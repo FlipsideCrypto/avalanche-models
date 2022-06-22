@@ -14,7 +14,7 @@ SELECT
     origin_function_signature,
     from_address,
     to_address,
-    eth_value,
+    eth_value as avax_value,
     tx_fee,
     gas_price,
     gas_limit,

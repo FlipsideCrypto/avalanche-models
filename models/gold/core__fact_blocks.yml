@@ -1,0 +1,40 @@
+version: 2
+models:
+  - name: core__fact_blocks
+    description: '{{ doc("avax_blocks_table_doc") }}'   
+
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("avax_block_number") }}'   
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("avax_block_timestamp") }}'
+      - name: NETWORK
+        description: '{{ doc("avax_network") }}'
+      - name: BLOCKCHAIN
+        description: '{{ doc("avax_blockchain") }}'
+      - name: TX_COUNT
+        description: '{{ doc("avax_tx_count") }}'
+      - name: DIFFICULTY
+        description: '{{ doc("avax_difficulty") }}'
+      - name: TOTAL_DIFFICULTY
+        description: '{{ doc("avax_total_difficulty") }}'
+      - name: EXTRA_DATA
+        description: '{{ doc("avax_extra_data") }}'
+      - name: GAS_LIMIT
+        description: '{{ doc("avax_gas_limit") }}'
+      - name: GAS_USED
+        description: '{{ doc("avax_gas_used") }}'
+      - name: HASH
+        description: '{{ doc("avax_blocks_hash") }}'
+      - name: PARENT_HASH
+        description: '{{ doc("avax_parent_hash") }}'
+      - name: RECEIPTS_ROOT
+        description: '{{ doc("avax_receipts_root") }}'
+      - name: SHA3_UNCLES
+        description: '{{ doc("avax_sha3_uncles") }}'
+      - name: SIZE
+        description: '{{ doc("avax_size") }}' 
+      - name: UNCLE_BLOCKS
+        description: '{{ doc("avax_uncle_blocks") }}' 
+      - name: BLOCK_HEADER_JSON
+        description: '{{ doc("avax_block_header_json") }}'

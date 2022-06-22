@@ -1,0 +1,40 @@
+version: 2
+models:
+  - name: core__fact_traces
+    description: '{{ doc("avax_traces_table_doc") }}'  
+
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("avax_traces_block_no") }}'   
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("avax_traces_blocktime") }}'
+      - name: TX_HASH
+        description: '{{ doc("avax_traces_tx_hash") }}' 
+      - name: FROM_ADDRESS
+        description: '{{ doc("avax_traces_from") }}'
+      - name: TO_ADDRESS
+        description: '{{ doc("avax_traces_to") }}'
+      - name: ETH_VALUE
+        description: '{{ doc("avax_traces_value") }}'
+      - name: GAS
+        description: '{{ doc("avax_traces_gas") }}'
+      - name: GAS_USED
+        description: '{{ doc("avax_traces_gas_used") }}'
+      - name: INPUT
+        description: '{{ doc("avax_traces_input") }}'
+      - name: OUTPUT
+        description: '{{ doc("avax_traces_output") }}'
+      - name: TYPE
+        description: '{{ doc("avax_traces_type") }}'
+      - name: IDENTIFIER
+        description: '{{ doc("avax_traces_identifier") }}'
+      - name: DATA
+        description: '{{ doc("avax_traces_call_data") }}'
+      - name: TX_STATUS
+        description: '{{ doc("avax_tx_status") }}' 
+      - name: SUB_TRACES
+        description: '{{ doc("avax_traces_sub") }}' 
+
+
+
+        

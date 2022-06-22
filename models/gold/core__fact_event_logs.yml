@@ -1,0 +1,38 @@
+version: 2
+models:
+  - name: core__fact_event_logs
+    description: '{{ doc("avax_logs_table_doc") }}'
+
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("avax_block_number") }}'   
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("avax_block_timestamp") }}'
+      - name: TX_HASH
+        description: '{{ doc("avax_logs_tx_hash") }}'
+      - name: EVENT_INDEX
+        description: '{{ doc("avax_event_index") }}'
+      - name: CONTRACT_ADDRESS
+        description: '{{ doc("avax_logs_contract_address") }}'
+      - name: CONTRACT_NAME
+        description: '{{ doc("avax_logs_contract_name") }}'
+      - name: EVENT_NAME
+        description: '{{ doc("avax_event_name") }}'
+      - name: EVENT_INPUTS
+        description: '{{ doc("avax_event_inputs") }}'
+      - name: TOPICS
+        description: '{{ doc("avax_topics") }}'
+      - name: DATA
+        description: '{{ doc("avax_logs_data") }}'
+      - name: EVENT_REMOVED
+        description: '{{ doc("avax_event_removed") }}'  
+      - name: _LOG_ID
+        description: '{{ doc("avax_log_id_events") }}'  
+      - name: TX_STATUS
+        description: '{{ doc("avax_tx_status") }}' 
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("avax_origin_sig") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("avax_origin_from") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("avax_origin_to") }}'

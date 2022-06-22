@@ -1,5 +1,5 @@
 {% docs avax_value %}
 
-The value transacted in ETH. 
+The value transacted in AVAX. 
 
 {% enddocs %}

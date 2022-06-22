@@ -10,7 +10,7 @@ SELECT
     block_timestamp,
     from_address,
     to_address,
-    eth_value,
+    eth_value as avax_value,
     gas,
     gas_used,
     input,

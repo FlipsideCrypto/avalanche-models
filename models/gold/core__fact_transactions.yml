@@ -20,7 +20,7 @@ models:
         description: '{{ doc("avax_from_address") }}' 
       - name: TO_ADDRESS
         description: '{{ doc("avax_to_address") }}' 
-      - name: ETH_VALUE
+      - name: AVAX_VALUE
         description: '{{ doc("avax_value") }}' 
       - name: TX_FEE
         description: '{{ doc("avax_tx_fee") }}' 

@@ -14,7 +14,7 @@ models:
         description: '{{ doc("avax_traces_from") }}'
       - name: TO_ADDRESS
         description: '{{ doc("avax_traces_to") }}'
-      - name: ETH_VALUE
+      - name: AVAX_VALUE
         description: '{{ doc("avax_traces_value") }}'
       - name: GAS
         description: '{{ doc("avax_traces_gas") }}'

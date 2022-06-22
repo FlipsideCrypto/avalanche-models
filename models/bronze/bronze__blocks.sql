@@ -11,7 +11,8 @@ SELECT
     chain_id,
     tx_count,
     header,
-    ingested_at
+    ingested_at,
+    _inserted_timestamp
 FROM
     {{ source(
         'prod',
@@ -19,4 +20,4 @@ FROM
     ) }}
     qualify(ROW_NUMBER() over(PARTITION BY block_id
 ORDER BY
-    ingested_at DESC)) = 1
+    _inserted_timestamp DESC)) = 1

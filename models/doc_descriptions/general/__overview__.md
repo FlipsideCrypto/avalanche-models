@@ -2,6 +2,8 @@
 
 # Welcome to the Flipside Crypto Avalanche Models Documentation!
 
+# NOTE: Data is in 'lite mode' - meaning, histrorical data has not yet been backfilled. Please see `min(block_timestamp)`
+
 ## **What is Flipside?**
 
 [Flipside Crypto](https://flipsidecrypto.xyz/earn) provides Community Enabled Crypto Analytics, allowing our users to create and share data insights on the crypto projects they care most about.
@@ -23,10 +25,10 @@ The documentation included here details the design of the Avalanche tables and v
 
 ### **Quick Links to Table Documentation**
 
-- [fact_blocks]()
-- [fact_event_logs]()
-- [fact_traces]()
-- [fact_transactions]()
+- [fact_blocks](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_blocks)
+- [fact_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_event_logs)
+- [fact_traces](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_traces)
+- [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_transactions)
 
 ## **Data Model Overview**
 

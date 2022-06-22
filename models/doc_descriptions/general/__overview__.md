@@ -1,6 +1,6 @@
 {% docs __overview__ %}
 
-# Welcome to the Flipside Crypto Avalanche Models Documentation!
+# Welcome to the Flipside Crypto Avalanche C-Chain Models Documentation!
 
 # NOTE: Data is in 'lite mode' - meaning, histrorical data has not yet been backfilled. Please see `min(block_timestamp)`
 

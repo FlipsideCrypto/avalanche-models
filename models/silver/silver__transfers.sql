@@ -27,7 +27,7 @@ WITH logs AS (
         tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
-AND inserted_at >= (
+AND _inserted_timestamp >= (
     SELECT
         MAX(
             _inserted_timestamp

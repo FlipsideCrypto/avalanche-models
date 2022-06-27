@@ -20,7 +20,7 @@ WITH eth_base AS (
     WHERE
         eth_value > 0
         AND tx_status = 'SUCCESS'
-        and gas_used is not null
+        AND gas_used IS NOT NULL
 ),
 eth_price AS (
     SELECT
@@ -32,8 +32,7 @@ eth_price AS (
             'fact_hourly_token_prices'
         ) }}
     WHERE
-        token_address IS NULL
-        AND symbol IS NULL
+        token_address = LOWER('0x85f138bfEE4ef8e540890CFb48F620571d67Eda3')
     GROUP BY
         HOUR
 )

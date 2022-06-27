@@ -1,0 +1,32 @@
+version: 2
+models:
+  - name: core__ez_avax_transfers
+    description: '{{ doc("avax_ez_transfer_table_doc") }}'
+      
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("avax_block_number") }}'
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("avax_block_timestamp") }}'
+      - name: TX_HASH
+        description: '{{ doc("avax_transfer_tx_hash") }}'
+      - name: ETH_FROM_ADDRESS
+        description: '{{ doc("avax_transfer_from_address") }}'
+      - name: ETH_TO_ADDRESS
+        description: '{{ doc("avax_transfer_to_address") }}'
+      - name: AMOUNT
+        description: '{{ doc("avax_eth_amount") }}'
+      - name: TOKEN_PRICE
+        description: '{{ doc("avax_transfer_token_price") }}'
+      - name: AMOUNT_USD
+        description: '{{ doc("avax_eth_amount_usd") }}' 
+      - name: HAS_PRICE
+        description: '{{ doc("avax_transfer_has_price") }}' 
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("avax_origin_sig") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("avax_origin_from") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("avax_origin_to") }}'
+      - name: IDENTIFIER
+        description: '{{ doc("avax_traces_identifier") }}'

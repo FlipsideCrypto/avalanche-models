@@ -30,6 +30,8 @@ The documentation included here details the design of the Avalanche tables and v
 - [fact_traces](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_traces)
 - [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_transactions)
 - [dim_lables](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__dim_labels)
+- [fact_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_token_transfers)
+- [ez_avax_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_avax_transfers)
 
 ## **Data Model Overview**
 

@@ -15,13 +15,9 @@ models:
       - name: ETH_TO_ADDRESS
         description: '{{ doc("avax_transfer_to_address") }}'
       - name: AMOUNT
-        description: '{{ doc("avax_eth_amount") }}'
-      - name: TOKEN_PRICE
-        description: '{{ doc("avax_transfer_token_price") }}'
+        description: '{{ doc("avax_amount") }}'
       - name: AMOUNT_USD
         description: '{{ doc("avax_eth_amount_usd") }}' 
-      - name: HAS_PRICE
-        description: '{{ doc("avax_transfer_has_price") }}' 
       - name: ORIGIN_FUNCTION_SIGNATURE
         description: '{{ doc("avax_origin_sig") }}'
       - name: ORIGIN_FROM_ADDRESS

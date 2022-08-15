@@ -28,3 +28,4 @@ sources:
     schema: SILVER
     tables:
       - name: prices_v2
+

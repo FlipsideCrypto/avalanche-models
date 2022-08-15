@@ -75,10 +75,17 @@ models:
                 - FLOAT
       - name: TOKEN_IN
         description: '{{ doc("eth_dex_swaps_token_in") }}'
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
 
       - name: TOKEN_OUT
         description: '{{ doc("eth_dex_swaps_token_out") }}'
-
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
       - name: SYMBOL_IN
         description: '{{ doc("eth_dex_swaps_symbol_in") }}'
         tests:
@@ -95,10 +102,16 @@ models:
                 - VARCHAR
       - name: SENDER
         description: '{{ doc("eth_dex_swaps_sender") }}'
-
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
       - name: TX_TO
         description: '{{ doc("eth_dex_swaps_tx_to") }}'
-
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_match_regex:
+              regex: 0[xX][0-9a-fA-F]+
       - name: PLATFORM
         description: '{{ doc("eth_dex_platform") }}'
         tests:

@@ -3,14 +3,14 @@
 ) }}
 
     SELECT
-        lower(pair_address) as pool_address,
-        lower(token_0_address) as token0_address,
-        pair_name as pool_name,
-        token_0_symbol as token0_symbol,
-        lower(token_1_address) as token1_address,
-        token_1_symbol as token1_symbol,
-        token_0_decimals as token0_decimals,
-        token_1_decimals as token1_decimals 
+        lower(pool_address) as pool_address,
+        lower(token0_address) as token0_address,
+        pool_name,
+        token0_symbol,
+        lower(token1_address) as token1_address,
+        token1_symbol,
+        token0_decimals,
+        token1_decimals
     FROM
          {{ source(
             'avalanche_pools',

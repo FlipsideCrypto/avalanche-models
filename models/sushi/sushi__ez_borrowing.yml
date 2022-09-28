@@ -20,9 +20,6 @@ models:
         tests:
           - not_null
           #    due to infrequency of txns these tests are removed for now
-          # - dbt_expectations.expect_row_values_to_have_recent_data:
-          #     datepart: day
-          #     interval: 30 #borrowing transactions are not very frequent
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - TIMESTAMP_NTZ

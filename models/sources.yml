@@ -28,4 +28,10 @@ sources:
     schema: SILVER
     tables:
       - name: prices_v2
+  - name: bronze_api
+    database: avalanche
+    schema: bronze_api
+    tables:
+      - name: contract_abis
+      - name: token_reads
 

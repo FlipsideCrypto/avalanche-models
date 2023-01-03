@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "_log_id",
-    cluster_by = ['_inserted_timestamp::DATE']
+    unique_key = 'tx_hash',
+    cluster_by = ['_inserted_timestamp::DATE'],
+    incremental_strategy = 'delete+insert'
 ) }}
 
 WITH base_txs AS (

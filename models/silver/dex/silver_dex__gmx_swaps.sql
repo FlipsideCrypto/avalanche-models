@@ -15,16 +15,16 @@ SELECT
   COALESCE(i.address_name,o.address_name) AS pool_name,
   event_name,
   event_inputs:inputValue ::NUMERIC / CASE WHEN event_inputs:inputToken::STRING IN('0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7', '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab') THEN POW(10,18) ELSE POW(10,6) END AS amount_in,
-  NULL AS amount_in,
+  NULL AS amount_in_usd,
   event_inputs:outputValue ::NUMERIC / CASE WHEN event_inputs:outputToken::STRING IN('0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7', '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab') THEN POW(10,18) ELSE POW(10,6) END AS amount_out,
-  NULL AS amount_out,
+  NULL AS amount_out_usd,
   event_inputs:sender ::STRING AS sender,
   event_index,
   'gmx' AS platform,
   event_inputs:inputToken ::STRING AS token_in,
   event_inputs:outputToken ::STRING AS token_out,
-  cp.address_name AS symbol_in,
-  co.address_name AS symbol_out,
+  cp.name AS symbol_in,
+  co.name AS symbol_out,
   _log_id
 FROM {{ ref('silver__logs') }}
 

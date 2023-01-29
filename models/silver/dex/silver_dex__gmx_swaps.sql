@@ -23,24 +23,8 @@ SELECT
   'gmx' AS platform,
   event_inputs:inputToken ::STRING AS token_in,
   event_inputs:outputToken ::STRING AS token_out,
-  CASE
-    WHEN event_inputs:inputToken ::STRING = '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e' THEN 'USDC'
-    WHEN event_inputs:inputToken ::STRING = '0x152b9d0fdc40c096757f570a51e494bd4b943e50' THEN 'BTC.b'
-    WHEN event_inputs:inputToken ::STRING = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' THEN 'WAVAX'
-    WHEN event_inputs:inputToken ::STRING = '0x50b7545627a5162f82a992c33b87adc75187b218' THEN 'WBTC.e'
-    WHEN event_inputs:inputToken ::STRING = '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664' THEN 'USDC.e'
-    WHEN event_inputs:inputToken ::STRING = '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab' THEN 'WETH.e'
-    ELSE event_inputs:inputToken ::STRING
-  END AS symbol_in,
-  CASE
-    WHEN event_inputs:outputToken ::STRING = '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e' THEN 'USDC'
-    WHEN event_inputs:outputToken ::STRING = '0x152b9d0fdc40c096757f570a51e494bd4b943e50' THEN 'BTC.b'
-    WHEN event_inputs:outputToken ::STRING = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' THEN 'WAVAX'
-    WHEN event_inputs:outputToken ::STRING = '0x50b7545627a5162f82a992c33b87adc75187b218' THEN 'WBTC.e'
-    WHEN event_inputs:outputToken ::STRING = '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664' THEN 'USDC.e'
-    WHEN event_inputs:outputToken ::STRING = '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab' THEN 'WETH.e'
-    ELSE event_inputs:outputToken ::STRING
-  END AS symbol_out,
+  cp.address_name AS symbol_in,
+  co.address_name AS symbol_out,
   _log_id
 FROM {{ ref('silver__logs') }}
 
@@ -49,6 +33,12 @@ LEFT OUTER JOIN {{ ref('silver_dex__gmx_tj_pools') }} i
   
 LEFT OUTER JOIN {{ ref('silver_dex__gmx_tj_pools') }} o
   ON event_inputs:outputToken ::STRING = o.address  
+
+LEFT OUTER JOIN {{ ref('core__dim_contracts') }} cp
+  ON event_inputs:inputToken ::STRING = cp.address
+
+LEFT OUTER JOIN {{ ref('core__dim_contracts') }} co
+  ON event_inputs:outputToken ::STRING = co.address    
 
 WHERE topics[0] ::STRING = '0xcd3829a3813dc3cdd188fd3d01dcf3268c16be2fdd2dd21d0665418816e46062'
   AND origin_to_address = '0x5f719c2f1095f7b9fc68a68e35b51194f4b6abe8' --GMX Router Contract

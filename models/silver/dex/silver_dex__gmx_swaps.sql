@@ -44,4 +44,5 @@ WHERE topics[0] ::STRING = '0xcd3829a3813dc3cdd188fd3d01dcf3268c16be2fdd2dd21d06
   AND origin_to_address = '0x5f719c2f1095f7b9fc68a68e35b51194f4b6abe8' --GMX Router Contract
   AND block_number >= 8351228 -- Contract Creation
   AND event_name = 'Swap'
+  AND tx_status = 'SUCCESS'
 

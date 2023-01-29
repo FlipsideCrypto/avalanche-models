@@ -16,6 +16,7 @@ WHERE topics[0] ::STRING = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628
   AND origin_to_address = '0x60ae616a2155ee3d9a68541ba4544862310933d4' --Trader Joe Router Contract
   AND block_number >= 2504337 -- Earliest tx 
   AND event_name = 'Transfer'
+  AND tx_status = 'SUCCESS'
 
 )
 

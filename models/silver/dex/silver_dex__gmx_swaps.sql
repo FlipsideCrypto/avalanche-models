@@ -28,10 +28,10 @@ SELECT
   _log_id
 FROM {{ ref('silver__logs') }}
 
-LEFT OUTER JOIN {{ ref('silver_dex__gmx_tj_pools') }} i
+LEFT OUTER JOIN {{ ref('silver_dex__pools') }} i
   ON event_inputs:inputToken ::STRING = i.address
   
-LEFT OUTER JOIN {{ ref('silver_dex__gmx_tj_pools') }} o
+LEFT OUTER JOIN {{ ref('silver_dex__pools') }} o
   ON event_inputs:outputToken ::STRING = o.address  
 
 LEFT OUTER JOIN {{ ref('core__dim_contracts') }} cp

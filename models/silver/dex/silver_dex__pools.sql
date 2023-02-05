@@ -10,5 +10,4 @@ SELECT
   address_name,
   project_name
 FROM {{ ref('core__dim_labels') }}
-WHERE project_name = 'trader joe' 
-  AND label_subtype = 'pool' 
+WHERE label_subtype = 'pool' 

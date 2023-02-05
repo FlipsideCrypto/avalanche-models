@@ -13,8 +13,8 @@ SELECT
   event_inputs:value ::STRING as value
 FROM avalanche.silver.logs 
 WHERE topics[0] ::STRING = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
-  AND origin_to_address = '0x60ae616a2155ee3d9a68541ba4544862310933d4' --Trader Joe Router Contract
-  AND block_number >= 2504337 -- Earliest tx 
+  AND origin_to_address = '0xe54ca86531e17ef3616d22ca28b0d458b6c89106' --Pangolin Router Contract
+  AND block_number >= 57309 -- Earliest tx 
   AND event_name = 'Transfer'
   AND tx_status = 'SUCCESS'
 
@@ -42,7 +42,7 @@ SELECT
   NULL AS amount_out_usd,
   event_inputs:sender ::STRING AS sender,
   event_index,
-  'trader-joe' AS platform,
+  'pangolin' AS platform,
   p.contract_address AS token_in,
   ou.contract_address AS token_out,
   cp.name AS symbol_in,
@@ -78,8 +78,8 @@ LEFT OUTER JOIN {{ ref('silver_dex__pools') }} po
   ON l.contract_address = po.address
 
 WHERE l.topics[0] ::STRING = '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822'
-  AND l.origin_to_address = '0x60ae616a2155ee3d9a68541ba4544862310933d4' --Trader Joe Router Contract
-  AND l.block_number >= 2504337 -- Earliest tx
+  AND l.origin_to_address = '0xe54ca86531e17ef3616d22ca28b0d458b6c89106' --Pangolin Router Contract
+  AND l.block_number >= 57349 -- Earliest tx
   AND l.tx_status = 'SUCCESS'
   AND l.event_name = 'Swap'
 

@@ -83,7 +83,7 @@ pandolin_swaps AS (
     symbol_out,
     _log_id
   FROM
-    {{ ref('silver_dex__pandolin_swaps') }}
+    {{ ref('silver_dex__pangolin_swaps') }}
 )
 
 SELECT
@@ -163,4 +163,4 @@ SELECT
   symbol_out,
   _log_id
 FROM
-  pandolin_swaps
+  pangolin_swaps

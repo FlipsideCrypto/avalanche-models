@@ -1,15 +1,12 @@
 version: 2
 models:
-  - name: core__ez_dex_swaps
-    description: '{{ doc("avax_ez_dex_swaps_table_doc") }}'
-
+  - name: silver_dex__gmx_swaps
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - _LOG_ID
     columns:
       - name: BLOCK_NUMBER
-        description: '{{ doc("avax_block_number") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_in_type_list:
@@ -17,7 +14,6 @@ models:
                 - NUMBER
                 - FLOAT
       - name: BLOCK_TIMESTAMP
-        description: '{{ doc("avax_block_timestamp") }}'
         tests:
           - not_null
           - dbt_expectations.expect_row_values_to_have_recent_data:
@@ -27,118 +23,87 @@ models:
               column_type_list:
                 - TIMESTAMP_NTZ
       - name: TX_HASH
-        description: '{{ doc("avax_logs_tx_hash") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: CONTRACT_ADDRESS
-        description: '{{ doc("avax_logs_contract_address") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: EVENT_NAME
-        description: '{{ doc("avax_event_name") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - STRING
                 - VARCHAR
       - name: AMOUNT_IN
-        description: '{{ doc("eth_dex_swaps_amount_in") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER
                 - FLOAT
       - name: AMOUNT_OUT
-        description: '{{ doc("eth_dex_swaps_amount_out") }}'
-        tests:
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
-      - name: AMOUNT_IN_USD
-        description: '{{ doc("eth_dex_swaps_amount_in_usd") }}'
-        tests:
-          - dbt_expectations.expect_column_values_to_be_in_type_list:
-              column_type_list:
-                - NUMBER
-                - FLOAT
-      - name: AMOUNT_OUT_USD
-        description: '{{ doc("eth_dex_swaps_amount_out_usd") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER
                 - FLOAT
       - name: TOKEN_IN
-        description: '{{ doc("eth_dex_swaps_token_in") }}'
         tests:
           - not_null:
               where: PLATFORM <> 'uniswap-v3'
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: TOKEN_OUT
-        description: '{{ doc("eth_dex_swaps_token_out") }}'
         tests:
           - not_null:
               where: PLATFORM <> 'uniswap-v3'
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: SYMBOL_IN
-        description: '{{ doc("eth_dex_swaps_symbol_in") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - STRING
                 - VARCHAR
       - name: SYMBOL_OUT
-        description: '{{ doc("eth_dex_swaps_symbol_out") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - STRING
                 - VARCHAR
       - name: SENDER
-        description: '{{ doc("eth_dex_swaps_sender") }}'
         tests:
           - not_null:
               where: BLOCK_TIMESTAMP > '2021-08-01'
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: PLATFORM
-        description: '{{ doc("eth_dex_platform") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - STRING
                 - VARCHAR
       - name: EVENT_INDEX
-        description: '{{ doc("avax_event_index") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:
               column_type_list:
                 - NUMBER
                 - FLOAT
       - name: _LOG_ID
-        description: '{{ doc("avax_log_id_events") }}'
         tests:
           - not_null
       - name: ORIGIN_FUNCTION_SIGNATURE
-        description: '{{ doc("avax_origin_sig") }}'
         tests:
           - not_null
       - name: ORIGIN_FROM_ADDRESS
-        description: '{{ doc("avax_origin_from") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
       - name: ORIGIN_TO_ADDRESS
-        description: '{{ doc("avax_origin_to") }}'
         tests:
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+
-

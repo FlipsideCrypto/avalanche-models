@@ -1,13 +1,11 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "address",
+    unique_key = "pool",
 ) }}
 
-SELECT
-  blockchain,
-  creator,
-  address,
-  address_name,
-  project_name
-FROM {{ ref('core__dim_labels') }}
-WHERE label_subtype = 'pool' 
+SELECT 
+  event_inputs:pair ::STRING AS pool,
+  event_inputs:token0 ::STRING AS token0,
+  event_inputs:token1 ::STRING AS token1
+FROM {{ ref('silver__logs') }}
+WHERE event_name = 'PairCreated'

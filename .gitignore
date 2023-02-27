@@ -16,3 +16,4 @@ logs/
 .vscode/
 .env
 dbt-env/
+.user.yml

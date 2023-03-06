@@ -12,10 +12,10 @@ sources:
     schema: core
     tables:
       - name: address_labels
-  - name: ethereum 
+  - name: ethereum
     database: ethereum
-    schema: core 
-    tables: 
+    schema: core
+    tables:
       - name: fact_hourly_token_prices
   - name: avalanche_pools
     database: avalanche
@@ -31,11 +31,18 @@ sources:
   - name: streamline_crosschain
     database: streamline
     schema: crosschain
-    tables: 
+    tables:
       - name: node_mapping
   - name: crosschain_silver
     database: crosschain
     schema: silver
     tables:
       - name: apis_keys
-
+  - name: bronze_streamline
+    database: streamline
+    schema: |
+      {{ "AVALANCHE_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "AVALANCHE" }}
+    tables:
+      - name: blocks
+      - name: transactions
+      

@@ -26,7 +26,7 @@ clean-targets: # directories to be removed by `dbt clean`
 
 tests:
   +store_failures: true # all tests
-  
+
 on-run-start:
   - "{{ create_sps() }}"
   - "{{ create_udfs() }}"
@@ -43,5 +43,7 @@ on-run-end:
 
 vars:
   "dbt_date:time_zone": GMT
+  STREAMLINE_INVOKE_STREAMS: False
+  STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: False
   UPDATE_UDFS_AND_SPS: False
   UPDATE_SNOWFLAKE_TAGS: True

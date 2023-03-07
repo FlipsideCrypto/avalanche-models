@@ -1,6 +1,6 @@
 {% macro create_udf_get_chainhead() %}
-    CREATE OR REPLACE EXTERNAL FUNCTION streamline.udf_get_chainhead(
-    ) returns variant api_integration = aws_avalanche_api AS {% if target.name == "prod" %}
+    CREATE
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_get_chainhead() returns variant api_integration = aws_avalanche_api AS {% if target.name == "prod" %}
         'https://87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/get_chainhead'
     {% else %}
         'https://28hv9m0ra8.execute-api.us-east-1.amazonaws.com/dev/get_chainhead'

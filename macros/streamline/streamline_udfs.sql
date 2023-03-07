@@ -24,7 +24,7 @@
         abi ARRAY,
         DATA STRING
     ) returns ARRAY api_integration = aws_avalanche_api AS {% if target.name == "prod" %}
-        'https:/87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/decode_function'
+        'https://87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/decode_function'
     {% else %}
         'https://28hv9m0ra8.execute-api.us-east-1.amazonaws.com/dev/decode_function'
     {%- endif %};
@@ -36,7 +36,7 @@
         abi ARRAY,
         DATA OBJECT
     ) returns ARRAY api_integration = aws_avalanche_api AS {% if target.name == "prod" %}
-        'https:/87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/decode_log'
+        'https://87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/decode_log'
     {% else %}
         'https://28hv9m0ra8.execute-api.us-east-1.amazonaws.com/dev/decode_log'
     {%- endif %};
@@ -47,7 +47,7 @@
     OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_decode_logs(
         json OBJECT
     ) returns ARRAY api_integration = aws_avalanche_api AS {% if target.name == "prod" %}
-        'https:/87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/bulk_decode_logs'
+        'https://87yvk5d2sf.execute-api.us-east-1.amazonaws.com/prod/bulk_decode_logs'
     {% else %}
         'https://28hv9m0ra8.execute-api.us-east-1.amazonaws.com/dev/bulk_decode_logs'
     {%- endif %};

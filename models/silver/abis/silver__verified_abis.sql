@@ -19,8 +19,11 @@ WITH base AS (
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(
-            _inserted_timestamp
+        COALESCE(
+            MAX(
+                _inserted_timestamp
+            ),
+            '1970-01-01'
         )
     FROM
         {{ this }}
@@ -51,8 +54,11 @@ user_abis AS (
 WHERE
     _inserted_timestamp >= (
         SELECT
-            MAX(
-                _inserted_timestamp
+            COALESCE(
+                MAX(
+                    _inserted_timestamp
+                ),
+                '1970-01-01'
             )
         FROM
             {{ this }}

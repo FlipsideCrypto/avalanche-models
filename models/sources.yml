@@ -45,4 +45,8 @@ sources:
     tables:
       - name: blocks
       - name: transactions
-      
+  - name: crosschain_public
+    database: crosschain
+    schema: bronze_public
+    tables:
+      - name: user_abis

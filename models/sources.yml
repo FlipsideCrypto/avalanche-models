@@ -38,6 +38,13 @@ sources:
     schema: silver
     tables:
       - name: apis_keys
+  - name: bronze_streamline
+    database: streamline
+    schema: |
+      {{ "AVALANCHE_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "AVALANCHE" }}
+    tables:
+      - name: blocks
+      - name: transactions
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

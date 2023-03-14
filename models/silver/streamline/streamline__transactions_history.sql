@@ -6,7 +6,7 @@
     )
 ) }}
 
-{% for item in range(26) %}
+{% for item in range(27) %}
     (
         WITH blocks AS (
 

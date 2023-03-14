@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'transactions', 'sql_limit', {{var('sql_limit','200000')}}, 'producer_batch_size', {{var('producer_batch_size','50000')}}, 'worker_batch_size', {{var('worker_batch_size','25000')}}, 'batch_call_limit', {{var('batch_call_limit','500')}}))",
+        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'debug_traceTransaction', 'sql_limit', {{var('sql_limit','160000')}}, 'producer_batch_size', {{var('producer_batch_size','40000')}}, 'worker_batch_size', {{var('worker_batch_size','20000')}}, 'batch_call_limit', {{var('batch_call_limit','10')}}))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
@@ -17,11 +17,12 @@ WITH last_3_days AS (
                 block_number DESC
         ) = 3
 ),
-blocks AS (
+transactions AS (
     SELECT
+        tx_hash :: STRING AS tx_hash,
         block_number :: STRING AS block_number
     FROM
-        {{ ref("streamline__blocks") }}
+        {{ ref("streamline__txs") }}
     WHERE
         (
             block_number >= (
@@ -34,9 +35,10 @@ blocks AS (
         AND block_number IS NOT NULL
     EXCEPT
     SELECT
+        tx_hash :: STRING,
         block_number :: STRING
     FROM
-        {{ ref("streamline__complete_transactions") }}
+        {{ ref("streamline__complete_debug_traceTransaction") }}
     WHERE
         (
             block_number >= (
@@ -51,14 +53,15 @@ SELECT
     PARSE_JSON(
         CONCAT(
             '{"jsonrpc": "2.0",',
-            '"method": "eth_getBlockByNumber", "params":[',
-            block_number :: INTEGER,
-            ',',
-            TRUE :: BOOLEAN,
-            '],"id":',
+            '"method": "debug_traceTransaction", "params":["',
+            tx_hash :: STRING,
+            '",{"tracer": "callTracer"}',
+            '],"id":"',
             block_number :: STRING,
-            '}'
+            '-',
+            tx_hash :: STRING,
+            '"}'
         )
     ) AS request
 FROM
-    blocks
+    transactions

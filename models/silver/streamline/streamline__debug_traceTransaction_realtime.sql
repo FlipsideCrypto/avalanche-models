@@ -6,15 +6,33 @@
     )
 ) }}
 
-WITH transactions AS (
+WITH last_3_days AS (
 
     SELECT
-        tx_hash :: STRING as tx_hash,
+        block_number
+    FROM
+        {{ ref("_max_block_by_date") }}
+        qualify ROW_NUMBER() over (
+            ORDER BY
+                block_number DESC
+        ) = 3
+),
+transactions AS (
+    SELECT
+        tx_hash :: STRING AS tx_hash,
         block_number :: STRING AS block_number
     FROM
         {{ ref("streamline__txs") }}
     WHERE
-        block_number > 27000000
+        (
+            block_number >= (
+                SELECT
+                    block_number
+                FROM
+                    last_3_days
+            )
+        )
+        AND block_number IS NOT NULL
     EXCEPT
     SELECT
         tx_hash :: STRING,
@@ -22,7 +40,14 @@ WITH transactions AS (
     FROM
         {{ ref("streamline__complete_debug_traceTransaction") }}
     WHERE
-        block_number > 27000000
+        (
+            block_number >= (
+                SELECT
+                    block_number
+                FROM
+                    last_3_days
+            )
+        )
 )
 SELECT
     PARSE_JSON(

@@ -46,6 +46,8 @@ sources:
       - name: decoded_logs
       - name: blocks
       - name: transactions
+      - name: eth_getTransactionReceipt
+      - name: debug_traceTransaction
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

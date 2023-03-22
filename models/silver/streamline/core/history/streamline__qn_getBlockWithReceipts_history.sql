@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'blocks', 'sql_limit', {{var('sql_limit','1000000')}}, 'producer_batch_size', {{var('producer_batch_size','100000')}}, 'worker_batch_size', {{var('worker_batch_size','50000')}}, 'batch_call_limit', {{var('batch_call_limit','1000')}}))",
+        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'qn_getBlockWithReceipts', 'sql_limit', {{var('sql_limit','10000000')}}, 'producer_batch_size', {{var('producer_batch_size','1000000')}}, 'worker_batch_size', {{var('worker_batch_size','500000')}}, 'batch_call_limit', {{var('batch_call_limit','100')}}))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
@@ -23,7 +23,7 @@
             SELECT
                 block_number :: STRING
             FROM
-                {{ ref("streamline__complete_blocks") }}
+                {{ ref("streamline__complete_qn_getBlockWithReceipts") }}
             WHERE
                 block_number BETWEEN {{ item * 1000000 + 1 }}
                 AND {{(
@@ -34,13 +34,11 @@
             PARSE_JSON(
                 CONCAT(
                     '{"jsonrpc": "2.0",',
-                    '"method": "eth_getBlockByNumber", "params":[',
+                    '"method": "qn_getBlockWithReceipts", "params":[',
                     block_number :: INTEGER,
-                    ',',
-                    FALSE :: BOOLEAN,
-                    '],"id":',
+                    '],"id":"',
                     block_number :: STRING,
-                    '}'
+                    '"}'
                 )
             ) AS request
         FROM

@@ -18,7 +18,7 @@ WITH meta AS (
     FROM
         TABLE(
             information_schema.external_table_files(
-                table_name => '{{ source( "bronze_streamline", "qn_getReceipts") }}'
+                table_name => '{{ source( "bronze_streamline", "debug_traceBlockByNumber") }}'
             )
         ) A
 
@@ -37,23 +37,23 @@ WHERE
 )
 {% endif %}
 SELECT
-    MD5(
-        CAST(COALESCE(CAST(block_number AS text), '') AS text)
-    ) AS id,
+	split(data:id :: STRING, '-')[1] :: STRING as tx_hash,
     block_number,
+    MD5(
+        CAST(COALESCE(CAST(block_number AS text), '') AS text) || CAST(COALESCE(CAST(tx_hash AS text), '') AS text)
+    ) AS id,
     registered_on AS _inserted_timestamp
 FROM
     {{ source(
         "bronze_streamline",
-        "qn_getReceipts"
+        "debug_traceBlockByNumber"
     ) }}
     t
     JOIN meta b
     ON b.file_name = metadata$filename
     and b._partition_by_block_number = t._partition_by_block_id
-
 WHERE
-    b._partition_by_block_number = t._partition_by_block_id
+    b._partition_by_block_number = t._partition_by_block_id 
     and (
     DATA :error :code IS NULL
     OR DATA :error :code NOT IN (

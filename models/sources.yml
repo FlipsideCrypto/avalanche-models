@@ -43,8 +43,11 @@ sources:
     schema: |
       {{ "AVALANCHE_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "AVALANCHE" }}
     tables:
-      - name: debug_traceBlockByNumber
-      - name: qn_getBlockWithReceipts
+      - name: decoded_logs
+      - name: blocks
+      - name: transactions
+      - name: qn_getReceipts
+      - name: debug_traceTransaction
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

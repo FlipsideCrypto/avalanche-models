@@ -11,7 +11,10 @@ WITH meta AS (
     SELECT
         registered_on,
         last_modified,
-        file_name
+        file_name,
+        CAST(
+                SPLIT_PART(SPLIT_PART(file_name, '/', 3), '_', 1) AS INTEGER
+            ) AS _partition_by_block_number
     FROM
         TABLE(
             information_schema.external_table_files(
@@ -29,14 +32,6 @@ WHERE
             COALESCE(MAX(_INSERTED_TIMESTAMP), '1970-01-01' :: DATE) max_INSERTED_TIMESTAMP
         FROM
             {{ this }})
-    ),
-    partitions AS (
-        SELECT
-            CAST(
-                SPLIT_PART(SPLIT_PART(file_name, '/', 3), '_', 1) AS INTEGER
-            ) AS _partition_by_block_number
-        FROM
-            meta
     )
 {% else %}
 )
@@ -55,12 +50,10 @@ FROM
     t
     JOIN meta b
     ON b.file_name = metadata$filename
-
-{% if is_incremental() %}
-JOIN partitions p
-ON p._partition_by_block_number = t._partition_by_block_id
-{% endif %}
+    and b._partition_by_block_number = t._partition_by_block_id
 WHERE
+    b._partition_by_block_number = t._partition_by_block_id 
+    and (
     DATA :error :code IS NULL
     OR DATA :error :code NOT IN (
         '-32000',
@@ -74,6 +67,6 @@ WHERE
         '-32008',
         '-32009',
         '-32010'
-    ) qualify(ROW_NUMBER() over (PARTITION BY id
+    )) qualify(ROW_NUMBER() over (PARTITION BY id
 ORDER BY
     _inserted_timestamp DESC)) = 1

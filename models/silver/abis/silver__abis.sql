@@ -130,5 +130,4 @@ FROM
     priority_abis p
     LEFT JOIN {{ ref('silver__created_contracts') }}
     ON p.contract_address = created_contract_address
-WHERE
-    p.contract_address IS NOT NULL
+where p.contract_address is not null

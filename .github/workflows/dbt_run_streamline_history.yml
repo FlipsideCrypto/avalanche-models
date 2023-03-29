@@ -4,8 +4,8 @@ run-name: dbt_run_streamline__history
 on:
   workflow_dispatch:
   schedule:
-    # Runs "at 3:00 UTC" (see https://crontab.guru)
-    - cron: '0 3 * * *'
+    # evevy 6 hours" (see https://crontab.guru)
+    - cron: '0 */6 * * *'
 
 env:
   DBT_PROFILES_DIR: ./

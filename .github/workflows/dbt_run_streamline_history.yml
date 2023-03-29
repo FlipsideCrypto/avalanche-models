@@ -4,7 +4,7 @@ run-name: dbt_run_streamline__history
 on:
   workflow_dispatch:
   schedule:
-    # evevy 6 hours" (see https://crontab.guru)
+    # every 6 hours" (see https://crontab.guru)
     - cron: '0 */6 * * *'
 
 env:

@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: silver_test__receipts_full
+  - name: test_silver__receipts_full
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

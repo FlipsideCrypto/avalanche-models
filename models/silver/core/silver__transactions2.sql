@@ -92,6 +92,7 @@ new_records AS (
             10,
             9
         ) AS tx_fee,
+        r.type AS tx_type,
         A._INSERTED_TIMESTAMP
     FROM
         base A
@@ -101,7 +102,9 @@ new_records AS (
         AND A.data :hash :: STRING = r.tx_hash
         LEFT OUTER JOIN {{ ref('silver__blocks2') }}
         b
-        ON A.block_number = b.block_number
+        ON A.block_number = b.block_number qualify(ROW_NUMBER() over (PARTITION BY A.block_number, A.data :hash :: STRING
+    ORDER BY
+        A._inserted_timestamp DESC)) = 1
 )
 
 {% if is_incremental() %},
@@ -137,6 +140,7 @@ missing_data AS (
             10,
             9
         ) AS tx_fee,
+        r.type AS tx_type,
         GREATEST(
             t._inserted_timestamp,
             b._inserted_timestamp,
@@ -182,11 +186,10 @@ SELECT
     cumulative_gas_used,
     effective_gas_price,
     tx_fee,
+    tx_type,
     _inserted_timestamp
 FROM
-    new_records qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_hash
-ORDER BY
-    _inserted_timestamp DESC)) = 1
+    new_records
 
 {% if is_incremental() %}
 UNION

@@ -81,7 +81,8 @@ WHERE
                     COALESCE(CAST({{ unique_key }} AS text), '' :: STRING) AS text
                 )
             ) AS id,
-            s.{{ partition_name }}
+            s.{{ partition_name }},
+            s.value AS value
         FROM
             {{ source(
                 "bronze_streamline",
@@ -138,7 +139,8 @@ SELECT
             COALESCE(CAST({{ unique_key }} AS text), '' :: STRING) AS text
         )
     ) AS id,
-    s.{{ partition_name }}
+    s.{{ partition_name }},
+    s.value AS value
 FROM
     {{ source(
         "bronze_streamline",

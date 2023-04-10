@@ -42,10 +42,10 @@ SELECT
     PUBLIC.udf_hex_to_int(
         DATA :totalDifficulty :: STRING
     ) :: INT AS total_difficulty,
-    -- need a txs column
     DATA :transactionsRoot :: STRING AS transactions_root,
     DATA :uncles AS uncles,
-    _inserted_timestamp
+    _inserted_timestamp,
+    -- need a txs column and block_header_json column(do we though?)
 FROM
 
 {% if is_incremental() %}

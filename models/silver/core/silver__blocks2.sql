@@ -44,8 +44,7 @@ SELECT
     ) :: INT AS total_difficulty,
     DATA :transactionsRoot :: STRING AS transactions_root,
     DATA :uncles AS uncles,
-    _inserted_timestamp,
-    -- need a txs column and block_header_json column(do we though?)
+    _inserted_timestamp -- need a txs column and block_header_json column(do we though?)
 FROM
 
 {% if is_incremental() %}

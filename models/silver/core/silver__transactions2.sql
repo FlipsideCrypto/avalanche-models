@@ -22,8 +22,8 @@ WHERE
             MAX(_inserted_timestamp) _inserted_timestamp
         FROM
             {{ this }}
-            AND IS_OBJECT(DATA)
     )
+    AND IS_OBJECT(DATA)
 {% else %}
     {{ ref('bronze__streamline_FR_transactions') }}
 WHERE

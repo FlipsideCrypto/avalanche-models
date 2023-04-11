@@ -25,7 +25,7 @@ WITH eth_base AS (
 eth_price AS (
     SELECT
         HOUR,
-        AVG(price) AS eth_price
+        price AS eth_price
     FROM
         {{ source(
             'ethereum',
@@ -33,8 +33,6 @@ eth_price AS (
         ) }}
     WHERE
         token_address = LOWER('0x85f138bfEE4ef8e540890CFb48F620571d67Eda3')
-    GROUP BY
-        HOUR
 )
 SELECT
     A.tx_hash AS tx_hash,

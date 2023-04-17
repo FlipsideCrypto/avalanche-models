@@ -6,7 +6,7 @@
     )
 ) }}
 
-{% for item in range(29) %}
+{% for item in range(28) %}
     (
         WITH blocks AS (
 
@@ -34,15 +34,28 @@
             PARSE_JSON(
                 CONCAT(
                     '{"jsonrpc": "2.0",',
-                    '"method": "qn_getBlockWithReceipts", "params":[',
-                    block_number :: INTEGER,
-                    '],"id":"',
+                    '"method": "qn_getBlockWithReceipts", "params":["',
+                    REPLACE(
+                        concat_ws(
+                            '',
+                            '0x',
+                            to_char(
+                                block_number :: INTEGER,
+                                'XXXXXXXX'
+                            )
+                        ),
+                        ' ',
+                        ''
+                    ),
+                    '"],"id":"',
                     block_number :: STRING,
                     '"}'
                 )
             ) AS request
         FROM
             blocks
+        ORDER BY
+            block_number ASC
     ) {% if not loop.last %}
     UNION ALL
     {% endif %}

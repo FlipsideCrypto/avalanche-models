@@ -22,10 +22,10 @@ WITH eth_base AS (
         AND tx_status = 'SUCCESS'
         AND gas_used IS NOT NULL
 ),
-eth_price AS (
+avax_price AS (
     SELECT
         HOUR,
-        price AS eth_price
+        price AS avax_price
     FROM
         {{ source(
             'ethereum',
@@ -42,16 +42,16 @@ SELECT
     tx.from_address AS origin_from_address,
     tx.to_address AS origin_to_address,
     tx.origin_function_signature AS origin_function_signature,
-    A.from_address AS eth_from_address,
-    A.to_address AS eth_to_address,
+    A.from_address AS avax_from_address,
+    A.to_address AS avax_to_address,
     A.eth_value AS amount,
     ROUND(
-        A.eth_value * eth_price,
+        A.eth_value * avax_price,
         2
     ) AS amount_usd
 FROM
     eth_base A
-    LEFT JOIN eth_price
+    LEFT JOIN avax_price
     ON DATE_TRUNC(
         'hour',
         block_timestamp

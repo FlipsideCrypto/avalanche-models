@@ -1,7 +1,7 @@
 {{ config (
     materialized = "view",
     post_hook = if_data_call_function(
-        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'qn_getBlockWithReceipts', 'sql_limit', {{var('sql_limit','100000')}}, 'producer_batch_size', {{var('producer_batch_size','100000')}}, 'worker_batch_size', {{var('worker_batch_size','5000')}}, 'batch_call_limit', {{var('batch_call_limit','10')}}))",
+        func = "{{this.schema}}.udf_bulk_json_rpc(object_construct('sql_source', '{{this.identifier}}', 'external_table', 'qn_getBlockWithReceipts', 'sql_limit', {{var('sql_limit','100000')}}, 'producer_batch_size', {{var('producer_batch_size','10000')}}, 'worker_batch_size', {{var('worker_batch_size','1000')}}, 'batch_call_limit', {{var('batch_call_limit','10')}}))",
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
@@ -59,7 +59,6 @@ WITH blocks AS (
         {{ ref("streamline__complete_qn_getBlockWithReceipts") }}
     WHERE
         block_number >= 28000000
-        and block_number <= 28100000
 )
 SELECT
     PARSE_JSON(

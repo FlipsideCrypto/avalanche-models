@@ -1,6 +1,7 @@
 {{ config (
     materialized = "incremental",
-    unique_key = "_call_id",
+    unique_key = "concat(block_number, '-', tx_position)",
+    incremental_strategy = 'delete+insert',
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION"
 ) }}

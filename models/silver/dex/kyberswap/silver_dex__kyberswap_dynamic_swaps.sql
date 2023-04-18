@@ -11,7 +11,7 @@ WITH pools AS (
         token0,
         token1
     FROM
-        {{ ref('silver_dex__trader_joe_v1_pools') }}
+        {{ ref('silver_dex__kyberswap_dynamic_pools') }}
 ),
 swaps_base AS (
     SELECT
@@ -46,6 +46,11 @@ swaps_base AS (
                 l_segmented_data [3] :: STRING
             )
         ) AS amount1Out,
+        TRY_TO_NUMBER(
+            ethereum.public.udf_hex_to_int(
+                l_segmented_data [4] :: STRING
+            )
+        ) AS feeInPrecision,
         token0,
         token1,
         l._log_id,
@@ -56,7 +61,7 @@ swaps_base AS (
         INNER JOIN pools p
         ON p.pool_address = l.contract_address
     WHERE
-        l.topics [0] :: STRING = '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822' --Swap
+        l.topics [0] :: STRING = '0x606ecd02b3e3b4778f8e97b2e03351de14224efaa5fa64e62200afc9395c2499' --Dynamic Swap
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -76,18 +81,19 @@ SELECT
     origin_from_address,
     origin_to_address,
     event_index,
-    sender_address AS sender,
-    to_address AS tx_to,
+    sender_address,
+    to_address,
     amount0In,
     amount1In,
     amount0Out,
     amount1Out,
+    feeInPrecision,
     token0,
     token1,
     CASE
         WHEN amount0In <> 0
-            AND amount1In <> 0
-            AND amount0Out <> 0 THEN amount1In
+        AND amount1In <> 0
+        AND amount0Out <> 0 THEN amount1In
         WHEN amount0In <> 0 THEN amount0In
         WHEN amount1In <> 0 THEN amount1In
     END AS amount_in_unadj,
@@ -97,8 +103,8 @@ SELECT
     END AS amount_out_unadj,
     CASE
         WHEN amount0In <> 0
-            AND amount1In <> 0
-            AND amount0Out <> 0 THEN token1
+        AND amount1In <> 0
+        AND amount0Out <> 0 THEN token1
         WHEN amount0In <> 0 THEN token0
         WHEN amount1In <> 0 THEN token1
     END AS token_in,
@@ -106,10 +112,11 @@ SELECT
         WHEN amount0Out <> 0 THEN token0
         WHEN amount1Out <> 0 THEN token1
     END AS token_out,
-    'Swap' AS event_name,
-    'trader-joe-v1' AS platform,
+    'Dynamic Swap' AS event_name,
+    'kyberswap-classic' AS platform,
     _log_id,
     _inserted_timestamp
 FROM
     swaps_base
-WHERE token_in <> token_out
+WHERE
+    token_in <> token_out

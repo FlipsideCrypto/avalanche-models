@@ -1,9 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = '_log_id',
-    cluster_by = ['block_timestamp::DATE'],
-    meta ={ 'database_tags':{ 'table':{ 'PROTOCOL': 'TRADER JOE',
-    'PURPOSE': 'DEFI, DEX, SWAPS' } } }
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
 WITH pools AS (
@@ -100,8 +98,6 @@ SELECT
     origin_to_address,
     event_index,
     contract_address,
-    topics,
-    DATA,
     sender_address AS sender,
     to_address AS tx_to,
     id,

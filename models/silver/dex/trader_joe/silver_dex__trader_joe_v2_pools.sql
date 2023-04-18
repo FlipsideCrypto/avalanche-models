@@ -46,7 +46,6 @@ SELECT
     block_timestamp,
     tx_hash,
     event_index,
-    segmented_data,
     tokenX,
     tokenY,
     binStep,

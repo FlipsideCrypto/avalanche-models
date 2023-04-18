@@ -1,9 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = '_log_id',
-    cluster_by = ['block_timestamp::DATE'],
-    meta ={ 'database_tags':{ 'table':{ 'PROTOCOL': 'GMX',
-    'PURPOSE': 'DEFI, DEX, SWAPS' } } }
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
 WITH swaps_base AS (
@@ -58,7 +56,6 @@ SELECT
     origin_to_address,
     event_index,
     contract_address,
-    l_segmented_data,
     origin_from_address AS sender,
     account_address AS tx_to,
     tokenIn AS token_in,

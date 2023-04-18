@@ -1,9 +1,7 @@
 {{ config(
     materialized = 'incremental',
     unique_key = '_log_id',
-    cluster_by = ['block_timestamp::DATE'],
-    meta ={ 'database_tags':{ 'table':{ 'PROTOCOL': 'WOOFI',
-    'PURPOSE': 'DEFI, DEX, SWAPS' } } }
+    cluster_by = ['block_timestamp::DATE']
 ) }}
 
 WITH swaps_base AS (
@@ -82,7 +80,6 @@ SELECT
     origin_to_address,
     event_index,
     contract_address,
-    l_segmented_data,
     from_token AS token_in,
     to_token AS token_out,
     to_address AS tx_to,

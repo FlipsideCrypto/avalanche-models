@@ -25,7 +25,7 @@ WHERE
             {{ this }})
             AND (
                 SELECT
-                    ROUND(MAX(block_number), -4) + 2500000
+                    ROUND(MAX(block_number), -4) + 1000000
                 FROM
                     {{ this }})
                 {% else %}

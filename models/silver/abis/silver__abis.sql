@@ -28,19 +28,47 @@ verified_abis AS (
         2 AS priority
     FROM
         {{ ref('silver__verified_abis') }}
+    WHERE
+        abi_source = 'snowscan'
 
 {% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(
-                _inserted_timestamp
-            )
-        FROM
-            {{ this }}
-        WHERE
-            abi_source <> 'bytecode_matched'
-    )
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        )
+    FROM
+        {{ this }}
+    WHERE
+        abi_source = 'snowscan'
+)
+{% endif %}
+),
+user_abis AS (
+    SELECT
+        contract_address,
+        DATA,
+        _inserted_timestamp,
+        abi_source,
+        discord_username,
+        abi_hash,
+        2 AS priority
+    FROM
+        {{ ref('silver__verified_abis') }}
+    WHERE
+        abi_source = 'user'
+
+{% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        )
+    FROM
+        {{ this }}
+    WHERE
+        abi_source = 'user'
+)
 {% endif %}
 ),
 bytecode_abis AS (
@@ -95,6 +123,17 @@ all_abis AS (
     UNION
     SELECT
         contract_address,
+        DATA,
+        _inserted_timestamp,
+        abi_source,
+        discord_username,
+        abi_hash,
+        priority
+    FROM
+        user_abis
+    UNION
+    SELECT
+        contract_address,
         abi AS DATA,
         _inserted_timestamp,
         abi_source,
@@ -130,4 +169,5 @@ FROM
     priority_abis p
     LEFT JOIN {{ ref('silver__created_contracts') }}
     ON p.contract_address = created_contract_address
-where p.contract_address is not null
+WHERE
+    p.contract_address IS NOT NULL

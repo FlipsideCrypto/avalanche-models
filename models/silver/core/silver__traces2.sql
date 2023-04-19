@@ -19,21 +19,19 @@ WITH traces_txs AS (
 {{ ref('bronze__streamline_FR_traces') }}
 WHERE
     _partition_by_block_id BETWEEN (
-        -- will change to parameter
         SELECT
             ROUND(MAX(block_number), -4)
         FROM
             {{ this }})
             AND (
-                -- will change to parameter
                 SELECT
-                    ROUND(MAX(block_number), -4) + 500000
+                    ROUND(MAX(block_number), -4) + 2500000
                 FROM
                     {{ this }})
                 {% else %}
                     {{ ref('bronze__streamline_FR_traces') }}
                 WHERE
-                    _partition_by_block_id <= 1000000
+                    _partition_by_block_id <= 2500000
                 {% endif %}
 
                 qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position

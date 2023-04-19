@@ -700,7 +700,10 @@ curve_swaps AS (
     origin_to_address,
     contract_address,
     pool_name,
-    event_name,
+    CASE 
+      WHEN event_name IS NULL THEN 'TokenExchange'
+      ELSE event_name
+    END AS event_name,
     s.tokens_sold AS amount_in_unadj,
     s.tokens_bought AS amount_out_unadj,
     sender,
@@ -1092,8 +1095,8 @@ SELECT
   platform,
   token_in,
   token_out,
-  symbol_in,
-  symbol_out,
+  token_symbol_in AS symbol_in,
+  token_symbol_in AS symbol_out,
   decimals_in,
   decimals_out,
   _log_id,
@@ -1127,36 +1130,6 @@ SELECT
   _inserted_timestamp
 FROM
   hashflow_swaps
-),
-
---union all non-standard dex CTEs here (excludes amount_usd)
-all_dex_custom AS (
-SELECT
-  block_number,
-  block_timestamp,
-  tx_hash,
-  origin_function_signature,
-  origin_from_address,
-  origin_to_address,
-  contract_address,
-  pool_name,
-  event_name,
-  amount_in,
-  amount_in_usd,
-  amount_out,
-  amount_out_usd,
-  sender,
-  tx_to,
-  event_index,
-  platform,
-  token_in,
-  token_out,
-  symbol_in,
-  symbol_out,
-  _log_id,
-  _inserted_timestamp
-FROM
-  x
 ),
 
 FINAL AS (
@@ -1199,35 +1172,6 @@ FINAL AS (
   LEFT JOIN prices p2
     ON s.token_out = p2.token_address
       AND DATE_TRUNC('hour', block_timestamp) = p2.hour
-  UNION ALL
-  SELECT
-    block_number,
-    block_timestamp,
-    tx_hash,
-    origin_function_signature,
-    origin_from_address,
-    origin_to_address,
-    contract_address,
-    pool_name,
-    event_name,
-    amount_in,
-    ROUND(
-      amount_in_usd, 2) AS amount_in_usd,
-    amount_out,
-    ROUND(
-      amount_out_usd, 2) AS amount_out_usd,
-    sender,
-    tx_to,
-    event_index,
-    platform,
-    token_in,
-    token_out,
-    symbol_in,
-    symbol_out,
-    _log_id,
-    _inserted_timestamp
-  FROM
-    all_dex_custom c
 )
 
 SELECT

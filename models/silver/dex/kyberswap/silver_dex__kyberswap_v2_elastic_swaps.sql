@@ -11,7 +11,7 @@ WITH pools AS (
         token0,
         token1
     FROM
-        {{ ref('silver_dex__kyberswap_dynamic_pools') }}
+        {{ ref('silver_dex__kyberswap_v2_elastic_pools') }}
 ),
 swaps_base AS (
     SELECT
@@ -25,34 +25,47 @@ swaps_base AS (
         l.contract_address,
         regexp_substr_all(SUBSTR(l.data, 3, len(l.data)), '.{64}') AS l_segmented_data,
         CONCAT('0x', SUBSTR(l.topics [1] :: STRING, 27, 40)) AS sender_address,
-        CONCAT('0x', SUBSTR(l.topics [2] :: STRING, 27, 40)) AS to_address,
+        CONCAT('0x', SUBSTR(l.topics [2] :: STRING, 27, 40)) AS reipient_address,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
+                's2c',
                 l_segmented_data [0] :: STRING
             )
-        ) AS amount0In,
+        ) AS deltaQty0,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
+                's2c',
                 l_segmented_data [1] :: STRING
             )
-        ) AS amount1In,
+        ) AS deltaQty1,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
                 l_segmented_data [2] :: STRING
             )
-        ) AS amount0Out,
+        ) AS sqrtP,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
                 l_segmented_data [3] :: STRING
             )
-        ) AS amount1Out,
+        ) AS liquidity,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
+                's2c',
                 l_segmented_data [4] :: STRING
             )
-        ) AS feeInPrecision,
+        ) AS currentTick,
+        ABS(GREATEST(deltaQty0, deltaQty1)) AS amountOut,
+        ABS(LEAST(deltaQty0, deltaQty1)) AS amountIn,
         token0,
         token1,
+        CASE
+            WHEN deltaQty0 < 0 THEN token0
+            ELSE token1
+        END AS token_in,
+        CASE
+            WHEN deltaQty0 > 0 THEN token0
+            ELSE token1
+        END AS token_out,
         l._log_id,
         l._inserted_timestamp
     FROM
@@ -61,7 +74,7 @@ swaps_base AS (
         INNER JOIN pools p
         ON p.pool_address = l.contract_address
     WHERE
-        l.topics [0] :: STRING = '0x606ecd02b3e3b4778f8e97b2e03351de14224efaa5fa64e62200afc9395c2499' --Dynamic Swap
+        topics [0] :: STRING = '0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67' -- elastic swap
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -81,39 +94,21 @@ SELECT
     origin_from_address,
     origin_to_address,
     event_index,
-    sender_address,
-    to_address,
-    amount0In,
-    amount1In,
-    amount0Out,
-    amount1Out,
-    feeInPrecision,
+    sender_address AS sender,
+    reipient_address AS tx_to,
+    deltaQty0 AS delta_qty0,
+    deltaQty1 AS delta_qty1,
+    sqrtP AS sqrt_p,
+    liquidity,
+    currentTick AS current_tick,
+    amountOut AS amount_out,
+    amountIn AS amount_in,
     token0,
     token1,
-    CASE
-        WHEN amount0In <> 0
-        AND amount1In <> 0
-        AND amount0Out <> 0 THEN amount1In
-        WHEN amount0In <> 0 THEN amount0In
-        WHEN amount1In <> 0 THEN amount1In
-    END AS amount_in_unadj,
-    CASE
-        WHEN amount0Out <> 0 THEN amount0Out
-        WHEN amount1Out <> 0 THEN amount1Out
-    END AS amount_out_unadj,
-    CASE
-        WHEN amount0In <> 0
-        AND amount1In <> 0
-        AND amount0Out <> 0 THEN token1
-        WHEN amount0In <> 0 THEN token0
-        WHEN amount1In <> 0 THEN token1
-    END AS token_in,
-    CASE
-        WHEN amount0Out <> 0 THEN token0
-        WHEN amount1Out <> 0 THEN token1
-    END AS token_out,
-    'Dynamic Swap' AS event_name,
-    'kyberswap-classic' AS platform,
+    token_in,
+    token_out,
+    'Elastic Swap' AS event_name,
+    'kyberswap-v2' AS platform,
     _log_id,
     _inserted_timestamp
 FROM

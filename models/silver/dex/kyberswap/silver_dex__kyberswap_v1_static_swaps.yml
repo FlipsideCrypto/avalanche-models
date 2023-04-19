@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: silver_dex__kyberswap_dynamic_swaps
+  - name: silver_dex__kyberswap_v1_static_swaps
    
     tests:
       - dbt_utils.unique_combination_of_columns:

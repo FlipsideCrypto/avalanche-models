@@ -14,17 +14,20 @@ WITH pool_creation AS (
         regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
         CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS token0,
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS token1,
-        CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS pool_address,
-        ethereum.public.udf_hex_to_int(
-            segmented_data [1] :: STRING
-        ) :: INT AS pool_id,
+        TRY_TO_NUMBER(ethereum.public.udf_hex_to_int(topics [3] :: STRING)) AS swapFeeUnits,
+        TRY_TO_NUMBER(
+            ethereum.public.udf_hex_to_int(
+                segmented_data [0] :: STRING
+            )
+        ) AS tickDistance,
+        CONCAT('0x', SUBSTR(segmented_data [1] :: STRING, 25, 40)) AS pool_address,
         _log_id,
         _inserted_timestamp
     FROM
         {{ ref ('silver__logs') }}
     WHERE
-        contract_address = LOWER('0x9Ad6C38BE94206cA50bb0d90783181662f0Cfa10')
-        AND topics [0] :: STRING = '0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9' --PairCreated
+        contract_address = '0x5f1dddbf348ac2fbe22a163e30f99f9ece3dd50a' --Elastic Pool Deployer
+        AND topics [0] :: STRING = '0x783cca1c0412dd0d695e784568c96da2e9c22ff989357a2e8b1d9b2b4e6b7118' --Create pool
 
 {% if is_incremental() %}
 AND pool_address NOT IN (
@@ -42,8 +45,9 @@ SELECT
     event_index,
     token0,
     token1,
+    swapFeeUnits AS swap_fee_units,
+    tickDistance AS tick_distance,
     pool_address,
-    pool_id,
     _log_id,
     _inserted_timestamp
 FROM

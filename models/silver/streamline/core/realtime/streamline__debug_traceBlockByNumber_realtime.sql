@@ -77,7 +77,8 @@ SELECT
                 ' ',
                 ''
             ),
-            '"],"id":"',
+            '",{"tracer": "callTracer"}',
+            '],"id":"',
             block_number :: STRING,
             '"}'
         )

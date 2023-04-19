@@ -4,7 +4,15 @@
     cluster_by = ['block_timestamp::DATE']
 ) }}
 
-WITH swaps_base AS (
+WITH pools AS (
+
+    SELECT
+        pool_address
+    FROM
+        {{ ref('silver_dex__hashflow_pools') }}
+),
+
+swaps_base AS (
 
     SELECT
         l.block_number,
@@ -16,28 +24,29 @@ WITH swaps_base AS (
         l.event_index,
         l.contract_address,
         regexp_substr_all(SUBSTR(l.data, 3, len(l.data)), '.{64}') AS l_segmented_data,
-        CONCAT('0x', SUBSTR(l.topics [1] :: STRING, 27, 40)) AS sender_address,
-        CONCAT('0x', SUBSTR(l.topics [2] :: STRING, 27, 40)) AS to_address,
-        CONCAT('0x', SUBSTR(l_segmented_data [0] :: STRING, 25, 40)) AS fromToken,
-        CONCAT('0x', SUBSTR(l_segmented_data [1] :: STRING, 25, 40)) AS toToken,
+        CONCAT('0x', SUBSTR(l_segmented_data [1] :: STRING, 25, 40)) AS account_address,
+        CONCAT('0x', SUBSTR(l_segmented_data [3] :: STRING, 25, 40)) AS tokenIn,
+        CONCAT('0x', SUBSTR(l_segmented_data [4] :: STRING, 25, 40)) AS tokenOut,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
-                l_segmented_data [2] :: STRING
+                l_segmented_data [5] :: STRING
             )
-        ) AS fromAmount,
+        ) AS amountIn,
         TRY_TO_NUMBER(
             ethereum.public.udf_hex_to_int(
-                l_segmented_data [3] :: STRING
+                l_segmented_data [6] :: STRING
             )
-        ) AS toAmount,
+        ) AS amountOut,
         l._log_id,
         l._inserted_timestamp
     FROM
         {{ ref('silver__logs') }}
         l
+        INNER JOIN pools p
+        ON l.contract_address = p.pool_address
     WHERE
-        contract_address = '0x66357dcace80431aee0a7507e2e361b7e2402370'
-        AND topics [0] :: STRING = '0x54787c404bb33c88e86f4baf88183a3b0141d0a848e6a9f7a13b66ae3a9b73d1'
+        l.topics [0] :: STRING = '0xb709ddcc6550418e9b89df1f4938071eeaa3f6376309904c77e15d46b16066f5' --swap
+
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
@@ -56,14 +65,14 @@ SELECT
     origin_to_address,
     event_index,
     contract_address,
-    sender_address AS sender,
-    to_address AS tx_to,
-    fromToken AS token_in,
-    toToken AS token_out,
-    fromAmount AS amount_in,
-    toAmount AS to_amount,
+    origin_from_address AS sender,
+    account_address AS tx_to,
+    tokenIn AS token_in,
+    tokenOut AS token_out,
+    amountIn AS amount_in_unadj,
+    amountOut AS amount_out_unadj,
     'Swap' AS event_name,
-    'platypus' AS platform,
+    'hashflow' AS platform,
     _log_id,
     _inserted_timestamp
 FROM

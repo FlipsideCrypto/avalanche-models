@@ -8,9 +8,8 @@ WITH pools AS (
 
     SELECT
         pool_address,
-        pool_name,
-        token0_address,
-        token1_address
+        token0,
+        token1
     FROM
         {{ ref('silver_dex__sushi_pools') }}
 ),
@@ -24,7 +23,6 @@ swaps_base AS (
         tx_hash,
         event_index,
         contract_address,
-        pool_name,
         regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
         TRY_TO_NUMBER(
             PUBLIC.udf_hex_to_int(
@@ -48,8 +46,8 @@ swaps_base AS (
         ) AS amount1Out,
         CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS sender,
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS tx_to,
-        token0_address,
-        token1_address,
+        token0,
+        token1,
         _log_id,
         _inserted_timestamp
     FROM
@@ -84,8 +82,8 @@ SELECT
     amount1In,
     amount0Out,
     amount1Out,
-    token0_address AS token0,
-    token1_address AS token1,
+    token0,
+    token1,
     CASE
         WHEN amount0In <> 0
         AND amount1In <> 0

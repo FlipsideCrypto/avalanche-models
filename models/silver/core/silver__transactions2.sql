@@ -46,7 +46,10 @@ new_records AS (
         ) :: INT AS gas,
         PUBLIC.udf_hex_to_int(
             A.data :gasPrice :: STRING
-        ) :: INT AS gas_price,
+        ) :: INT / pow(
+            10,
+            9
+        ) AS gas_price,
         A.data :hash :: STRING AS tx_hash,
         A.data :input :: STRING AS input_data,
         SUBSTR(
@@ -54,6 +57,18 @@ new_records AS (
             1,
             10
         ) AS origin_function_signature,
+        PUBLIC.udf_hex_to_int(
+            A.data :maxFeePerGas :: STRING
+        ) :: INT / pow(
+            10,
+            9
+        ) AS max_fee_per_gas,
+        PUBLIC.udf_hex_to_int(
+            A.data :maxPriorityFeePerGas :: STRING
+        ) :: INT / pow(
+            10,
+            9
+        ) AS max_priority_fee_per_gas,
         PUBLIC.udf_hex_to_int(
             A.data :nonce :: STRING
         ) :: INT AS nonce,
@@ -119,6 +134,8 @@ missing_data AS (
         t.tx_hash,
         t.input_data,
         t.origin_function_signature,
+        t.max_fee_per_gas,
+        t.max_priority_fee_per_gas,
         t.nonce,
         t.r,
         t.s,
@@ -170,6 +187,8 @@ SELECT
     tx_hash,
     input_data,
     origin_function_signature,
+    max_fee_per_gas,
+    max_priority_fee_per_gas,
     nonce,
     r,
     s,

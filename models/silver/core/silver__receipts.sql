@@ -42,7 +42,10 @@ FINAL AS (
         ) :: INT AS cumulative_gas_used,
         PUBLIC.udf_hex_to_int(
             DATA :effectiveGasPrice :: STRING
-        ) :: INT AS effective_gas_price,
+        ) :: INT / pow(
+            10,
+            9
+        ) AS effective_gas_price,
         DATA :from :: STRING AS from_address,
         PUBLIC.udf_hex_to_int(
             DATA :gasUsed :: STRING

@@ -83,7 +83,7 @@ swaps_base AS (
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(_inserted_timestamp) :: DATE - 1
+        MAX(_inserted_timestamp) :: DATE
     FROM
         {{ this }}
 )
@@ -135,7 +135,7 @@ SELECT
         WHEN amount1Out <> 0 THEN tokenX
     END AS token_out,
     'Swap' AS event_name,
-    'trader-joe-v2.1' AS platform,
+    'trader-joe-v2' AS platform,
     _log_id,
     _inserted_timestamp
 FROM

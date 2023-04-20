@@ -30,6 +30,12 @@ WITH pool_creation AS (
         AND topics [0] :: STRING = '0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9' --pairCreated
 
 {% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE
+    FROM
+        {{ this }}
+)
 AND pool_address NOT IN (
     SELECT
         DISTINCT pool_address

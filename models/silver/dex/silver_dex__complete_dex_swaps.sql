@@ -83,7 +83,7 @@ trader_joe_v1_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -133,7 +133,7 @@ trader_joe_v2_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -183,7 +183,7 @@ trader_joe_v2_1_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -233,7 +233,7 @@ woofi_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -283,7 +283,7 @@ gmx_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -333,7 +333,7 @@ kyberswap_v1_dynamic AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -383,7 +383,7 @@ kyberswap_v1_static AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -433,7 +433,7 @@ kyberswap_v2_elastic AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -483,7 +483,7 @@ pangolin_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -533,7 +533,7 @@ platypus_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -583,7 +583,7 @@ fraxswap_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -633,7 +633,7 @@ hashflow_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -683,7 +683,7 @@ sushi_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )
@@ -744,7 +744,7 @@ curve_swaps AS (
 AND
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE
+      MAX(_inserted_timestamp) :: DATE - 1
     FROM
       {{ this }}
   )

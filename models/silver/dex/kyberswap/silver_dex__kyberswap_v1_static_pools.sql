@@ -39,6 +39,12 @@ WITH pool_creation AS (
         AND topics [0] :: STRING = '0xb6bce363b712c921bead4bcc977289440eb6172eb89e258e3a25bd49ca806de6' --create pool
 
 {% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE
+    FROM
+        {{ this }}
+)
 AND pool_address NOT IN (
     SELECT
         DISTINCT pool_address

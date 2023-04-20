@@ -23,6 +23,12 @@ WITH contract_deployments AS (
         AND tx_status ILIKE 'success'
 
 {% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE
+    FROM
+        {{ this }}
+)
 AND to_address NOT IN (
     SELECT
         DISTINCT pool_address

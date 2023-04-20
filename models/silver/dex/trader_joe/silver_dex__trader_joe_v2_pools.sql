@@ -34,6 +34,12 @@ WITH pool_creation AS (
         AND topics [0] :: STRING = '0x2c8d104b27c6b7f4492017a6f5cf3803043688934ebcaa6a03540beeaf976aff' --LB PairCreated
 
 {% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(_inserted_timestamp) :: DATE
+    FROM
+        {{ this }}
+)
 AND lb_pair NOT IN (
     SELECT
         DISTINCT lb_pair

@@ -302,13 +302,13 @@ FINAL AS (
 SELECT
     pool_address,
     CASE
-        WHEN token_address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' THEN '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab'
+        WHEN token_address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' THEN '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
         ELSE token_address
     END AS token_address,
     token_id,
     token_type,
     CASE 
-        WHEN token_address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' THEN 'WETH'
+        WHEN token_address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' THEN 'WAVAX'
         WHEN pool_symbol IS NULL THEN c.token_symbol
         ELSE pool_symbol
     END AS pool_symbol,

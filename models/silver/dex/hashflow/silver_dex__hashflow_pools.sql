@@ -13,7 +13,7 @@ WITH contract_deployments AS (
         to_address AS contract_address,
         _inserted_timestamp
     FROM
-        avalanche.silver.traces
+        {{ ref('silver__traces') }}
     WHERE
         from_address IN (
             '0x05fb0089bec6d00b2f01f4096eb0e0488c79cd91',

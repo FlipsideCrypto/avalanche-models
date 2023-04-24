@@ -775,6 +775,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -802,6 +804,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -829,6 +833,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -856,6 +862,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -883,6 +891,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -910,6 +920,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -937,6 +949,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -964,6 +978,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -991,6 +1007,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1018,6 +1036,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1045,6 +1065,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1072,6 +1094,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1099,6 +1123,8 @@ SELECT
   token_symbol_in AS symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1126,6 +1152,8 @@ SELECT
   symbol_out,
   decimals_in,
   decimals_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM
@@ -1163,6 +1191,8 @@ FINAL AS (
     token_out,
     symbol_in,
     symbol_out,
+    amount_in_unadj,
+    amount_out_unadj,
     _log_id,
     _inserted_timestamp
   FROM all_dex_standard s
@@ -1204,6 +1234,8 @@ SELECT
   token_out,
   symbol_in,
   symbol_out,
+  amount_in_unadj,
+  amount_out_unadj,
   _log_id,
   _inserted_timestamp
 FROM FINAL

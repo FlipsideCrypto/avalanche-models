@@ -2,8 +2,10 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "tx_hash",
+    incremental_predicates = ["dynamic_range", "block_timestamp::date"],
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION"
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
+    full_refresh = false
 ) }}
 
 WITH base AS (
@@ -117,9 +119,16 @@ new_records AS (
         AND A.data :hash :: STRING = r.tx_hash
         LEFT OUTER JOIN {{ ref('silver__blocks2') }}
         b
-        ON A.block_number = b.block_number qualify(ROW_NUMBER() over (PARTITION BY A.block_number, A.data :hash :: STRING
-    ORDER BY
-        A._inserted_timestamp DESC)) = 1
+        ON A.block_number = b.block_number
+
+{% if is_incremental() %}
+WHERE
+    r._INSERTED_TIMESTAMP >= '{{ lookback() }}'
+{% endif %}
+
+qualify(ROW_NUMBER() over (PARTITION BY A.block_number, A.data :hash :: STRING
+ORDER BY
+    A._inserted_timestamp DESC)) = 1
 )
 
 {% if is_incremental() %},

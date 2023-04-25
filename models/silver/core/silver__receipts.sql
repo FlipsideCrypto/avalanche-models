@@ -2,8 +2,10 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "tx_hash",
+    incremental_predicates = ["dynamic_range", "block_number"],
     cluster_by = "ROUND(block_number, -3)",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(tx_hash)"
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(tx_hash)",
+    full_refresh = false
 ) }}
 
 WITH base AS (

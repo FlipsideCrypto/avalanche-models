@@ -5,16 +5,17 @@
         target = "{{this.schema}}.{{this.identifier}}"
     )
 ) }}
-{# WITH last_3_days AS (
 
-SELECT
-    block_number
-FROM
-    {{ ref("_max_block_by_date") }}
-    qualify ROW_NUMBER() over (
-        ORDER BY
-            block_number DESC
-    ) = 3
+WITH last_3_days AS (
+
+    SELECT
+        block_number
+    FROM
+        {{ ref("_max_block_by_date") }}
+        qualify ROW_NUMBER() over (
+            ORDER BY
+                block_number DESC
+        ) = 3
 ),
 blocks AS (
     SELECT
@@ -44,21 +45,6 @@ blocks AS (
                     last_3_days
             )
         )
-) #}
-WITH blocks AS (
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__blocks") }}
-    WHERE
-        block_number >= 29000000
-    EXCEPT
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__complete_qn_getBlockWithReceipts") }}
-    WHERE
-        block_number >= 29000000
 )
 SELECT
     PARSE_JSON(

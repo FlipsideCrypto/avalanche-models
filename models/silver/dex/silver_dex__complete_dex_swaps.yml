@@ -87,6 +87,18 @@ models:
               column_type_list:
                 - STRING
                 - VARCHAR
+      - name: AMOUNT_IN_UNADJ
+        tests:
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
+      - name: AMOUNT_OUT_UNADJ
+        tests:
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER
+                - FLOAT
       - name: SENDER
         tests:
           - not_null:

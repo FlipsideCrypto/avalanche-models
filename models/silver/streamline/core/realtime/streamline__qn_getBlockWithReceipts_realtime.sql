@@ -45,24 +45,6 @@ blocks AS (
                     last_3_days
             )
         )
-<<<<<<< HEAD
-=======
-) #}
-WITH blocks AS (
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__blocks") }}
-    WHERE
-        block_number >= 29000000
-    EXCEPT
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__complete_qn_getBlockWithReceipts") }}
-    WHERE
-        block_number >= 29000000
->>>>>>> ca99d01874c62e223e49e27573d9af9253b0a761
 )
 SELECT
     PARSE_JSON(

@@ -7,8 +7,8 @@
 SELECT
     block_number,
     block_timestamp,
-    network,
-    blockchain,
+    'mainnet' as network,
+    'avalanche' as blockchain,
     tx_count,
     difficulty,
     total_difficulty,

@@ -2,7 +2,8 @@
     materialized = 'incremental',
     unique_key = "tx_hash",
     cluster_by = ['ingested_at::DATE'],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION"
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
+    enabled = false
 ) }}
 
 WITH base_table AS (

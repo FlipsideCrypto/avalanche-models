@@ -77,7 +77,7 @@ decoded_logs AS (
             "decoded_logs"
         ) }} AS s
         JOIN meta b
-        ON b.file_name = metadata $ filename
+        ON b.file_name = metadata$filename
 
 {% if is_incremental() %}
 JOIN date_partitions p
@@ -89,6 +89,7 @@ WHERE
         CURRENT_DATE,
         CURRENT_DATE -1
     )
+    and bp._partition_by_block_number = s._partition_by_block_number
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY _log_id

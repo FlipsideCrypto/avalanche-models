@@ -2,8 +2,7 @@
     materialized = "incremental",
     unique_key = "_log_id",
     cluster_by = "ROUND(block_number, -3)",
-    merge_update_columns = ["_log_id"],
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION"
+    merge_update_columns = ["_log_id"]
 ) }}
 
 {% if is_incremental() %}
@@ -73,7 +72,10 @@ decoded_logs AS (
         id :: STRING AS _log_id,
         TO_TIMESTAMP_NTZ(SYSDATE()) AS _inserted_timestamp
     FROM
-        {{ source( "bronze_streamline", "decoded_logs") }} AS s
+        {{ source(
+            "bronze_streamline",
+            "decoded_logs"
+        ) }} AS s
         JOIN meta b
         ON b.file_name = metadata$filename
 
@@ -87,6 +89,7 @@ WHERE
         CURRENT_DATE,
         CURRENT_DATE -1
     )
+    and bp._partition_by_block_number = s._partition_by_block_number
 {% endif %}
 
 qualify(ROW_NUMBER() over (PARTITION BY _log_id

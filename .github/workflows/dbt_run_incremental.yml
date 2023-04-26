@@ -41,4 +41,8 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
+<<<<<<< HEAD
           dbt run --exclude models/silver/api_udf models/silver/streamline models/silver/silver__decoded_logs.sql models/silver/core/tests
+=======
+          dbt run --exclude models/silver/api_udf models/silver/streamline models/silver/silver__decoded_logs.sql models/silver/core models/silver/silver__decoded_logs_full.sql
+>>>>>>> 1c1c2147011e9a32b53df2a512f115c82f7e1605

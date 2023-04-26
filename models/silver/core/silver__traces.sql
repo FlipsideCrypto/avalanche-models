@@ -2,7 +2,7 @@
 {{ config (
     materialized = "incremental",
     unique_key = ['block_number', 'tx_position', 'trace_index'],
-    incremental_predicates = ["dynamic_range", "block_timestamp::date"],
+    incremental_predicates = ["dynamic_range", "block_number"],
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
     full_refresh = False

@@ -21,10 +21,10 @@ WITH eth_base AS (
         AND tx_status = 'SUCCESS'
         AND trace_status = 'SUCCESS'
 ),
-eth_price AS (
+avax_prices AS (
     SELECT
         HOUR,
-        price AS eth_price
+        price AS avax_price
     FROM
         {{ source(
             'ethereum',
@@ -45,12 +45,12 @@ SELECT
     A.to_address AS eth_to_address,
     A.avax_value AS amount,
     ROUND(
-        A.avax_value * eth_price,
+        A.avax_value * avax_price,
         2
     ) AS amount_usd
 FROM
     eth_base A
-    LEFT JOIN eth_price
+    LEFT JOIN avax_prices
     ON DATE_TRUNC(
         'hour',
         block_timestamp

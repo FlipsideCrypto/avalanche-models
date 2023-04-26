@@ -20,7 +20,7 @@ SELECT
     receipts_root,
     sha3_uncles,
     SIZE,
-    uncle_blocks,
+    uncles as uncle_blocks,
     OBJECT_CONSTRUCT(
         'baseFeePerGas',
         base_fee_per_gas,

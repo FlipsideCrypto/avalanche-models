@@ -10,16 +10,16 @@ WITH eth_base AS (
         block_timestamp,
         from_address,
         to_address,
-        eth_value,
+        avax_value,
         identifier,
         _call_id,
         input
     FROM
         {{ ref('silver__traces') }}
     WHERE
-        eth_value > 0
+        avax_value > 0
         AND tx_status = 'SUCCESS'
-        AND gas_used IS NOT NULL
+        AND trace_status = 'SUCCESS'
 ),
 eth_price AS (
     SELECT
@@ -43,9 +43,9 @@ SELECT
     tx.origin_function_signature AS origin_function_signature,
     A.from_address AS eth_from_address,
     A.to_address AS eth_to_address,
-    A.eth_value AS amount,
+    A.avax_value AS amount,
     ROUND(
-        A.eth_value * eth_price,
+        A.avax_value * eth_price,
         2
     ) AS amount_usd
 FROM

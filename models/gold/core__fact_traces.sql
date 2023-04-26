@@ -10,7 +10,7 @@ SELECT
     block_timestamp,
     from_address,
     to_address,
-    eth_value as avax_value,
+    avax_value,
     gas,
     gas_used,
     input,
@@ -19,6 +19,9 @@ SELECT
     identifier,
     DATA,
     tx_status,
-    sub_traces
+    sub_traces,
+    trace_status,
+    error_reason,
+    trace_index
 FROM
     {{ ref('silver__traces') }}

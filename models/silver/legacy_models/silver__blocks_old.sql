@@ -1,7 +1,8 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "block_number",
-    cluster_by = ['_inserted_timestamp::DATE']
+    cluster_by = ['_inserted_timestamp::DATE'],
+    enabled = false
 ) }}
 
 WITH base_tables AS (

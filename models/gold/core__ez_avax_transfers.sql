@@ -26,12 +26,9 @@ avax_prices AS (
         HOUR,
         price AS avax_price
     FROM
-        {{ source(
-            'ethereum',
-            'fact_hourly_token_prices'
-        ) }}
+        {{ ref('silver__prices') }}
     WHERE
-        token_address = LOWER('0x85f138bfEE4ef8e540890CFb48F620571d67Eda3')
+        token_address = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
 )
 SELECT
     A.tx_hash AS tx_hash,

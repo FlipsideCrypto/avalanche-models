@@ -39,8 +39,9 @@ avalanche:
 dbt run-operation create_aws_avalanche_api --target dev
 ```
 
-### Add the custom udf in the create_udfs.sql
+- Add the udf to the ![create udfs macro](./macros/create_udfs.sql)
 
+- Invoke the udf
 
 ```zsh
 dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' -m 1+models/silver/streamline/core/realtime/streamline__debug_traceBlockByNumber_realtime.sql --profile avalanche --target dev   

@@ -18,6 +18,16 @@
     {%- endif %};
 {% endmacro %}
 
+{% macro create_udf_bulk_json_rpc_sbx_shah() %}
+    CREATE
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_json_rpc_sbx_shah(
+        json variant
+    ) returns text api_integration = aws_avalanche_api AS {% if target.name == "dev" %}
+        'https://ehoj955g33.execute-api.us-east-1.amazonaws.com/sbx-shah/udf_bulk_json_rpc'
+        
+    {%- endif %};
+{% endmacro %}
+
 {% macro create_udf_bulk_get_traces() %}
     CREATE
     OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_get_traces(

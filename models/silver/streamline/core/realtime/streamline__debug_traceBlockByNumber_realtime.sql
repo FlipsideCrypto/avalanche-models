@@ -31,20 +31,20 @@ blocks AS (
                     last_3_days
             )
         )
-    EXCEPT
-    SELECT
-        block_number
-    FROM
-        {{ ref("streamline__complete_debug_traceBlockByNumber") }}
-    WHERE
-        (
-            block_number >= (
-                SELECT
-                    block_number
-                FROM
-                    last_3_days
-            )
-        )
+    -- EXCEPT
+    -- SELECT
+    --     block_number
+    -- FROM
+    --     {{ ref("streamline__complete_debug_traceBlockByNumber") }}
+    -- WHERE
+    --     (
+    --         block_number >= (
+    --             SELECT
+    --                 block_number
+    --             FROM
+    --                 last_3_days
+    --         )
+    --     )
 )
 SELECT
     PARSE_JSON(

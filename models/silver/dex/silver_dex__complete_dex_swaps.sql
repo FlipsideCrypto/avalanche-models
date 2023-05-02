@@ -97,11 +97,13 @@ trader_joe_v2_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -151,11 +153,13 @@ trader_joe_v2_1_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -205,11 +209,13 @@ woofi_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -259,11 +265,13 @@ gmx_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -313,11 +321,13 @@ kyberswap_v1_dynamic AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -367,11 +377,13 @@ kyberswap_v1_static AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -421,11 +433,13 @@ kyberswap_v2_elastic AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -475,11 +489,13 @@ pangolin_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -529,11 +545,13 @@ platypus_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -583,11 +601,13 @@ fraxswap_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -637,11 +657,13 @@ hashflow_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -691,11 +713,13 @@ sushi_swaps AS (
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    contract_address,<<<<<<< head CONCAT(
+    contract_address,
+    CONCAT(
       c1.symbol,
       '-',
       c2.symbol
-    ) AS pool_name,=======>>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10 event_name,
+    ) AS pool_name,
+    event_name,
     c1.decimals AS decimals_in,
     c1.symbol AS symbol_in,
     amount_in_unadj,
@@ -1279,20 +1303,18 @@ SELECT
   event_name,
   amount_in,
   CASE
-    <<<<<<< head
     WHEN ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_out_usd, 0)) > 0.5
-    OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_in_usd, 0)) > 0.5 THEN NULL =======
+    OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_in_usd, 0)) > 0.5 THEN NULL
     WHEN ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_out_usd, 0)) > 0.75
-    OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_in_usd, 0)) > 0.75 THEN NULL >>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10
+    OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_in_usd, 0)) > 0.75 THEN NULL
     ELSE amount_in_usd
   END AS amount_in_usd,
   amount_out,
   CASE
-    <<<<<<< head
     WHEN ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_in_usd, 0)) > 0.5
-    OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_out_usd, 0)) > 0.5 THEN NULL =======
+    OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_out_usd, 0)) > 0.5 THEN NULL
     WHEN ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_in_usd, 0)) > 0.75
-    OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_out_usd, 0)) > 0.75 THEN NULL >>>>>>> 6fedd943c1746e7b8f985907075513566c4b9d10
+    OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_out_usd, 0)) > 0.75 THEN NULL
     ELSE amount_out_usd
   END AS amount_out_usd,
   sender,

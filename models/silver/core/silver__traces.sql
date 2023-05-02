@@ -20,9 +20,9 @@ WITH traces_txs AS (
 {% if is_incremental() %}
 {{ ref('bronze__streamline_traces') }}
 WHERE
-    _inserted_timestamp :: DATE >= (
+    _inserted_timestamp >= (
         SELECT
-            MAX(_inserted_timestamp) :: DATE _inserted_timestamp
+            MAX(_inserted_timestamp) _inserted_timestamp
         FROM
             {{ this }}
     )
@@ -251,11 +251,13 @@ flattened_traces AS (
                 LEFT OUTER JOIN {{ ref('silver__transactions') }}
                 t
                 ON f.tx_position = t.position
-                AND f.block_number = t.block_number -- {% if is_incremental() %}
-                -- WHERE
-                --     t._INSERTED_TIMESTAMP >= '{{ lookback() }}'
-                -- {% endif %}
-        )
+                AND f.block_number = t.block_number
+
+{% if is_incremental() %}
+WHERE
+    t._INSERTED_TIMESTAMP >= '{{ lookback() }}'
+{% endif %}
+)
 
 {% if is_incremental() %},
 missing_data AS (

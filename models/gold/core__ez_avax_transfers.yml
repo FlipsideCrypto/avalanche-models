@@ -10,9 +10,9 @@ models:
         description: '{{ doc("avax_block_timestamp") }}'
       - name: TX_HASH
         description: '{{ doc("avax_transfer_tx_hash") }}'
-      - name: ETH_FROM_ADDRESS
+      - name: AVAX_FROM_ADDRESS
         description: '{{ doc("avax_transfer_from_address") }}'
-      - name: ETH_TO_ADDRESS
+      - name: AVAX_TO_ADDRESS
         description: '{{ doc("avax_transfer_to_address") }}'
       - name: AMOUNT
         description: '{{ doc("avax_amount") }}'

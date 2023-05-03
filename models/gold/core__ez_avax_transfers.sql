@@ -41,8 +41,8 @@ SELECT
     tx.from_address AS origin_from_address,
     tx.to_address AS origin_to_address,
     tx.origin_function_signature AS origin_function_signature,
-    A.from_address AS eth_from_address,
-    A.to_address AS eth_to_address,
+    A.from_address AS avax_from_address,
+    A.to_address AS avax_to_address,
     A.avax_value AS amount,
     ROUND(
         A.avax_value * avax_price,

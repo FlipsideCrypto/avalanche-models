@@ -46,18 +46,37 @@ WHERE
             tx_hash AS model_tx_hash
         FROM
             {{ model }}
+    ),
+    FINAL AS (
+        SELECT
+            base_block_number,
+            base_tx_hash,
+            model_block_number,
+            model_tx_hash
+        FROM
+            txs_base
+            LEFT JOIN model_name
+            ON base_block_number = model_block_number
+            AND base_tx_hash = model_tx_hash
+        WHERE
+            model_tx_hash IS NULL
+            OR model_block_number IS NULL
+    ),
+    errors AS (
+        SELECT
+            COUNT(*) > 9 AS threshold
+        FROM
+            FINAL
     )
 SELECT
-    base_block_number,
-    base_tx_hash,
-    model_block_number,
-    model_tx_hash
+    *
 FROM
-    txs_base
-    LEFT JOIN model_name
-    ON base_block_number = model_block_number
-    AND base_tx_hash = model_tx_hash
+    FINAL
 WHERE
-    model_tx_hash IS NULL
-    OR model_block_number IS NULL
+    (
+        SELECT
+            threshold
+        FROM
+            errors
+    )
 {% endmacro %}

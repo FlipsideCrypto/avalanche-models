@@ -1,12 +1,12 @@
 ## Sandbox integration setup
 
-In order to perform a `sandbox` `streamline` integration you need to ![register](./macros/streamline/api_integrations.sql) you `sbx api gateway` endpoint. 
+In order to perform a `sandbox` `streamline` integration you need to ![register](./macros/streamline/api_integrations.sql) your `sbx api gateway` endpoint. 
 
 ### DBT Global config
 - The first step is to configure your `global dbt` profile:
 
 ```zsh
-# create dbtl global config
+# create dbt global config
 touch ~/.dbt/profiles.yaml 
 ```
 
@@ -44,5 +44,5 @@ dbt run-operation create_aws_avalanche_api --target dev
 - Invoke the udf
 
 ```zsh
-dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' -m 1+models/silver/streamline/core/realtime/streamline__debug_traceBlockByNumber_realtime.sql --profile avalanche --target dev   
+dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True, "STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES": True}' -m 1+models/silver/streamline/core/realtime/streamline__qn_getBlockWithReceipts_realtime.sql --profile avalanche --target dev   
 ```

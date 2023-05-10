@@ -22,7 +22,7 @@
     CREATE
     OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_json_rpc_sbx_shah(
         json variant
-    ) returns text api_integration = aws_avalanche_api AS {% if target.name == "dev" %}
+    ) returns text api_integration = aws_avalanche_api_sbx_shah AS {% if target.name == "dev" %}
         'https://ehoj955g33.execute-api.us-east-1.amazonaws.com/sbx-shah/udf_bulk_json_rpc'
         
     {%- endif %};

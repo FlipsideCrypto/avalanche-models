@@ -139,7 +139,7 @@ AND _inserted_timestamp >= (
 )
 {% endif %}
 ),
-FINAL (
+FINAL AS (
     SELECT
         block_number,
         block_timestamp,

@@ -70,5 +70,28 @@ SELECT
     ) AS request
 FROM
     blocks
-ORDER BY
-    block_number ASC
+UNION
+SELECT
+    PARSE_JSON(
+        CONCAT(
+            '{"jsonrpc": "2.0",',
+            '"method": "qn_getBlockWithReceipts", "params":["',
+            REPLACE(
+                concat_ws(
+                    '',
+                    '0x',
+                    to_char(
+                        block_number :: INTEGER,
+                        'XXXXXXXX'
+                    )
+                ),
+                ' ',
+                ''
+            ),
+            '"],"id":"',
+            block_number :: STRING,
+            '"}'
+        )
+    ) AS request
+FROM
+    {{ ref("silver__retry_blocks") }}

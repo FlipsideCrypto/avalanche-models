@@ -45,6 +45,27 @@ blocks AS (
                     last_3_days
             )
         )
+),
+all_blocks AS (
+    SELECT
+        block_number
+    FROM
+        blocks
+    UNION
+    SELECT
+        block_number
+    FROM
+        (
+            SELECT
+                block_number
+            FROM
+                {{ ref("_missing_receipts") }}
+            UNION
+            SELECT
+                block_number
+            FROM
+                {{ ref("_missing_txs") }}
+        )
 )
 SELECT
     PARSE_JSON(
@@ -69,29 +90,6 @@ SELECT
         )
     ) AS request
 FROM
-    blocks
-UNION
-SELECT
-    PARSE_JSON(
-        CONCAT(
-            '{"jsonrpc": "2.0",',
-            '"method": "qn_getBlockWithReceipts", "params":["',
-            REPLACE(
-                concat_ws(
-                    '',
-                    '0x',
-                    to_char(
-                        block_number :: INTEGER,
-                        'XXXXXXXX'
-                    )
-                ),
-                ' ',
-                ''
-            ),
-            '"],"id":"',
-            block_number :: STRING,
-            '"}'
-        )
-    ) AS request
-FROM
-    {{ ref("silver__retry_blocks") }}
+    all_blocks
+ORDER BY
+    block_number ASC

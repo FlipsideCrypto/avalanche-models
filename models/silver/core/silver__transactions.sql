@@ -1,8 +1,8 @@
 -- depends_on: {{ ref('bronze__streamline_transactions') }}
 {{ config(
     materialized = 'incremental',
-    unique_key = ['block_number', 'position'],
-    incremental_predicates = ["dynamic_range", "block_timestamp::date"],
+    incremental_strategy = 'delete+insert',
+    unique_key = "block_number",
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
     full_refresh = false

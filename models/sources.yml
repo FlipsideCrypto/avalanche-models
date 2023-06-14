@@ -51,6 +51,7 @@ sources:
       - name: transactions
       - name: debug_traceBlockByNumber
       - name: decoded_logs
+      - name: confirm_blocks
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

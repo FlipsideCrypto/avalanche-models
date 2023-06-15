@@ -14,11 +14,11 @@ WITH pool_creation AS (
         regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
         CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS tokenX,
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS tokenY,
-        ethereum.public.udf_hex_to_int(
+        utils.udf_hex_to_int(
             topics [3] :: STRING
         ) :: INT AS binStep,
         CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS lb_pair,
-        ethereum.public.udf_hex_to_int(
+        utils.udf_hex_to_int(
             segmented_data [1] :: STRING
         ) :: INT AS pool_id,
         CASE

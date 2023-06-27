@@ -41,12 +41,12 @@ WITH swaps_base AS (
             )
         ) AS tokenOut,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [3] :: STRING
             )
         ) AS amountIn,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [4] :: STRING
             )
         ) AS amountOut,

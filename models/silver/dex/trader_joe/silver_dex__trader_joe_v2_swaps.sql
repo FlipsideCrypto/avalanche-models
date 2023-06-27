@@ -30,33 +30,33 @@ swaps_base AS (
         CONCAT('0x', SUBSTR(l.topics [1] :: STRING, 27, 40)) AS sender_address,
         CONCAT('0x', SUBSTR(l.topics [2] :: STRING, 27, 40)) AS recipient_address,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l.topics [3] :: STRING
             )
         ) AS id,
         CASE
-            WHEN ethereum.public.udf_hex_to_int(
+            WHEN utils.udf_hex_to_int(
                 l_segmented_data [0] :: STRING
             ) = 0 THEN FALSE
             ELSE TRUE
         END AS swapForY,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [1] :: STRING
             )
         ) AS amountIn,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [2] :: STRING
             )
         ) AS amountOut,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [3] :: STRING
             )
         ) AS volatilityAccumulated,
         TRY_TO_NUMBER(
-            ethereum.public.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 l_segmented_data [4] :: STRING
             )
         ) AS fees,

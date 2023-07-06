@@ -82,7 +82,8 @@ WHERE
 {% endmacro %}
 
 {% macro missing_confirmed_txs(
-        model
+        model1,
+        model2
     ) %}
     WITH txs_base AS (
         SELECT
@@ -90,7 +91,7 @@ WHERE
             block_hash AS base_block_hash,
             tx_hash AS base_tx_hash
         FROM
-            {{ ref('test_silver__confirmed_blocks_full') }}
+            {{ model1 }}
     ),
     model_name AS (
         SELECT
@@ -98,58 +99,28 @@ WHERE
             block_hash AS model_block_hash,
             tx_hash AS model_tx_hash
         FROM
-            {{ model }}
+            {{ model2 }}
     )
 SELECT
-    base_block_number,
-    base_tx_hash,
-    base_block_hash,
-    model_block_number,
-    model_tx_hash,
-    model_block_hash
+    COALESCE(
+        base_block_number,
+        model_block_number
+    ) AS block_number
 FROM
-    txs_base
-    LEFT JOIN model_name
+    txs_base full
+    OUTER JOIN model_name
     ON base_block_number = model_block_number
     AND base_tx_hash = model_tx_hash
     AND base_block_hash = model_block_hash
 WHERE
-    model_tx_hash IS NULL
-{% endmacro %}
-
-
-{% macro recent_missing_confirmed_txs(
-        model
-    ) %}
-    WITH txs_base AS (
-        SELECT
-            block_number AS base_block_number,
-            block_hash AS base_block_hash,
-            tx_hash AS base_tx_hash
-        FROM
-            {{ ref('test_silver__confirmed_blocks_recent') }}
-    ),
-    model_name AS (
-        SELECT
-            block_number AS model_block_number,
-            block_hash AS model_block_hash,
-            tx_hash AS model_tx_hash
-        FROM
-            {{ model }}
+    (
+        base_tx_hash IS NULL
+        OR model_tx_hash IS NULL
     )
-SELECT
-    base_block_number,
-    base_tx_hash,
-    base_block_hash,
-    model_block_number,
-    model_tx_hash,
-    model_block_hash
-FROM
-    txs_base
-    LEFT JOIN model_name
-    ON base_block_number = model_block_number
-    AND base_tx_hash = model_tx_hash
-    AND base_block_hash = model_block_hash
-WHERE
-    model_tx_hash IS NULL
+    AND model_block_number <= (
+        SELECT
+            MAX(base_block_number)
+        FROM
+            txs_base
+    )
 {% endmacro %}

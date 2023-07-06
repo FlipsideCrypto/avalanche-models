@@ -19,8 +19,8 @@ confirmed_blocks AS (
         txs.tx_hash AS tx_hash
     FROM
         {{ ref("silver__confirmed_blocks") }}
-        cb
-        LEFT JOIN {{ ref("silver__transactions") }}
+        cb full
+        OUTER JOIN {{ ref("silver__transactions") }}
         txs
         ON cb.block_number = txs.block_number
         AND cb.block_hash = txs.block_hash
@@ -38,7 +38,16 @@ confirmed_blocks AS (
             FROM
                 lookback
         )
-        AND txs.tx_hash IS NULL
+        AND (
+            txs.tx_hash IS NULL
+            OR cb.tx_hash IS NULL
+        )
+        AND txs.block_number <= (
+            SELECT
+                MAX(block_number)
+            FROM
+                {{ ref("silver__confirmed_blocks") }}
+        )
 )
 SELECT
     DISTINCT confirmed_block_number AS block_number

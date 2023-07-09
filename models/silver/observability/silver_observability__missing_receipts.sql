@@ -3,4 +3,4 @@
     unique_key = 'test_timestamp',
     full_refresh = false
 ) }}
-{{ evm_missing_receipts() }}
+{{ evm_missing_receipts_model() }}

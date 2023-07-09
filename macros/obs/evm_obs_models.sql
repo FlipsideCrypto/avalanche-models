@@ -1,4 +1,4 @@
-{% macro evm_missing_blocks() %}
+{% macro evm_missing_blocks_model() %}
     WITH look_back AS (
         SELECT
             block_number
@@ -54,23 +54,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -135,7 +134,7 @@ SELECT
     CURRENT_TIMESTAMP() AS test_timestamp
 {% endmacro %}
 
-{% macro evm_missing_transactions() %}
+{% macro evm_missing_transactions_model() %}
     WITH look_back AS (
         SELECT
             block_number
@@ -185,23 +184,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -237,23 +235,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -334,7 +331,7 @@ SELECT
     CURRENT_TIMESTAMP() AS test_timestamp
 {% endmacro %}
 
-{% macro evm_missing_receipts() %}
+{% macro evm_missing_receipts_model() %}
     WITH look_back AS (
         SELECT
             block_number
@@ -385,23 +382,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -436,23 +432,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -525,7 +520,7 @@ SELECT
     CURRENT_TIMESTAMP() AS test_timestamp
 {% endmacro %}
 
-{% macro evm_missing_traces() %}
+{% macro evm_missing_traces_model() %}
     WITH look_back AS (
         SELECT
             block_number
@@ -576,23 +571,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -627,23 +621,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -664,7 +657,7 @@ impacted_blocks AS (
 )
 SELECT
     'missing_traces' AS test_name,
-    '004' AS test_id,
+    '005' AS test_id,
     (
         SELECT
             MIN(block_number)
@@ -715,7 +708,7 @@ SELECT
     CURRENT_TIMESTAMP() AS test_timestamp
 {% endmacro %}
 
-{% macro evm_missing_logs() %}
+{% macro evm_missing_logs_model() %}
     WITH look_back AS (
         SELECT
             block_number
@@ -765,23 +758,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -816,23 +808,22 @@ AND (
                 block_range
         )
     )
-    OR block_number >=(
-        SELECT
-            MIN(VALUE) - 1
-        FROM
-            (
-                SELECT
-                    blocks_impacted_array
-                FROM
-                    {{ this }}
-                    qualify(ROW_NUMBER() over(
-                ORDER BY
-                    test_timestamp DESC) = 1)
-            ),
-            LATERAL FLATTEN (
-                input => blocks_impacted_array
-            )
-    )
+    OR ({% if var('FULL_TEST') %}
+        block_number >= 0
+    {% else %}
+        block_number >= (
+    SELECT
+        MIN(VALUE) - 1
+    FROM
+        (
+    SELECT
+        blocks_impacted_array
+    FROM
+        {{ this }}
+        qualify ROW_NUMBER() over (
+    ORDER BY
+        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
+    {% endif %})
 )
 {% endif %}
 ),
@@ -853,7 +844,7 @@ impacted_blocks AS (
 )
 SELECT
     'missing_event_logs' AS test_name,
-    '005' AS test_id,
+    '004' AS test_id,
     (
         SELECT
             MIN(block_number)

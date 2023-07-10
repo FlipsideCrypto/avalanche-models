@@ -70,6 +70,11 @@ all_blocks AS (
                 block_number
             FROM
                 {{ ref("_unconfirmed_blocks") }}
+            UNION
+            SELECT
+                block_number
+            FROM
+                {{ ref("_observability_failures") }}
         )
 )
 SELECT

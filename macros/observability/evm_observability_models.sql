@@ -54,7 +54,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -73,65 +73,70 @@ AND (
 )
 {% endif %}
 ),
-impacted_blocks AS (
+block_gen AS (
     SELECT
-        DISTINCT block_number AS block_number
+        _id AS block_number
     FROM
-        blocks
+        {{ source(
+            'crosschain_silver',
+            'number_sequence'
+        ) }}
     WHERE
-        block_number - prev_BLOCK_NUMBER <> 1
+        _id BETWEEN (
+            SELECT
+                MIN(block_number)
+            FROM
+                blocks
+        )
+        AND (
+            SELECT
+                MAX(block_number)
+            FROM
+                blocks
+        )
 )
 SELECT
-    'block_gaps' AS test_name,
-    '001' AS test_id,
-    (
-        SELECT
-            MIN(block_number)
-        FROM
-            blocks
+    'blocks' AS test_name,
+    MIN(
+        b.block_number
     ) AS min_block,
-    (
-        SELECT
-            MAX(block_number)
-        FROM
-            blocks
+    MAX(
+        b.block_number
     ) AS max_block,
-    (
-        SELECT
-            MIN(block_timestamp)
-        FROM
-            blocks
+    MIN(
+        b.block_timestamp
     ) AS min_block_timestamp,
-    (
-        SELECT
-            MAX(block_timestamp)
-        FROM
-            blocks
+    MAX(
+        b.block_timestamp
     ) AS max_block_timestamp,
-    (
-        SELECT
-            COUNT(*)
-        FROM
-            blocks
-    ) AS blocks_tested,
-    (
-        SELECT
-            COUNT(
-                DISTINCT block_number
-            )
-        FROM
-            impacted_blocks
+    COUNT(1) AS blocks_tested,
+    COUNT(
+        CASE
+            WHEN C.block_number IS NOT NULL THEN A.block_number
+        END
     ) AS blocks_impacted_count,
-    (
-        SELECT
-            ARRAY_AGG(block_number) within GROUP (
-                ORDER BY
-                    block_number
-            )
-        FROM
-            impacted_blocks
+    ARRAY_AGG(
+        CASE
+            WHEN C.block_number IS NOT NULL THEN A.block_number
+        END
+    ) within GROUP (
+        ORDER BY
+            A.block_number
     ) AS blocks_impacted_array,
-    CURRENT_TIMESTAMP() AS test_timestamp
+    CURRENT_TIMESTAMP AS test_timestamp
+FROM
+    block_gen A
+    LEFT JOIN blocks b
+    ON A.block_number = b.block_number
+    LEFT JOIN blocks C
+    ON A.block_number > C.prev_block_number
+    AND A.block_number < C.block_number
+    AND C.block_number - C.prev_block_number <> 1
+WHERE
+    COALESCE(
+        b.block_number,
+        C.block_number
+    ) IS NOT NULL
 {% endmacro %}
 
 {% macro evm_missing_transactions_model() %}
@@ -184,7 +189,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -235,7 +240,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -279,8 +284,7 @@ impacted_blocks AS (
         )
 )
 SELECT
-    'missing_txs' AS test_name,
-    '002' AS test_id,
+    'transactions' AS test_name,
     (
         SELECT
             MIN(block_number)
@@ -382,7 +386,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -432,7 +436,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -468,8 +472,7 @@ impacted_blocks AS (
         OR t.tx_hash IS NULL
 )
 SELECT
-    'missing_receipts' AS test_name,
-    '003' AS test_id,
+    'receipts' AS test_name,
     (
         SELECT
             MIN(block_number)
@@ -571,7 +574,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -621,7 +624,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -656,8 +659,7 @@ impacted_blocks AS (
         OR t.tx_hash IS NULL
 )
 SELECT
-    'missing_traces' AS test_name,
-    '005' AS test_id,
+    'traces' AS test_name,
     (
         SELECT
             MIN(block_number)
@@ -758,7 +760,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -808,7 +810,7 @@ AND (
                 block_range
         )
     )
-    OR ({% if var('FULL_TEST') %}
+    OR ({% if var('OBSERV_FULL_TEST') %}
         block_number >= 0
     {% else %}
         block_number >= (
@@ -843,8 +845,7 @@ impacted_blocks AS (
         OR t.tx_hash IS NULL
 )
 SELECT
-    'missing_event_logs' AS test_name,
-    '004' AS test_id,
+    'event_logs' AS test_name,
     (
         SELECT
             MIN(block_number)

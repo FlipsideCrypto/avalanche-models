@@ -13,8 +13,8 @@ WITH look_back AS (
         qualify ROW_NUMBER() over (
             ORDER BY
                 block_number DESC
-        ) BETWEEN 11
-        AND 72
+        ) BETWEEN 24
+        AND 96
 ),
 block_range AS (
     SELECT

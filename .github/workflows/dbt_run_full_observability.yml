@@ -4,8 +4,8 @@ run-name: dbt_run_full_observability
 on:
   workflow_dispatch:
   schedule:
-    # Runs “At 00:00 on day-of-month 1.” (see https://crontab.guru)
-    - cron: '0 0 1 * *'
+    # Runs “At 04:00 on day-of-month 1.” (see https://crontab.guru)
+    - cron: '0 4 1 * *'
     
 env:
   DBT_PROFILES_DIR: ./
@@ -41,7 +41,7 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run --vars '{"OBSERV_FULL_TEST":True}' -m models/silver/_observability
+          dbt run --threads 2 --vars '{"OBSERV_FULL_TEST":True}' -m models/silver/_observability
   
 
 

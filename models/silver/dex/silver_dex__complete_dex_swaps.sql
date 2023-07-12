@@ -1138,7 +1138,7 @@ all_dex_standard AS (
     token_in,
     token_out,
     token_symbol_in AS symbol_in,
-    token_symbol_in AS symbol_out,
+    token_symbol_out AS symbol_out,
     decimals_in,
     decimals_out,
     amount_in_unadj,

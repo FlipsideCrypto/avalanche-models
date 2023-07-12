@@ -4,80 +4,101 @@
     full_refresh = false
 ) }}
 
-WITH look_back AS (
+WITH summary_stats AS (
 
     SELECT
-        block_number
+        MIN(block_number) AS min_block,
+        MAX(block_number) AS max_block,
+        MIN(block_timestamp) AS min_block_timestamp,
+        MAX(block_timestamp) AS max_block_timestamp,
+        COUNT(1) AS blocks_tested
     FROM
-        {{ ref("_max_block_by_hour") }}
-        qualify ROW_NUMBER() over (
-            ORDER BY
-                block_number DESC
-        ) BETWEEN 24
-        AND 96
-),
-block_range AS (
-    SELECT
-        MAX(block_number) AS end_block,
-        MIN(block_number) AS start_block
-    FROM
-        look_back
-),
-blocks AS (
-    SELECT
-        block_number,
-        block_timestamp,
-        LAG(
-            block_number,
-            1
-        ) over (
-            ORDER BY
-                block_number ASC
-        ) AS prev_BLOCK_NUMBER
-    FROM
-        {{ ref("silver__blocks") }}
+        {{ ref('silver__blocks') }}
     WHERE
-        block_number <= (
-            SELECT
-                end_block
-            FROM
-                block_range
-        )
+        block_timestamp <= DATEADD('hour', -12, CURRENT_TIMESTAMP())
 
 {% if is_incremental() %}
 AND (
-    (
-        block_number BETWEEN (
+    block_number >= (
+        SELECT
+            MIN(block_number)
+        FROM
+            (
+                SELECT
+                    MIN(block_number) AS block_number
+                FROM
+                    {{ ref('silver__blocks') }}
+                WHERE
+                    block_timestamp BETWEEN DATEADD('hour', -96, CURRENT_TIMESTAMP())
+                    AND DATEADD('hour', -95, CURRENT_TIMESTAMP())
+                UNION
+                SELECT
+                    MIN(VALUE) - 1 AS block_number
+                FROM
+                    (
+                        SELECT
+                            blocks_impacted_array
+                        FROM
+                            {{ this }}
+                            qualify ROW_NUMBER() over (
+                                ORDER BY
+                                    test_timestamp DESC
+                            ) = 1
+                    ),
+                    LATERAL FLATTEN(
+                        input => blocks_impacted_array
+                    )
+            )
+    ) {% if var('OBSERV_FULL_TEST') %}
+        OR block_number >= 0
+    {% endif %}
+)
+{% endif %}
+),
+block_range AS (
+    SELECT
+        _id AS block_number
+    FROM
+        {{ source(
+            'crosschain_silver',
+            'number_sequence'
+        ) }}
+    WHERE
+        _id BETWEEN (
             SELECT
-                start_block
+                min_block
             FROM
-                block_range
+                summary_stats
         )
         AND (
             SELECT
-                end_block
+                max_block
+            FROM
+                summary_stats
+        )
+),
+blocks AS (
+    SELECT
+        l.block_number,
+        block_timestamp,
+        LAG(
+            l.block_number,
+            1
+        ) over (
+            ORDER BY
+                l.block_number ASC
+        ) AS prev_BLOCK_NUMBER
+    FROM
+        {{ ref("silver__blocks") }}
+        l
+        INNER JOIN block_range b
+        ON l.block_number = b.block_number
+        AND l.block_number >= (
+            SELECT
+                MIN(block_number)
             FROM
                 block_range
         )
-    )
-    OR ({% if var('OBSERV_FULL_TEST') %}
-        block_number >= 0
-    {% else %}
-        block_number >= (
-    SELECT
-        MIN(VALUE) - 1
-    FROM
-        (
-    SELECT
-        blocks_impacted_array
-    FROM
-        {{ this }}
-        qualify ROW_NUMBER() over (
-    ORDER BY
-        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
-    {% endif %})
-)
-{% endif %}
 ),
 block_gen AS (
     SELECT

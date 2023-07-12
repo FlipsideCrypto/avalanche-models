@@ -4,188 +4,115 @@
     full_refresh = false
 ) }}
 
-WITH look_back AS (
+WITH summary_stats AS (
 
     SELECT
-        block_number
+        MIN(block_number) AS min_block,
+        MAX(block_number) AS max_block,
+        MIN(block_timestamp) AS min_block_timestamp,
+        MAX(block_timestamp) AS max_block_timestamp,
+        COUNT(1) AS blocks_tested
     FROM
-        {{ ref("_max_block_by_hour") }}
-        qualify ROW_NUMBER() over (
-            ORDER BY
-                block_number DESC
-        ) BETWEEN 24
-        AND 96
-),
-block_range AS (
-    SELECT
-        MAX(block_number) AS end_block,
-        MIN(block_number) AS start_block
-    FROM
-        look_back
-),
-txs AS (
-    SELECT
-        block_number,
-        block_timestamp,
-        tx_hash,
-        block_hash
-    FROM
-        {{ ref("silver__transactions") }}
+        {{ ref('silver__blocks') }}
     WHERE
-        block_number <= (
-            SELECT
-                end_block
-            FROM
-                block_range
-        )
+        block_timestamp <= DATEADD('hour', -12, CURRENT_TIMESTAMP())
 
 {% if is_incremental() %}
 AND (
-    (
-        block_number BETWEEN (
-            SELECT
-                start_block
-            FROM
-                block_range
-        )
-        AND (
-            SELECT
-                end_block
-            FROM
-                block_range
-        )
-    )
-    OR ({% if var('OBSERV_FULL_TEST') %}
-        block_number >= 0
-    {% else %}
-        block_number >= (
-    SELECT
-        MIN(VALUE) - 1
-    FROM
-        (
-    SELECT
-        blocks_impacted_array
-    FROM
-        {{ this }}
-        qualify ROW_NUMBER() over (
-    ORDER BY
-        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
-    {% endif %})
-)
-{% endif %}
-),
-traces AS (
-    SELECT
-        block_number,
-        block_timestamp,
-        tx_hash
-    FROM
-        {{ ref("silver__traces") }}
-    WHERE
-        block_number <= (
-            SELECT
-                end_block
-            FROM
-                block_range
-        )
-
-{% if is_incremental() %}
-AND (
-    (
-        block_number BETWEEN (
-            SELECT
-                start_block
-            FROM
-                block_range
-        )
-        AND (
-            SELECT
-                end_block
-            FROM
-                block_range
-        )
-    )
-    OR ({% if var('OBSERV_FULL_TEST') %}
-        block_number >= 0
-    {% else %}
-        block_number >= (
-    SELECT
-        MIN(VALUE) - 1
-    FROM
-        (
-    SELECT
-        blocks_impacted_array
-    FROM
-        {{ this }}
-        qualify ROW_NUMBER() over (
-    ORDER BY
-        test_timestamp DESC) = 1), LATERAL FLATTEN(input => blocks_impacted_array))
-    {% endif %})
-)
-{% endif %}
-),
-impacted_blocks AS (
-    SELECT
-        DISTINCT COALESCE(
-            t.block_number,
-            r.block_number
-        ) AS block_number
-    FROM
-        txs t full
-        OUTER JOIN traces r
-        ON t.block_number = r.block_number
-        AND t.tx_hash = r.tx_hash
-    WHERE
-        r.tx_hash IS NULL
-        OR t.tx_hash IS NULL
-)
-SELECT
-    'traces' AS test_name,
-    (
+    block_number >= (
         SELECT
             MIN(block_number)
         FROM
-            traces
-    ) AS min_block,
-    (
-        SELECT
-            MAX(block_number)
-        FROM
-            traces
-    ) AS max_block,
-    (
-        SELECT
-            MIN(block_timestamp)
-        FROM
-            traces
-    ) AS min_block_timestamp,
-    (
-        SELECT
-            MAX(block_timestamp)
-        FROM
-            traces
-    ) AS max_block_timestamp,
-    (
-        SELECT
-            COUNT(
-                DISTINCT block_number
+            (
+                SELECT
+                    MIN(block_number) AS block_number
+                FROM
+                    {{ ref('silver__blocks') }}
+                WHERE
+                    block_timestamp BETWEEN DATEADD('hour', -96, CURRENT_TIMESTAMP())
+                    AND DATEADD('hour', -95, CURRENT_TIMESTAMP())
+                UNION
+                SELECT
+                    MIN(VALUE) - 1 AS block_number
+                FROM
+                    (
+                        SELECT
+                            blocks_impacted_array
+                        FROM
+                            {{ this }}
+                            qualify ROW_NUMBER() over (
+                                ORDER BY
+                                    test_timestamp DESC
+                            ) = 1
+                    ),
+                    LATERAL FLATTEN(
+                        input => blocks_impacted_array
+                    )
             )
-        FROM
-            traces
-    ) AS blocks_tested,
-    (
-        SELECT
-            COUNT(*)
-        FROM
-            impacted_blocks
-    ) AS blocks_impacted_count,
-    (
-        SELECT
-            ARRAY_AGG(block_number) within GROUP (
-                ORDER BY
-                    block_number
-            )
-        FROM
-            impacted_blocks
-    ) AS blocks_impacted_array,
+    ) {% if var('OBSERV_FULL_TEST') %}
+        OR block_number >= 0
+    {% endif %}
+)
+{% endif %}
+),
+block_range AS (
+    SELECT
+        _id AS block_number
+    FROM
+        {{ source(
+            'crosschain_silver',
+            'number_sequence'
+        ) }}
+    WHERE
+        _id BETWEEN (
+            SELECT
+                min_block
+            FROM
+                summary_stats
+        )
+        AND (
+            SELECT
+                max_block
+            FROM
+                summary_stats
+        )
+),
+broken_blocks AS (
+    SELECT
+        DISTINCT block_number
+    FROM
+        {{ ref("silver__transactions") }}
+        tx
+        LEFT JOIN {{ ref("silver__traces") }}
+        tr USING (
+            block_number,
+            tx_hash
+        )
+        JOIN block_range USING (block_number)
+    WHERE
+        tr.tx_hash IS NULL
+),
+impacted_blocks AS (
+    SELECT
+        COUNT(1) AS blocks_impacted_count,
+        ARRAY_AGG(block_number) within GROUP (
+            ORDER BY
+                block_number
+        ) AS blocks_impacted_array
+    FROM
+        broken_blocks
+)
+SELECT
+    'traces' AS test_name,
+    min_block,
+    max_block,
+    min_block_timestamp,
+    max_block_timestamp,
+    blocks_tested,
+    blocks_impacted_count,
+    blocks_impacted_array,
     CURRENT_TIMESTAMP() AS test_timestamp
+FROM
+    summary_stats
+    JOIN impacted_blocks
+    ON 1 = 1

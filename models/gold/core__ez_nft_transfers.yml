@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: core__ez_nft_transfers
-    description: This table contains NFT sales on Avalanche
+    description: '{{ doc("avax_nft_transfer_doc") }}'
   
     columns:
       - name: BLOCK_NUMBER

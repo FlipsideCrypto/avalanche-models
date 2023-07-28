@@ -1,4 +1,4 @@
-{% docs eth_nft_mint_count %}
+{% docs avax_nft_mint_count %}
 
 The number of NFTs minted in this event.
 

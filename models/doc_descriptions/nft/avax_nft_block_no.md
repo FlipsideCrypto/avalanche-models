@@ -1,4 +1,4 @@
-{% docs eth_nft_block_no %}
+{% docs avax_nft_block_no %}
 
 The block number at which the NFT event occurred.
 

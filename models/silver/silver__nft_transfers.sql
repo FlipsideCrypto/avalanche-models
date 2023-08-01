@@ -263,6 +263,8 @@ all_transfers AS (
         ) AS _log_id
     FROM
         transfer_singles
+    WHERE
+        erc1155_value > 0
     UNION ALL
     SELECT
         block_number,
@@ -287,6 +289,8 @@ all_transfers AS (
         ) AS _log_id
     FROM
         transfer_batch_final
+    WHERE
+        erc1155_value > 0
 ),
 nft_project_name AS (
     SELECT

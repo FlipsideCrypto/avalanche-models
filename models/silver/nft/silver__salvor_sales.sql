@@ -66,7 +66,7 @@ payout_raw AS (
             27,
             40
         ) AS nft_address,
-        avalanche.utils.udf_hex_to_int(
+        utils.udf_hex_to_int(
             topics [2] :: STRING
         ) AS tokenid,
         '0x' || SUBSTR(
@@ -76,7 +76,7 @@ payout_raw AS (
         ) AS nft_owner,
         -- payout receiver
         TRY_TO_NUMBER(
-            avalanche.utils.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 segmented_data [0] :: STRING
             )
         ) AS sale_amount_raw,
@@ -112,7 +112,7 @@ commission_raw AS (
             27,
             40
         ) AS nft_address,
-        avalanche.utils.udf_hex_to_int(
+        utils.udf_hex_to_int(
             topics [2] :: STRING
         ) AS tokenid,
         '0x' || SUBSTR(
@@ -121,12 +121,12 @@ commission_raw AS (
             40
         ) AS nft_owner,
         TRY_TO_NUMBER(
-            avalanche.utils.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 segmented_data [1] :: STRING
             )
         ) AS platform_fee_raw,
         TRY_TO_NUMBER(
-            avalanche.utils.udf_hex_to_int(
+            utils.udf_hex_to_int(
                 segmented_data [2] :: STRING
             )
         ) AS total_price_raw,
@@ -146,7 +146,7 @@ royalty_raw AS (
             27,
             40
         ) AS nft_address,
-        avalanche.utils.udf_hex_to_int(
+        utils.udf_hex_to_int(
             topics [2] :: STRING
         ) AS tokenid,
         '0x' || SUBSTR(
@@ -159,7 +159,7 @@ royalty_raw AS (
             25,
             40
         ) AS nft_owner,
-        avalanche.utils.udf_hex_to_int(
+        utils.udf_hex_to_int(
             segmented_data [1] :: STRING
         ) AS creator_fee_raw_,
         CONCAT(

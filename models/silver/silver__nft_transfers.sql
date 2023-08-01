@@ -83,9 +83,11 @@ transfer_singles AS (
         utils.udf_hex_to_int(
             segmented_data [0] :: STRING
         ) :: STRING AS token_id,
-        utils.udf_hex_to_int(
-            segmented_data [1] :: STRING
-        ) :: STRING AS erc1155_value,
+        TRY_TO_NUMBER(
+            utils.udf_hex_to_int(
+                segmented_data [1] :: STRING
+            )
+        ) AS erc1155_value,
         TO_TIMESTAMP_NTZ(_inserted_timestamp) AS _inserted_timestamp,
         event_index
     FROM
@@ -104,9 +106,11 @@ transfer_batch_raw AS (
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS from_address,
         CONCAT('0x', SUBSTR(topics [3] :: STRING, 27, 40)) AS to_address,
         contract_address,
-        utils.udf_hex_to_int(
-            segmented_data [2] :: STRING
-        ) :: STRING AS tokenid_length,
+        TRY_TO_NUMBER(
+            utils.udf_hex_to_int(
+                segmented_data [2] :: STRING
+            )
+        ) AS tokenid_length,
         tokenid_length AS quantity_length,
         _log_id,
         TO_TIMESTAMP_NTZ(_inserted_timestamp) AS _inserted_timestamp
@@ -131,9 +135,9 @@ flattened AS (
         VALUE,
         tokenid_length,
         quantity_length,
-        '2' + tokenid_length AS tokenid_indextag,
-        '4' + tokenid_length AS quantity_indextag_start,
-        '4' + tokenid_length + tokenid_length AS quantity_indextag_end,
+        2 + tokenid_length AS tokenid_indextag,
+        4 + tokenid_length AS quantity_indextag_start,
+        4 + tokenid_length + tokenid_length AS quantity_indextag_end,
         CASE
             WHEN INDEX BETWEEN 3
             AND (
@@ -183,9 +187,11 @@ quantity_list AS (
     SELECT
         tx_hash,
         event_index,
-        utils.udf_hex_to_int(
-            VALUE :: STRING
-        ) :: STRING AS quantity,
+        TRY_TO_NUMBER (
+            utils.udf_hex_to_int(
+                VALUE :: STRING
+            )
+        ) AS quantity,
         ROW_NUMBER() over (
             PARTITION BY tx_hash,
             event_index

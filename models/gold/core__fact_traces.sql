@@ -11,8 +11,11 @@ SELECT
     from_address,
     to_address,
     avax_value,
-    utils.udf_hex_to_int(
-        DATA :value :: STRING
+    IFNULL(
+        utils.udf_hex_to_int(
+            DATA :value :: STRING
+        ),
+        '0'
     ) AS avax_value_precise_raw,
     utils.udf_decimal_adjust(
         avax_value_precise_raw,

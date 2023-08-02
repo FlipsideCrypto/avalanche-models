@@ -2,7 +2,7 @@
     materialized = 'view'
 ) }}
 
-WITH eth_base AS (
+WITH avax_base AS (
 
     SELECT
         tx_hash,
@@ -13,7 +13,14 @@ WITH eth_base AS (
         avax_value,
         identifier,
         _call_id,
-        input
+        input,
+        utils.udf_hex_to_int(
+            DATA :value :: STRING
+        ) AS avax_value_precise_raw,
+        utils.udf_decimal_adjust(
+            avax_value_precise_raw,
+            18
+        ) AS avax_value_precise
     FROM
         {{ ref('silver__traces') }}
     WHERE
@@ -41,12 +48,14 @@ SELECT
     A.from_address AS avax_from_address,
     A.to_address AS avax_to_address,
     A.avax_value AS amount,
+    A.avax_value_precise_raw AS amount_precise_raw,
+    A.avax_value_precise AS amount_precise,
     ROUND(
         A.avax_value * avax_price,
         2
     ) AS amount_usd
 FROM
-    eth_base A
+    avax_base A
     LEFT JOIN avax_prices
     ON DATE_TRUNC(
         'hour',

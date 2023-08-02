@@ -22,8 +22,14 @@ models:
         description: '{{ doc("avax_to_address") }}' 
       - name: AVAX_VALUE
         description: '{{ doc("avax_value") }}' 
+      - name: AVAX_VALUE_PRECISE_RAW
+        description: '{{ doc("precise_amount_unadjusted") }}'
+      - name: AVAX_VALUE_PRECISE
+        description: '{{ doc("precise_amount_adjusted") }}'
       - name: TX_FEE
         description: '{{ doc("avax_tx_fee") }}' 
+      - name: TX_FEE_PRECISE
+        description: '{{ doc("tx_fee_precise") }}' 
       - name: GAS_PRICE
         description: '{{ doc("avax_tx_gas_price") }}' 
       - name: GAS_LIMIT

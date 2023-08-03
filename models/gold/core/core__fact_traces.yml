@@ -16,6 +16,10 @@ models:
         description: '{{ doc("avax_traces_to") }}'
       - name: AVAX_VALUE
         description: '{{ doc("avax_traces_value") }}'
+      - name: AVAX_VALUE_PRECISE_RAW
+        description: '{{ doc("precise_amount_unadjusted") }}'
+      - name: AVAX_VALUE_PRECISE
+        description: '{{ doc("precise_amount_adjusted") }}'
       - name: GAS
         description: '{{ doc("avax_traces_gas") }}'
       - name: GAS_USED

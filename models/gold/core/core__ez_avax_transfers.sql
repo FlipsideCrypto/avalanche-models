@@ -13,14 +13,7 @@ WITH avax_base AS (
         avax_value,
         identifier,
         _call_id,
-        input,
-        utils.udf_hex_to_int(
-            DATA :value :: STRING
-        ) AS avax_value_precise_raw,
-        utils.udf_decimal_adjust(
-            avax_value_precise_raw,
-            18
-        ) AS avax_value_precise
+        input
     FROM
         {{ ref('silver__traces') }}
     WHERE
@@ -48,8 +41,6 @@ SELECT
     A.from_address AS avax_from_address,
     A.to_address AS avax_to_address,
     A.avax_value AS amount,
-    A.avax_value_precise_raw AS amount_precise_raw,
-    A.avax_value_precise AS amount_precise,
     ROUND(
         A.avax_value * avax_price,
         2

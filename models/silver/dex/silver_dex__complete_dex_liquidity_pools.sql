@@ -83,33 +83,6 @@ WHERE
 GROUP BY all
 ),
 
-camelot AS (
-
-SELECT
-    block_number,
-    block_timestamp,
-    tx_hash,
-    contract_address,
-    pool_address,
-    NULL AS pool_name,
-    token0,
-    token1,
-    'camelot' AS platform,
-    _log_id AS _id,
-    _inserted_timestamp
-FROM
-    {{ ref('silver_dex__camelot_pools') }}
-{% if is_incremental() %}
-WHERE
-  _inserted_timestamp >= (
-    SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
-    FROM
-      {{ this }}
-  )
-{% endif %}
-),
-
 frax AS (
 
 SELECT

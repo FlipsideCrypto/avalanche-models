@@ -1,6 +1,7 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = "pool_address"
+    unique_key = "pool_address",
+    tags = ['non_realtime']
 ) }}
 
 WITH pool_creation AS (
@@ -51,6 +52,7 @@ SELECT
     block_number,
     block_timestamp,
     tx_hash,
+    contract_address,
     event_index,
     token0,
     token1,

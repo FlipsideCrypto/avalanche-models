@@ -1,8 +1,9 @@
 {{ config(
     materialized = 'incremental',
     unique_key = "pool_id",
-    full_refresh = false
+    tags = ['non_realtime']
 ) }}
+--    full_refresh = false,
 
 WITH contract_deployments AS (
 
@@ -12,6 +13,7 @@ SELECT
     block_timestamp,
     from_address AS deployer_address,
     to_address AS contract_address,
+    _call_id,
     _inserted_timestamp,
     ROW_NUMBER() OVER (ORDER BY contract_address) AS row_num
 FROM
@@ -172,7 +174,7 @@ FROM inputs_pool_details
 
 pool_token_reads AS (
 
-{% for item in range(5) %}
+{% for item in range(20) %}
 (
 SELECT
     ethereum.streamline.udf_json_rpc_read_calls(
@@ -206,7 +208,7 @@ FROM (
         FROM all_inputs
         LEFT JOIN contract_deployments USING(contract_address) 
             ) ready_reads_pools
-    WHERE row_num BETWEEN {{ item * 500 + 1 }} AND {{ (item + 1) * 500}}
+    WHERE row_num BETWEEN {{ item * 50 + 1 }} AND {{ (item + 1) * 50}}
     ) batch_reads_pools
 JOIN {{ source(
             'streamline_crosschain',
@@ -280,9 +282,9 @@ SELECT
     CONCAT('0x',SUBSTRING(t.segmented_token_address,25,40)) AS token_address,
     function_input AS token_id,
     function_name AS token_type,
-    MIN(CASE WHEN p.function_name = 'symbol' THEN TRY_HEX_DECODE_STRING(RTRIM(p.segmented_output [2] :: STRING, 0)) END) AS pool_symbol,
-    MIN(CASE WHEN p.function_name = 'name' THEN CONCAT(TRY_HEX_DECODE_STRING(p.segmented_output [2] :: STRING),
-        TRY_HEX_DECODE_STRING(segmented_output [3] :: STRING)) END) AS pool_name,
+    MIN(CASE WHEN p.function_name = 'symbol' THEN utils.udf_hex_to_string(RTRIM(p.segmented_output [2] :: STRING, 0)) END) AS pool_symbol,
+    MIN(CASE WHEN p.function_name = 'name' THEN CONCAT(utils.udf_hex_to_string(p.segmented_output [2] :: STRING),
+        utils.udf_hex_to_string(segmented_output [3] :: STRING)) END) AS pool_name,
     MIN(CASE 
             WHEN p.read_result::STRING = '0x' THEN NULL
             ELSE utils.udf_hex_to_int(LEFT(p.read_result::STRING,66))
@@ -306,6 +308,10 @@ GROUP BY 1,2,3,4
 
 FINAL AS (
 SELECT
+    block_number,
+    block_timestamp,
+    tx_hash,
+    deployer_address,
     pool_address,
     CASE
         WHEN token_address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' THEN '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
@@ -325,19 +331,17 @@ SELECT
         ELSE pool_decimals
     END AS pool_decimals,
     pool_id,
+    _call_id,
     a._inserted_timestamp
 FROM all_pools a
-LEFT JOIN {{ ref('silver__contracts') }} c ON a.token_address = c.contract_address
+LEFT JOIN {{ ref('silver__contracts') }} c 
+    ON a.token_address = c.contract_address
+LEFT JOIN contract_deployments d 
+    ON a.pool_address = d.contract_address
+QUALIFY(ROW_NUMBER() OVER(PARTITION BY pool_address, token_address ORDER BY a._inserted_timestamp DESC)) = 1
 )
 
 SELECT
-    pool_address,
-    token_address,
-    token_id,
-    token_type,
-    pool_symbol,
-    pool_name,
-    pool_decimals,
-    pool_id,
-    _inserted_timestamp
+    *,
+    ROW_NUMBER() OVER (PARTITION BY pool_address ORDER BY token_address ASC) AS token_num
 FROM FINAL

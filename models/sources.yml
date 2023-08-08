@@ -24,6 +24,7 @@ sources:
       - name: apis_keys
       - name: token_prices_priority_hourly
       - name: asset_metadata_priority
+      - name: number_sequence
   - name: bronze_streamline
     database: streamline
     schema: |
@@ -40,3 +41,13 @@ sources:
     schema: bronze_public
     tables:
       - name: user_abis
+  - name: avalanche_silver
+    database: avalanche
+    schema: silver
+    tables:
+      - name: verified_abis
+  - name: avalanche_bronze_api
+    database: avalanche
+    schema: bronze_api
+    tables:
+      - name: contract_abis

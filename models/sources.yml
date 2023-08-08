@@ -41,3 +41,13 @@ sources:
     schema: bronze_public
     tables:
       - name: user_abis
+  - name: avalanche_silver
+    database: avalanche
+    schema: silver
+    tables:
+      - name: verified_abis
+  - name: avalanche_bronze_api
+    database: avalanche
+    schema: bronze_api
+    tables:
+      - name: contract_abis

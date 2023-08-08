@@ -58,9 +58,9 @@ row_nos AS (
         JOIN api_keys
         ON 1 = 1
 ),
-batched AS ({% for item in range(150) %}
+batched AS ({% for item in range(101) %}
 SELECT
-    rn.contract_address, ethereum.streamline.udf_api('GET', CONCAT('https://api.snowtrace.io/api?module=contract&action=getabi&address=', contract_address, '&apikey=', api_key),{},{}) AS abi_data, SYSDATE() AS _inserted_timestamp
+    rn.contract_address, ethereum.streamline.udf_api('GET', CONCAT('https://api.snowtrace.io/api?module=contract&action=getabi&address=', contract_address, '&apikey=', api_key),{ 'User-Agent': 'FlipsideStreamline' },{}) AS abi_data, SYSDATE() AS _inserted_timestamp
 FROM
     row_nos rn
 WHERE

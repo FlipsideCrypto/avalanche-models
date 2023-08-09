@@ -315,7 +315,7 @@ SELECT
     creator_fee_raw,
     platform_fee_raw + creator_fee_raw AS total_fees_raw,
     total_fees_raw + sale_amount_raw AS total_price_raw,
-    'AXAX' AS currency_address,
+    'AVAX' AS currency_address,
     origin_from_address,
     origin_to_address,
     origin_function_signature,

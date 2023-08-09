@@ -243,8 +243,7 @@ nft_address_type AS (
     FROM
         {{ ref('silver__nft_transfers') }}
     WHERE
-        block_timestamp :: DATE >= '2022-04-01'
-        AND contract_address IN (
+        contract_address IN (
             SELECT
                 nft_address
             FROM

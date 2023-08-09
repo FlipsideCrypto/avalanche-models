@@ -540,8 +540,7 @@ mao_orderhash AS (
                         tx_hash
                     FROM
                         filtered_private_offer_tx
-                )
-                AND tx_type IS NOT NULL
+                ) -- AND tx_type IS NOT NULL ; null tx type would mean that there aren't any considerations. The nft is transferred without asking for anything in exchange for it
         ),
         base_sales_buy_null_values AS (
             SELECT
@@ -785,6 +784,18 @@ mao_orderhash AS (
                     FROM
                         base_sales_buy_sale_amount_filter
                 )
+            UNION ALL
+            SELECT
+                tx_hash,
+                event_index,
+                NULL AS currency_address,
+                0 AS sale_amount_raw_,
+                0 AS platform_fee_raw_,
+                0 AS creator_fee_raw_
+            FROM
+                base_sales_buy
+            WHERE
+                tx_type IS NULL
         ),
         base_sales_buy_sale_amount_combined AS (
             SELECT
@@ -1562,12 +1573,12 @@ mao_orderhash AS (
                 ZONE,
                 tx_type,
                 token_type,
-                nft_address,
+                nft_address AS nft_address_temp,
                 tokenid AS tokenId,
                 erc1155_value,
                 IFF(
                     currency_address = '0x0000000000000000000000000000000000000000',
-                    'ETH',
+                    'AVAX',
                     currency_address
                 ) AS currency_address,
                 total_sale_amount_raw,
@@ -1598,12 +1609,12 @@ mao_orderhash AS (
                 ZONE,
                 tx_type,
                 token_type,
-                nft_address,
+                nft_address AS nft_address_temp,
                 tokenid AS tokenId,
                 erc1155_value,
                 IFF(
                     currency_address = '0x0000000000000000000000000000000000000000',
-                    'ETH',
+                    'AVAX',
                     currency_address
                 ) AS currency_address,
                 total_sale_amount_raw,
@@ -1634,12 +1645,12 @@ mao_orderhash AS (
                 ZONE,
                 tx_type,
                 token_type,
-                nft_address,
+                nft_address AS nft_address_temp,
                 tokenId,
                 erc1155_value,
                 IFF(
                     currency_address = '0x0000000000000000000000000000000000000000',
-                    'ETH',
+                    'AVAX',
                     currency_address
                 ) AS currency_address,
                 total_sale_amount_raw,
@@ -1686,29 +1697,36 @@ AND _inserted_timestamp >= (
 )
 {% endif %}
 ),
-nft_transfers AS (
+nft_transfer_operator AS (
     SELECT
         tx_hash,
-        event_index,
-        contract_address,
-        tokenId,
-        erc1155_value,
-        CONCAT(
-            tx_hash,
-            '-',
-            contract_address,
-            '-',
-            tokenId
-        ) AS nft_id
+        regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
+        contract_address AS nft_address_from_transfers,
+        CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS nft_address_temp,
+        --or operator_address
+        CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS offerer,
+        CONCAT('0x', SUBSTR(topics [3] :: STRING, 27, 40)) AS recipient,
+        utils.udf_hex_to_int(
+            segmented_data [0] :: STRING
+        ) :: STRING AS tokenid,
+        TRY_TO_NUMBER(
+            utils.udf_hex_to_int(
+                segmented_data [1] :: STRING
+            )
+        ) AS erc1155_value
     FROM
-        {{ ref('silver__nft_transfers') }}
+        {{ ref('silver__logs') }}
     WHERE
-        block_timestamp :: DATE >= '2023-05-01'
+        block_timestamp :: DATE >= '2022-07-01'
         AND tx_hash IN (
             SELECT
                 DISTINCT tx_hash
             FROM
                 base_sales_buy_and_offer
+        )
+        AND topics [0] :: STRING IN (
+            '0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62',
+            '0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb'
         )
 
 {% if is_incremental() %}
@@ -1747,7 +1765,11 @@ final_seaport AS (
         ZONE,
         tx_type,
         s.token_type,
-        s.nft_address,
+        s.nft_address_temp,
+        CASE
+            WHEN nft_address_from_transfers IS NOT NULL THEN nft_address_from_transfers
+            ELSE s.nft_address_temp
+        END AS nft_address,
         s.tokenId,
         s.erc1155_value,
         s.currency_address,
@@ -1764,7 +1786,7 @@ final_seaport AS (
         offer,
         input_data,
         CONCAT(
-            s.nft_address,
+            nft_address,
             '-',
             s.tokenId,
             '-',
@@ -1776,12 +1798,13 @@ final_seaport AS (
         _inserted_timestamp
     FROM
         base_sales_buy_and_offer s
-        INNER JOIN tx_data t
-        ON t.tx_hash = s.tx_hash
-        LEFT JOIN nft_transfers n
-        ON n.tx_hash = s.tx_hash
-        AND n.contract_address = s.nft_address
-        AND n.tokenId = s.tokenId qualify(ROW_NUMBER() over(PARTITION BY nft_log_id
+        INNER JOIN tx_data t USING (tx_hash)
+    LEFT JOIN nft_transfer_operator o USING (
+        tx_hash,
+        nft_address_temp,
+        tokenid,
+        recipient
+    ) qualify(ROW_NUMBER() over(PARTITION BY nft_log_id
     ORDER BY
         _inserted_timestamp DESC)) = 1
 )

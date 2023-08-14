@@ -84,11 +84,11 @@ transfer_singles AS (
         utils.udf_hex_to_int(
             segmented_data [0] :: STRING
         ) :: STRING AS token_id,
-        TRY_TO_NUMBER(
+        (
             utils.udf_hex_to_int(
                 segmented_data [1] :: STRING
             )
-        ) AS erc1155_value,
+        ) :: STRING AS erc1155_value,
         TO_TIMESTAMP_NTZ(_inserted_timestamp) AS _inserted_timestamp,
         event_index
     FROM
@@ -107,7 +107,7 @@ transfer_batch_raw AS (
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS from_address,
         CONCAT('0x', SUBSTR(topics [3] :: STRING, 27, 40)) AS to_address,
         contract_address,
-        TRY_TO_NUMBER(
+        (
             utils.udf_hex_to_int(
                 segmented_data [2] :: STRING
             )
@@ -188,11 +188,9 @@ quantity_list AS (
     SELECT
         tx_hash,
         event_index,
-        TRY_TO_NUMBER (
-            utils.udf_hex_to_int(
-                VALUE :: STRING
-            )
-        ) AS quantity,
+        utils.udf_hex_to_int(
+            VALUE :: STRING
+        ) :: STRING AS quantity,
         ROW_NUMBER() over (
             PARTITION BY tx_hash,
             event_index
@@ -271,7 +269,7 @@ all_transfers AS (
     FROM
         transfer_singles
     WHERE
-        erc1155_value > 0
+        erc1155_value != '0'
     UNION ALL
     SELECT
         block_number,
@@ -297,7 +295,7 @@ all_transfers AS (
     FROM
         transfer_batch_final
     WHERE
-        erc1155_value > 0
+        erc1155_value != '0'
 ),
 transfer_base AS (
     SELECT

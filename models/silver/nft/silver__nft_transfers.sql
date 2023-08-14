@@ -60,7 +60,7 @@ erc721s AS (
         CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS to_address,
         utils.udf_hex_to_int(
             topics [3] :: STRING
-        ) AS token_id,
+        ) :: STRING AS token_id,
         NULL AS erc1155_value,
         TO_TIMESTAMP_NTZ(_inserted_timestamp) AS _inserted_timestamp,
         event_index
@@ -83,7 +83,7 @@ transfer_singles AS (
         CONCAT('0x', SUBSTR(topics [3] :: STRING, 27, 40)) AS to_address,
         utils.udf_hex_to_int(
             segmented_data [0] :: STRING
-        ) AS token_id,
+        ) :: STRING AS token_id,
         (
             utils.udf_hex_to_int(
                 segmented_data [1] :: STRING
@@ -172,7 +172,7 @@ tokenid_list AS (
         contract_address,
         utils.udf_hex_to_int(
             VALUE :: STRING
-        ) AS tokenId,
+        ) :: STRING AS tokenId,
         ROW_NUMBER() over (
             PARTITION BY tx_hash,
             event_index

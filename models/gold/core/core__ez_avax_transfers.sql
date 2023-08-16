@@ -1,5 +1,7 @@
 {{ config(
-    materialized = 'view'
+    materialized = 'view',
+    persist_docs ={ "relation": true,
+    "columns": true }
 ) }}
 
 WITH avax_base AS (

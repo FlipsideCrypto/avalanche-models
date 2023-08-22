@@ -28,7 +28,7 @@ avax_prices AS (
         HOUR,
         price AS avax_price
     FROM
-        {{ ref('silver__prices') }}
+        {{ ref('price__ez_hourly_token_prices') }}
     WHERE
         token_address = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
 )

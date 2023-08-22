@@ -2,11 +2,10 @@ version: 2
 
 sources:
   - name: crosschain
-    database: crosschain
+    database: "{{ 'crosschain' if target.database == 'AVALANCHE' else 'crosschain_dev' }}"
     schema: core
     tables:
-      - name: address_labels
-      - name: ez_hourly_prices
+      - name: dim_labels
   - name: ethereum
     database: ethereum
     schema: core
@@ -22,9 +21,12 @@ sources:
     schema: silver
     tables:
       - name: apis_keys
+      - name: address_labels
       - name: token_prices_priority_hourly
       - name: asset_metadata_priority
       - name: number_sequence
+      - name: token_prices_all_providers_hourly
+      - name: asset_metadata_all_providers
   - name: bronze_streamline
     database: streamline
     schema: |

@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: test_gold__ez_AVAX_transfers_full
+  - name: test_gold__ez_avax_transfers_full
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

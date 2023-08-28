@@ -8,7 +8,7 @@ SELECT
     tokens :token0 :: STRING AS token0,
     symbols: token0 :: STRING AS token0_symbol,
     decimals: token0 :: STRING AS token0_decimal
-FROM arbitrum.defi.dim_dex_liquidity_pools
+FROM avalanche.defi.dim_dex_liquidity_pools
 WHERE token0_symbol = 'WETH'
 ;
 

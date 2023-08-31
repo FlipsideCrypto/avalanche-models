@@ -103,7 +103,7 @@ SELECT
     trace_index
 FROM
     avax_base A
-    LEFT JOIN {{ ref('silver__prices') }}
+    LEFT JOIN {{ ref('silver__hourly_prices_priority') }}
     ON DATE_TRUNC(
         'hour',
         A.block_timestamp

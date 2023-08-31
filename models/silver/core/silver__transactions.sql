@@ -88,12 +88,10 @@ base_tx AS (
         A.data :v :: STRING AS v,
         utils.udf_hex_to_int(
             A.data :value :: STRING
-        ) AS avax_value_precise_raw,
-        utils.udf_decimal_adjust(
-            avax_value_precise_raw,
+        ) / pow(
+            10,
             18
-        ) AS avax_value_precise,
-        avax_value_precise :: FLOAT AS VALUE,
+        ) :: FLOAT AS VALUE,
         A._INSERTED_TIMESTAMP,
         A.data
     FROM
@@ -119,8 +117,6 @@ new_records AS (
         t.position,
         t.type,
         t.v,
-        t.avax_value_precise_raw,
-        t.avax_value_precise,
         t.value,
         block_timestamp,
         CASE
@@ -182,8 +178,6 @@ missing_data AS (
         t.position,
         t.type,
         t.v,
-        t.avax_value_precise_raw,
-        t.avax_value_precise,
         t.value,
         b.block_timestamp,
         FALSE AS is_pending,
@@ -239,8 +233,6 @@ FINAL AS (
         TYPE,
         v,
         VALUE,
-        avax_value_precise_raw,
-        avax_value_precise,
         block_timestamp,
         is_pending,
         gas_used,
@@ -278,8 +270,6 @@ SELECT
     TYPE,
     v,
     VALUE,
-    avax_value_precise_raw,
-    avax_value_precise,
     block_timestamp,
     is_pending,
     gas_used,

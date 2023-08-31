@@ -4,12 +4,6 @@
     "columns": true }
 ) }}
 
-SELECT
-    HOUR,
-    token_address,
-    symbol,
-    decimals,
-    price,
-    is_imputed
+SELECT *
 FROM
-    {{ ref('silver__prices') }}
+    {{ ref('price__ez_hourly_token_prices') }}

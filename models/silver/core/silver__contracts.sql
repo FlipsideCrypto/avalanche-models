@@ -58,9 +58,13 @@ token_symbols AS (
 token_decimals AS (
     SELECT
         contract_address,
-        utils.udf_hex_to_int(
-            read_output :: STRING
-        ) AS token_decimals,
+        CASE 
+            WHEN LENGTH(read_output :: STRING) <= 4300
+                THEN utils.udf_hex_to_int(
+                    read_output :: STRING
+                ) 
+            ELSE NULL 
+        END AS token_decimals,
         LENGTH(token_decimals) AS dec_length
     FROM
         base_metadata

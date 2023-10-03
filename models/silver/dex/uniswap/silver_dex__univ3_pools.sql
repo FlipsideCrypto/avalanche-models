@@ -1,7 +1,7 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
-    unique_key = 'block_number',
+    unique_key = 'created_block',
     cluster_by = ['_inserted_timestamp::DATE'],
     tags = ['non_realtime']
 ) }}

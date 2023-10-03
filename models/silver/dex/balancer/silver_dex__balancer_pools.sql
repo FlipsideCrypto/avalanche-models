@@ -2,7 +2,7 @@
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
     unique_key = 'block_number',
-    full_refresh = false
+    full_refresh = false,
     tags = ['non_realtime']
 ) }}
 

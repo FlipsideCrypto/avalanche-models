@@ -1,8 +1,9 @@
 {{ config(
   materialized = 'incremental',
-  unique_key = "_log_id",
+  incremental_strategy = 'delete+insert',
+  unique_key = ['block_number','platform','version'],
   cluster_by = ['block_timestamp::DATE'],
-  tags = ['non_realtime']
+  tags = ['non_realtime','reorg']
 ) }}
 
 WITH contracts AS (
@@ -29,15 +30,6 @@ prices AS (
       FROM
         contracts
     )
-
-{% if is_incremental() %}
-AND HOUR >= (
-  SELECT
-    MAX(_inserted_timestamp) :: DATE - 2
-  FROM
-    {{ this }}
-)
-{% endif %}
 ),
 
 balancer_swaps AS (
@@ -69,6 +61,7 @@ balancer_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     _log_id,
@@ -85,7 +78,7 @@ balancer_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -119,6 +112,7 @@ trader_joe_v1_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -136,7 +130,7 @@ trader_joe_v1_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -170,6 +164,7 @@ trader_joe_v2_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v2' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -187,7 +182,7 @@ trader_joe_v2_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -221,6 +216,7 @@ trader_joe_v2_1_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v2.1' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -238,7 +234,7 @@ trader_joe_v2_1_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -272,6 +268,7 @@ woofi_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     CONCAT(
@@ -299,7 +296,7 @@ woofi_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -333,6 +330,7 @@ gmx_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     CONCAT(
@@ -360,7 +358,7 @@ gmx_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -394,6 +392,7 @@ kyberswap_v1_dynamic AS (
     tx_to,
     event_index,
     platform,
+    'v1-dynamic' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -411,7 +410,7 @@ kyberswap_v1_dynamic AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -445,6 +444,7 @@ kyberswap_v1_static AS (
     tx_to,
     event_index,
     platform,
+    'v1-static' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -462,7 +462,7 @@ kyberswap_v1_static AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -496,6 +496,7 @@ kyberswap_v2_elastic AS (
     tx_to,
     event_index,
     platform,
+    'v2' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -513,7 +514,7 @@ kyberswap_v2_elastic AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -547,6 +548,7 @@ pangolin_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -564,7 +566,7 @@ pangolin_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -598,6 +600,7 @@ platypus_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     CONCAT(
@@ -625,7 +628,7 @@ platypus_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -659,6 +662,7 @@ fraxswap_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -676,7 +680,7 @@ fraxswap_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -710,6 +714,7 @@ hashflow_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     CONCAT(
@@ -737,7 +742,7 @@ hashflow_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -771,6 +776,7 @@ sushi_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     NULL AS pool_name,
@@ -788,7 +794,7 @@ sushi_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -811,6 +817,7 @@ curve_swaps AS (
     tx_to,
     event_index,
     platform,
+    'v1' AS version,
     token_in,
     token_out,
     COALESCE(
@@ -856,7 +863,7 @@ curve_swaps AS (
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
   SELECT
-    MAX(_inserted_timestamp) :: DATE - 1
+    MAX(_inserted_timestamp) - INTERVAL '36 hours'
   FROM
     {{ this }}
 )
@@ -915,6 +922,7 @@ univ3_swaps AS (
     recipient AS tx_to,
     event_index,
     'uniswap-v3' AS platform,
+    'v3' AS version,
     CASE
       WHEN amount0_unadj > 0 THEN token0_address
       ELSE token1_address
@@ -957,7 +965,7 @@ univ3_swaps AS (
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '36 hours'
     FROM
       {{ this }}
   )
@@ -981,6 +989,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1010,6 +1019,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1039,6 +1049,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1068,6 +1079,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1097,6 +1109,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1126,6 +1139,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1155,6 +1169,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1184,6 +1199,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1213,6 +1229,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1242,6 +1259,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1271,6 +1289,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1300,6 +1319,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1329,6 +1349,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1358,6 +1379,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     token_symbol_in AS symbol_in,
@@ -1387,6 +1409,7 @@ all_dex_standard AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1422,6 +1445,7 @@ all_dex_custom AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1462,6 +1486,7 @@ FINAL AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1509,6 +1534,7 @@ FINAL AS (
     tx_to,
     event_index,
     platform,
+    version,
     token_in,
     token_out,
     symbol_in,
@@ -1551,6 +1577,7 @@ SELECT
   tx_to,
   event_index,
   f.platform,
+  f.version,
   token_in,
   token_out,
   symbol_in,

@@ -1,8 +1,9 @@
 {{ config(
   materialized = 'incremental',
-  unique_key = "_id",
+  incremental_strategy = 'delete+insert',
+  unique_key = ['block_number','platform','version'],
   cluster_by = ['block_timestamp::DATE'],
-  tags = ['non_realtime']
+  tags = ['non_realtime','reorg']
 ) }}
 
 WITH contracts AS (
@@ -26,6 +27,7 @@ SELECT
     pool_address,
     pool_name,
     'balancer' AS platform,
+    'v1' AS version,
     _log_id AS _id,
     _inserted_timestamp,
     token0,
@@ -42,7 +44,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -59,6 +61,7 @@ SELECT
     pool_address,
     pool_name,
     'curve' AS platform,
+    'v1' AS version,
     _call_id AS _id,
     _inserted_timestamp,
     MAX(CASE WHEN token_num = 1 THEN token_address END) AS token0,
@@ -75,7 +78,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -95,6 +98,7 @@ SELECT
     token0,
     token1,
     'fraxswap' AS platform,
+    'v1' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -103,7 +107,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -122,6 +126,7 @@ SELECT
     token0,
     token1,
     'kyberswap-v1' AS platform,
+    'v1-dynamic' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -130,7 +135,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -149,6 +154,7 @@ SELECT
     token0,
     token1,
     'kyberswap-v1' AS platform,
+    'v1-static' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -157,7 +163,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -177,6 +183,7 @@ SELECT
     token0,
     token1,
     'kyberswap-v2' AS platform,
+    'v2' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -185,7 +192,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -204,6 +211,7 @@ SELECT
     token0,
     token1,
     'pangolin' AS platform,
+    'v1' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -212,7 +220,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -231,6 +239,7 @@ SELECT
     token0,
     token1,
     'sushiswap' AS platform,
+    'v1' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -239,7 +248,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -258,6 +267,7 @@ SELECT
     token0,
     token1,
     'trader-joe-v1' AS platform,
+    'v1' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -266,7 +276,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -285,6 +295,7 @@ SELECT
     tokenX AS token0,
     tokenY AS token1,
     'trader-joe-v2' AS platform,
+    'v2' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -293,7 +304,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -313,6 +324,7 @@ SELECT
     token0_address AS token0,
     token1_address AS token1,
     'uniswap-v3' AS platform,
+    'v3' AS version,
     _log_id AS _id,
     _inserted_timestamp
 FROM
@@ -321,7 +333,7 @@ FROM
 WHERE
   _inserted_timestamp >= (
     SELECT
-      MAX(_inserted_timestamp) :: DATE - 1
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
       {{ this }}
   )
@@ -387,6 +399,7 @@ FINAL AS (
         OBJECT_CONSTRUCT('token0',c0.symbol,'token1',c1.symbol) AS symbols,
         OBJECT_CONSTRUCT('token0',c0.decimals,'token1',c1.decimals) AS decimals,
         platform,
+        version,
         _id,
         p._inserted_timestamp
     FROM all_pools_standard p 
@@ -411,6 +424,7 @@ FINAL AS (
         OBJECT_CONSTRUCT('token0',c0.symbol,'token1',c1.symbol) AS symbols,
         OBJECT_CONSTRUCT('token0',c0.decimals,'token1',c1.decimals) AS decimals,
         platform,
+        version,
         _id,
         p._inserted_timestamp
     FROM all_pools_v3 p 
@@ -443,6 +457,7 @@ FINAL AS (
         OBJECT_CONSTRUCT('token0', c0.symbol, 'token1', c1.symbol, 'token2', c2.symbol, 'token3', c3.symbol, 'token4', c4.symbol, 'token5', c5.symbol, 'token6', c6.symbol, 'token7', c7.symbol) AS symbols,
         OBJECT_CONSTRUCT('token0', c0.decimals, 'token1', c1.decimals, 'token2', c2.decimals, 'token3', c3.decimals, 'token4', c4.decimals, 'token5', c5.decimals, 'token6', c6.decimals, 'token7', c7.decimals) AS decimals,
         platform,
+        version,
         _id,
         p._inserted_timestamp
     FROM all_pools_other p
@@ -469,6 +484,7 @@ SELECT
     block_timestamp,
     tx_hash,
     platform,
+    version,
     contract_address,
     pool_address,
     pool_name,

@@ -12,7 +12,7 @@
         FROM
             TABLE(
                 information_schema.external_table_file_registration_history(
-                    start_time => DATEADD('day', -7, CURRENT_TIMESTAMP()),
+                    start_time => DATEADD('day', -3, CURRENT_TIMESTAMP()),
                     table_name => '{{ source( "bronze_streamline", model) }}')
                 ) A
             )
@@ -51,7 +51,8 @@
                     '-32007',
                     '-32008',
                     '-32009',
-                    '-32010'
+                    '-32010',
+                    '-32608'
                 )
             )
 {% endmacro %}
@@ -109,7 +110,8 @@ WHERE
             '-32007',
             '-32008',
             '-32009',
-            '-32010'
+            '-32010',
+            '-32608'
         )
     )
 {% endmacro %}

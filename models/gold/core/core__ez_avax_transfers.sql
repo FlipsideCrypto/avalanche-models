@@ -22,21 +22,8 @@ WITH avax_base AS (
         _call_id,
         input,
         _INSERTED_TIMESTAMP,
-        to_varchar(
-            TO_NUMBER(REPLACE(DATA :value :: STRING, '0x'), REPEAT('X', LENGTH(REPLACE(DATA :value :: STRING, '0x'))))
-        ) AS avax_value_precise_raw,
-        IFF(LENGTH(avax_value_precise_raw) > 18, LEFT(avax_value_precise_raw, LENGTH(avax_value_precise_raw) - 18) || '.' || RIGHT(avax_value_precise_raw, 18), '0.' || LPAD(avax_value_precise_raw, 18, '0')) AS rough_conversion,
-        IFF(
-            POSITION(
-                '.000000000000000000' IN rough_conversion
-            ) > 0,
-            LEFT(rough_conversion, LENGTH(rough_conversion) - 19),
-            REGEXP_REPLACE(
-                rough_conversion,
-                '0*$',
-                ''
-            )
-        ) AS avax_value_precise,
+        avax_value_precise_raw,
+        avax_value_precise,
         tx_position,
         trace_index
     FROM

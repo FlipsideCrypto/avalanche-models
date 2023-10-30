@@ -3,9 +3,9 @@
     incremental_strategy = 'delete+insert',
     unique_key = "block_number",
     cluster_by = ['block_timestamp::DATE'],
-    tags = ['non_realtime','reorg']
+    tags = ['curated','reorg']
 ) }}
---Check and see where and if there are router swaps
+
 WITH pools AS (
 
     SELECT

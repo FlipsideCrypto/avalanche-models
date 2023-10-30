@@ -42,4 +42,4 @@ jobs:
           dbt deps
       - name: Run DBT Jobs
         run: |
-          dbt run -m "polygon_models,tag:curated"
+          dbt run -m "avalanche_models,tag:curated"

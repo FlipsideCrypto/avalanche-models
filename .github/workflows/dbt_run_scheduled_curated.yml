@@ -3,9 +3,8 @@ run-name: dbt_run_scheduled_curated
 
 on:
   workflow_dispatch:
-  schedule:
-    # Runs at minutes 25 and 55" (see https://crontab.guru)
-    - cron: '25,55 * * * *'
+    branches:
+      - "main"
     
 env:
   DBT_PROFILES_DIR: ./

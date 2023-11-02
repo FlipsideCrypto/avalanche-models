@@ -4,8 +4,8 @@ run-name: dbt_test_monthly
 on:
   workflow_dispatch:
   schedule:
-    # Runs "at 4:00 UTC" (see https://crontab.guru)
-    - cron: '0 4 1 * *'
+    # Runs "at 4:00 UTC on 28th of the month" (see https://crontab.guru)
+    - cron: '0 4 28 * *'
     
 env:
   DBT_PROFILES_DIR: ./

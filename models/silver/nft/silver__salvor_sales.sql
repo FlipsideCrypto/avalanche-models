@@ -75,11 +75,9 @@ payout_raw AS (
             40
         ) AS nft_owner,
         -- payout receiver
-        TRY_TO_NUMBER(
-            utils.udf_hex_to_int(
-                segmented_data [0] :: STRING
-            )
-        ) AS sale_amount_raw,
+        utils.udf_hex_to_int(
+            segmented_data [0] :: STRING
+        ) :: INT AS sale_amount_raw,
         CONCAT(
             tx_hash,
             '-',
@@ -120,16 +118,12 @@ commission_raw AS (
             25,
             40
         ) AS nft_owner,
-        TRY_TO_NUMBER(
-            utils.udf_hex_to_int(
-                segmented_data [1] :: STRING
-            )
-        ) AS platform_fee_raw,
-        TRY_TO_NUMBER(
-            utils.udf_hex_to_int(
-                segmented_data [2] :: STRING
-            )
-        ) AS total_price_raw,
+        utils.udf_hex_to_int(
+            segmented_data [1] :: STRING
+        ) :: INT AS platform_fee_raw,
+        utils.udf_hex_to_int(
+            segmented_data [2] :: STRING
+        ) :: INT AS total_price_raw,
         segmented_data
     FROM
         raw_logs
@@ -161,7 +155,7 @@ royalty_raw AS (
         ) AS nft_owner,
         utils.udf_hex_to_int(
             segmented_data [1] :: STRING
-        ) AS creator_fee_raw_,
+        ) :: INT AS creator_fee_raw_,
         CONCAT(
             tx_hash,
             '-',

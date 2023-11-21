@@ -64,7 +64,7 @@ SELECT
     COALESCE (
         blocks_id,
         {{ dbt_utils.generate_surrogate_key(
-            ['a.block_number']
+            ['block_number']
         ) }}
     ) AS fact_blocks_id,
     COALESCE(

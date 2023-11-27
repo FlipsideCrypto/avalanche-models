@@ -26,8 +26,6 @@ models:
         description: '{{ doc("avax_transfer_from_address") }}'
       - name: TO_ADDRESS
         description: '{{ doc("avax_transfer_to_address") }}'
-      - name: SYMBOL
-        description: 'Native asset symbol, e.g. `AVAX`'
       - name: AMOUNT
         description: '{{ doc("avax_amount") }}'
       - name: AMOUNT_PRECISE_RAW

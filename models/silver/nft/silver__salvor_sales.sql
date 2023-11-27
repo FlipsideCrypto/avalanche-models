@@ -283,6 +283,7 @@ SELECT
     block_timestamp,
     tx_hash,
     payout_event_index,
+    payout_event_index AS event_index,
     CASE
         WHEN origin_from_address = nft_owner THEN 'bid_won'
         WHEN auction_contract_address IS NOT NULL THEN 'bid_won'

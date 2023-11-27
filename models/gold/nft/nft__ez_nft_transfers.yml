@@ -12,6 +12,8 @@ models:
         description: '{{ doc("nft_tx_hash") }}'
       - name: EVENT_INDEX
         description: '{{ doc("nft_event_index") }}'
+      - name: INTRA_EVENT_INDEX
+        description: '{{ doc("nft_intra_event_index") }}'
       - name: EVENT_TYPE
         description: '{{ doc("nft_event_type") }}'
       - name: NFT_ADDRESS

@@ -12,6 +12,7 @@ SELECT
     block_number,
     block_timestamp,
     tx_hash,
+    event_index,
     event_type,
     platform_address,
     platform_name,
@@ -41,7 +42,7 @@ SELECT
     COALESCE (
         complete_nft_sales_id,
         {{ dbt_utils.generate_surrogate_key(
-            ['block_number','platform_name','platform_exchange_version']
+            ['tx_hash', 'event_index', 'nft_address','tokenId','platform_exchange_version']
         ) }}
     ) AS ez_nft_sales_id,
     COALESCE(

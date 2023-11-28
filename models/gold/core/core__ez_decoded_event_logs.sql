@@ -28,7 +28,7 @@ SELECT
         ) }}
     ) AS ez_decoded_event_logs_id,
     GREATEST(COALESCE(l.inserted_timestamp, '2000-01-01'), COALESCE(C.inserted_timestamp, '2000-01-01')) AS inserted_timestamp,
-    GREATEST(COALESCE(l.modified_timestamp, '2000-01-01'), COALESCE(C.modified_timestamp, '2000-01-01')) AS modified_timestamp,
+    GREATEST(COALESCE(l.modified_timestamp, '2000-01-01'), COALESCE(C.modified_timestamp, '2000-01-01')) AS modified_timestamp
 FROM
     {{ ref('silver__decoded_logs') }}
     l

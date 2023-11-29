@@ -1,7 +1,7 @@
 version: 2
 models:
   - name: core__ez_avax_transfers
-    description: '{{ doc("avax_ez_transfer_table_doc") }}'
+    description: 'Deprecating soon! Migrate to `core.ez_native_transfers` by Jan. 31 2024'
       
     columns:
       - name: BLOCK_NUMBER

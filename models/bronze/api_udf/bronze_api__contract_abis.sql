@@ -46,7 +46,7 @@ row_nos AS (
 ),
 batched AS ({% for item in range(101) %}
 SELECT
-    rn.contract_address, live.udf_api('GET', CONCAT('https://api.snowtrace.io/api?module=contract&action=getabi&address=', contract_address, '&apikey={avax_key}'),{ 'User-Agent': 'FlipsideStreamline' },{}, 'EXPLORER') AS abi_data, SYSDATE() AS _inserted_timestamp
+    rn.contract_address, live.udf_api('GET', CONCAT('https://api.snowtrace.io/api?module=contract&action=getabi&address=', contract_address, '&apikey={avax_key}'),{ 'User-Agent': 'FlipsideStreamline' },{},'EXPLORER') AS abi_data, SYSDATE() AS _inserted_timestamp
 FROM
     row_nos rn
 WHERE

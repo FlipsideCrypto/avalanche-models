@@ -29,8 +29,11 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 {% endif %}
-)
 
+qualify(ROW_NUMBER() over(PARTITION BY to_address
+ORDER BY
+    block_timestamp ASC)) = 1
+)
 SELECT
     tx_hash,
     block_number,
@@ -38,7 +41,5 @@ SELECT
     deployer_address,
     contract_address AS pool_address,
     _inserted_timestamp
-FROM contract_deployments
-qualify(ROW_NUMBER() over(PARTITION BY pool_address
-ORDER BY
-    _inserted_timestamp DESC)) = 1
+FROM
+    contract_deployments

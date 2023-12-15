@@ -41,3 +41,6 @@ SELECT
     _inserted_timestamp
 FROM
     contract_deployments
+qualify(ROW_NUMBER() over(PARTITION BY pool_address
+ORDER BY
+    _inserted_timestamp DESC)) = 1

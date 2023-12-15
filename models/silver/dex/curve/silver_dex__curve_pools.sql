@@ -36,12 +36,6 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
 )
-AND to_address NOT IN (
-    SELECT
-        DISTINCT pool_address
-    FROM
-        {{ this }}
-)
 {% endif %}
 QUALIFY(ROW_NUMBER() OVER(PARTITION BY to_address ORDER BY block_timestamp ASC)) = 1
 ),

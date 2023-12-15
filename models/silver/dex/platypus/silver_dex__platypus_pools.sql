@@ -28,17 +28,7 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
 )
-AND to_address NOT IN (
-    SELECT
-        DISTINCT pool_address
-    FROM
-        {{ this }}
-)
 {% endif %}
-
-qualify(ROW_NUMBER() over(PARTITION BY to_address
-ORDER BY
-    block_timestamp ASC)) = 1
 )
 
 SELECT
@@ -49,3 +39,6 @@ SELECT
     contract_address AS pool_address,
     _inserted_timestamp
 FROM contract_deployments
+qualify(ROW_NUMBER() over(PARTITION BY pool_address
+ORDER BY
+    _inserted_timestamp DESC)) = 1

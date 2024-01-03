@@ -18,7 +18,7 @@ WITH base_contracts AS (
     FROM
         {{ ref('silver__traces') }}
     WHERE
-        from_address = '0x55bdb4164d28fbaf0898e0ef14a589ac09ac9970'
+        from_address = LOWER('0x808d7c71ad2ba3FA531b068a2417C63106BC0949')
         AND TYPE ILIKE 'create%'
         AND tx_status ILIKE 'success'
 
@@ -86,7 +86,7 @@ contract_reads AS (
             'node_mapping'
         ) }}
         ON 1 = 1
-        AND chain = 'arbitrum'
+        AND chain = 'avalanche'
 ),
 reads_flat AS (
     SELECT

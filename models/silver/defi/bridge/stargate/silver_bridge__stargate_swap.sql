@@ -88,7 +88,7 @@ SELECT
     event_name,
     event_removed,
     tx_status,
-    '0x352d8275aae3e0c2404d9f68f6cee084b5beb3dd' AS bridge_address,
+    LOWER('0x9d1B1669c73b033DFe47ae5a0164Ab96df25B944') AS bridge_address,
     NAME AS platform,
     from_address AS sender,
     from_address AS receiver,

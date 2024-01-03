@@ -26,20 +26,8 @@ WITH base_evt AS (
         TRY_TO_NUMBER(
             decoded_flat :"chainId" :: STRING
         ) AS chainId,
-        TRY_TO_TIMESTAMP(
-            decoded_flat :"deadline" :: STRING
-        ) AS deadline,
-        TRY_TO_NUMBER(
-            decoded_flat :"minDy" :: STRING
-        ) AS minDy,
         decoded_flat :"to" :: STRING AS to_address,
         decoded_flat :"token" :: STRING AS token,
-        TRY_TO_NUMBER(
-            decoded_flat :"tokenIndexFrom" :: STRING
-        ) AS tokenIndexFrom,
-        TRY_TO_NUMBER(
-            decoded_flat :"tokenIndexTo" :: STRING
-        ) AS tokenIndexTo,
         decoded_flat,
         event_removed,
         tx_status,
@@ -48,8 +36,16 @@ WITH base_evt AS (
     FROM
         {{ ref('silver__decoded_logs') }}
     WHERE
-        topics [0] :: STRING = '0x91f25e9be0134ec851830e0e76dc71e06f9dade75a9b84e9524071dbbc319425'
-        AND contract_address = '0x6f4e8eba4d337f874ab57478acc2cb5bacdc19c9'
+        topics [0] :: STRING IN (
+            '0xdc5bad4651c5fbe9977a696aadc65996c468cde1448dd468ec0d83bf61c4b57c',
+            --redeem
+            '0xda5273705dbef4bf1b902a131c2eac086b7e1476a8ab0cb4da08af1fe1bd8e3b' --deposit
+        )
+        AND contract_address IN (
+            '0xc4133e23c783af2c732c06677b98b905b5c65c46',
+            '0xc05e61d0e7a63d27546389b7ad62fdff5a91aace'
+        )
+        AND origin_to_address IS NOT NULL
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -74,16 +70,12 @@ SELECT
     tx_status,
     contract_address AS bridge_address,
     NAME AS platform,
+    amount,
     origin_from_address AS sender,
     to_address AS receiver,
     receiver AS destination_chain_receiver,
-    amount,
     chainId AS destination_chain_id,
     token AS token_address,
-    deadline,
-    minDy AS min_dy,
-    tokenIndexFrom AS token_index_from,
-    tokenIndexTo AS token_index_to,
     _log_id,
     _inserted_timestamp
 FROM

@@ -6,44 +6,7 @@
     tags = ['curated','reorg']
 ) }}
 
-WITH across AS (
-
-    SELECT
-        block_number,
-        block_timestamp,
-        origin_from_address,
-        origin_to_address,
-        origin_function_signature,
-        tx_hash,
-        event_index,
-        bridge_address,
-        event_name,
-        platform,
-        'v1' AS version,
-        sender,
-        receiver,
-        destination_chain_receiver,
-        destination_chain_id :: STRING AS destination_chain_id,
-        NULL AS destination_chain,
-        token_address,
-        NULL AS token_symbol,
-        amount AS amount_unadj,
-        _log_id AS _id,
-        _inserted_timestamp
-    FROM
-        {{ ref('silver_bridge__across_fundsdeposited') }}
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp) - INTERVAL '36 hours'
-        FROM
-            {{ this }}
-    )
-{% endif %}
-),
-axelar AS (
+WITH axelar AS (
     SELECT
         block_number,
         block_timestamp,
@@ -104,42 +67,6 @@ celer_cbridge AS (
         _inserted_timestamp
     FROM
         {{ ref('silver_bridge__celer_cbridge_send') }}
-
-{% if is_incremental() %}
-WHERE
-    _inserted_timestamp >= (
-        SELECT
-            MAX(_inserted_timestamp) - INTERVAL '36 hours'
-        FROM
-            {{ this }}
-    )
-{% endif %}
-),
-hop AS (
-    SELECT
-        block_number,
-        block_timestamp,
-        origin_from_address,
-        origin_to_address,
-        origin_function_signature,
-        tx_hash,
-        event_index,
-        bridge_address,
-        event_name,
-        platform,
-        'v1' AS version,
-        sender,
-        receiver,
-        destination_chain_receiver,
-        destination_chain_id :: STRING AS destination_chain_id,
-        NULL AS destination_chain,
-        token_address,
-        NULL AS token_symbol,
-        amount AS amount_unadj,
-        _log_id AS _id,
-        _inserted_timestamp
-    FROM
-        {{ ref('silver_bridge__hop_transfersent') }}
 
 {% if is_incremental() %}
 WHERE
@@ -295,7 +222,7 @@ WHERE
     )
 {% endif %}
 ),
-synapse_tr AS (
+synapse_tb AS (
     SELECT
         block_number,
         block_timestamp,
@@ -307,7 +234,7 @@ synapse_tr AS (
         bridge_address,
         event_name,
         platform,
-        'v1-td' AS version,
+        'v1-tb' AS version,
         sender,
         receiver,
         destination_chain_receiver,
@@ -319,7 +246,7 @@ synapse_tr AS (
         _log_id AS _id,
         _inserted_timestamp
     FROM
-        {{ ref('silver_bridge__synapse_tokenredeem') }}
+        {{ ref('silver_bridge__synapse_token_bridge') }}
 
 {% if is_incremental() %}
 WHERE
@@ -331,7 +258,7 @@ WHERE
     )
 {% endif %}
 ),
-synapse_trs AS (
+synapse_tbs AS (
     SELECT
         block_number,
         block_timestamp,
@@ -343,7 +270,7 @@ synapse_trs AS (
         bridge_address,
         event_name,
         platform,
-        'v1-tds' AS version,
+        'v1-tbs' AS version,
         sender,
         receiver,
         destination_chain_receiver,
@@ -355,7 +282,7 @@ synapse_trs AS (
         _log_id AS _id,
         _inserted_timestamp
     FROM
-        {{ ref('silver_bridge__synapse_tokenredeemandswap') }}
+        {{ ref('silver_bridge__synapse_tokenbridgeandswap') }}
 
 {% if is_incremental() %}
 WHERE
@@ -407,11 +334,6 @@ all_protocols AS (
     SELECT
         *
     FROM
-        across
-    UNION ALL
-    SELECT
-        *
-    FROM
         axelar
     UNION ALL
     SELECT
@@ -447,12 +369,12 @@ all_protocols AS (
     SELECT
         *
     FROM
-        synapse_tr
+        synapse_tb
     UNION ALL
     SELECT
         *
     FROM
-        synapse_trs
+        synapse_tbs
     UNION ALL
     SELECT
         *

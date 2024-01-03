@@ -60,7 +60,7 @@ WITH token_transfers AS (
         AND tr.tx_hash = tx.tx_hash
     WHERE
         tr.from_address <> '0x0000000000000000000000000000000000000000'
-        AND tr.to_address = '0x0b2402144bb366a632d14b83f244d2e0e21bd39c'
+        AND tr.to_address = LOWER('0x0e082F06FF657D94310cB8cE8B0D9a04541d8052')
         AND tr.origin_function_signature = '0x0f5287b0' -- tokenTransfer
         AND destination_chain_id <> 0
 
@@ -122,7 +122,7 @@ native_transfers AS (
         ON et.block_number = tx.block_number
         AND et.tx_hash = tx.tx_hash
     WHERE
-        et.to_address = '0x0b2402144bb366a632d14b83f244d2e0e21bd39c'
+        et.to_address = LOWER('0x0e082F06FF657D94310cB8cE8B0D9a04541d8052')
         AND tx.origin_function_signature = '0x9981509f' -- wrapAndTransfer
         AND destination_chain_id <> 0
 
@@ -173,7 +173,7 @@ all_transfers AS (
         to_address AS receiver,
         amount_precise_raw AS amount_unadj,
         destination_chain_id,
-        '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' AS token_address,
+        LOWER('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7') AS token_address,
         destination_recipient_address,
         {{ dbt_utils.generate_surrogate_key(
             ['_call_id']

@@ -46,8 +46,9 @@ WITH base_evt AS (
     WHERE
         topics [0] :: STRING = '0x89d8051e597ab4178a863a5190407b98abfeff406aa8db90c59af76612e58f01'
         AND contract_address IN (
-            '0xdd90e5e87a2081dcf0391920868ebc2ffb81a1af',
-            '0x1619de6b6b20ed217a58d00f37b9d47c7663feca'
+            '0xbb7684cc5408f4dd0921e5c2cadd547b8f1ad573',
+            '0x9b36f165bab9ebe611d491180418d8de4b8f3a1f',
+            '0xef3c714c9425a8f3697a9c969dc1af30ba82e5d4'
         )
 
 {% if is_incremental() %}

@@ -5,23 +5,23 @@ models:
 
     columns:
       - name: BLOCK_NUMBER
-        description: '{{ doc("arb_block_number") }}'
+        description: '{{ doc("avax_block_number") }}'
       - name: BLOCK_TIMESTAMP
-        description: '{{ doc("arb_block_timestamp") }}'
+        description: '{{ doc("avax_block_timestamp") }}'
       - name: TX_HASH
-        description: '{{ doc("arb_logs_tx_hash") }}'
+        description: '{{ doc("avax_logs_tx_hash") }}'
       - name: CONTRACT_ADDRESS
-        description: '{{ doc("arb_logs_contract_address") }}'
+        description: '{{ doc("avax_logs_contract_address") }}'
       - name: EVENT_NAME
-        description: '{{ doc("arb_event_name") }}'
+        description: '{{ doc("avax_event_name") }}'
       - name: EVENT_INDEX
-        description: '{{ doc("arb_event_index") }}'
+        description: '{{ doc("avax_event_index") }}'
       - name: ORIGIN_FUNCTION_SIGNATURE
         description: '{{ doc("nft_origin_sig") }}'
       - name: ORIGIN_FROM_ADDRESS
         description: '{{ doc("evm_bridge_origin_from") }}'
       - name: ORIGIN_TO_ADDRESS
-        description: '{{ doc("arb_origin_from") }}'
+        description: '{{ doc("avax_origin_from") }}'
       - name: PLATFORM
         description: '{{ doc("evm_bridge_platform") }}'
       - name: SENDER

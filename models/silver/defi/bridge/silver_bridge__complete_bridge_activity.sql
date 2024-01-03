@@ -344,11 +344,6 @@ all_protocols AS (
     SELECT
         *
     FROM
-        hop
-    UNION ALL
-    SELECT
-        *
-    FROM
         meson
     UNION ALL
     SELECT

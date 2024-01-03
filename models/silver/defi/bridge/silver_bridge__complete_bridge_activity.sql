@@ -6,7 +6,42 @@
     tags = ['curated','reorg']
 ) }}
 
-WITH axelar AS (
+WITH allbridge AS (
+    SELECT
+        block_number,
+        block_timestamp,
+        origin_from_address,
+        origin_to_address,
+        origin_function_signature,
+        tx_hash,
+        event_index,
+        bridge_address,
+        event_name,
+        platform,
+        'v1' AS version,
+        sender,
+        receiver,
+        destination_chain_receiver,
+        NULL AS destination_chain_id,
+        destination_chain,
+        token_address,
+        amount AS amount_unadj,
+        _log_id AS _id,
+        _inserted_timestamp
+    FROM
+        {{ ref('silver_bridge__allbridge_sent') }}
+
+{% if is_incremental() %}
+WHERE
+    _inserted_timestamp >= (
+        SELECT
+            MAX(_inserted_timestamp) - INTERVAL '36 hours'
+        FROM
+            {{ this }}
+    )
+{% endif %}
+),
+axelar AS (
     SELECT
         block_number,
         block_timestamp,
@@ -331,6 +366,11 @@ WHERE
 {% endif %}
 ),
 all_protocols AS (
+    SELECT 
+        *
+    FROM 
+        allbridge
+    UNION ALL
     SELECT
         *
     FROM

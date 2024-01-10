@@ -1,15 +1,8 @@
-{{ config(
-    materialized = 'incremental',
-    incremental_strategy = 'delete+insert',
-    unique_key = 'block_number',
-    cluster_by = ['block_timestamp::DATE'],
-    tags = ['curated','reorg']
-) }}
-
 WITH pools AS (
 
     SELECT
-        pool_address
+        pool_address,
+        pool_name
     FROM
         {{ ref('silver_dex__hashflow_pools') }}
 ),
@@ -23,6 +16,7 @@ router_swaps_base AS (
         origin_to_address,
         l.event_index,
         l.contract_address,
+        p.pool_name,
         regexp_substr_all(SUBSTR(l.data, 3, len(l.data)), '.{64}') AS l_segmented_data,
         CONCAT(
             '0x',
@@ -87,6 +81,7 @@ swaps_base AS (
         origin_to_address,
         l.event_index,
         l.contract_address,
+        pool_name,
         regexp_substr_all(SUBSTR(l.data, 3, len(l.data)), '.{64}') AS l_segmented_data,
         CONCAT(
             '0x',
@@ -151,6 +146,7 @@ FINAL AS (
         origin_to_address,
         event_index,
         contract_address,
+        pool_name,
         origin_from_address AS sender,
         account_address AS tx_to,
         tokenIn AS token_in,
@@ -173,6 +169,7 @@ FINAL AS (
         origin_to_address,
         event_index,
         contract_address,
+        pool_name,
         origin_from_address AS sender,
         account_address AS tx_to,
         tokenIn AS token_in,
@@ -195,6 +192,7 @@ SELECT
     origin_to_address,
     event_index,
     contract_address,
+    pool_name,
     sender,
     tx_to,
     CASE

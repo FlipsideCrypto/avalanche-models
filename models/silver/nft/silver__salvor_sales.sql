@@ -15,7 +15,8 @@ WITH raw_logs AS (
             WHEN topics [0] :: STRING = '0x9634876a7ae7fcd98f91878964895038e3c5291ed5176557fe818e6a7edc6049' THEN 'CommissionSent'
             WHEN topics [0] :: STRING = '0x637d7d42dbff8be0a38276d141ac56dcd3235fb305480f6568b03e329c50ea62' THEN 'RoyaltyReceived'
             WHEN topics [0] :: STRING = '0xb01e54e29f65d01d12cc9c68660a6a04cf31f388669ab29d964abf266ca0419a' THEN 'PayoutCompleted'
-            ELSE NULL
+            WHEN topics [0] :: STRING = '0x15d4649ef85f6d7a1e2068dd3d0c51d49d0257fa627d1e46abe3e1b3458d8b00' THEN 'AuctionSettled'
+            WHEN topics [0] :: STRING = '0x2f258d8ad9499ea044033d10f2d28e770de5366a12c487afee76b4083e8edfb9' THEN 'ShareIncome'
         END AS topics_event_name
     FROM
         {{ ref('silver__logs') }}
@@ -26,6 +27,13 @@ WITH raw_logs AS (
             '0xa5128fbbd52a6572a8dad43b578bb3d693772447',
             -- english
             '0x1425d8a410d1bf8bfcf983048070a8ec2fd634d4' -- dutch
+        )
+        AND topics [0] :: STRING IN (
+            '0x9634876a7ae7fcd98f91878964895038e3c5291ed5176557fe818e6a7edc6049',
+            '0x637d7d42dbff8be0a38276d141ac56dcd3235fb305480f6568b03e329c50ea62',
+            '0xb01e54e29f65d01d12cc9c68660a6a04cf31f388669ab29d964abf266ca0419a',
+            '0x15d4649ef85f6d7a1e2068dd3d0c51d49d0257fa627d1e46abe3e1b3458d8b00',
+            '0x2f258d8ad9499ea044033d10f2d28e770de5366a12c487afee76b4083e8edfb9'
         )
         AND tx_status = 'SUCCESS'
 
@@ -68,7 +76,7 @@ payout_raw AS (
         ) AS nft_address,
         utils.udf_hex_to_int(
             topics [2] :: STRING
-        ) AS tokenid,
+        ) :: STRING AS tokenid,
         '0x' || SUBSTR(
             topics [3] :: STRING,
             27,
@@ -101,6 +109,95 @@ payout_raw AS (
         topics_event_name = 'PayoutCompleted'
         AND contract_address = '0xd106ec6e81e9b7f5bd33a6091a3c3e45b6183dc3'
 ),
+auction_settled_raw AS (
+    SELECT
+        tx_hash,
+        event_index,
+        contract_address,
+        topics_event_name,
+        topics,
+        segmented_data,
+        '0x' || SUBSTR(
+            topics [1] :: STRING,
+            27
+        ) :: STRING AS nft_address,
+        utils.udf_hex_to_int(
+            topics [2] :: STRING
+        ) :: STRING AS tokenid,
+        '0x' || SUBSTR(
+            topics [3] :: STRING,
+            27
+        ) AS nft_owner,
+        '0x' || SUBSTR(
+            segmented_data [0] :: STRING,
+            25
+        ) AS highest_bidder,
+        utils.udf_hex_to_int(
+            segmented_data [1] :: STRING
+        ) :: INT AS highest_bid,
+        CONCAT(
+            tx_hash,
+            '-',
+            nft_address,
+            '-',
+            tokenid,
+            '-',
+            nft_owner
+        ) AS tx_identifier
+    FROM
+        raw_logs
+    WHERE
+        topics_event_name = 'AuctionSettled'
+        AND contract_address = '0xa5128fbbd52a6572a8dad43b578bb3d693772447'
+),
+share_income_raw AS (
+    SELECT
+        tx_hash,
+        event_index,
+        topics,
+        segmented_data,
+        '0x' || SUBSTR(
+            topics [1] :: STRING,
+            27
+        ) AS nft_address,
+        utils.udf_hex_to_int(
+            topics [2] :: STRING
+        ) :: STRING AS tokenid,
+        '0x' || SUBSTR(
+            topics [3] :: STRING,
+            27
+        ) AS share_income_receiver,
+        '0x' || SUBSTR(
+            segmented_data [0] :: STRING,
+            25
+        ) AS nft_owner,
+        utils.udf_hex_to_int(
+            segmented_data [1] :: STRING
+        ) :: INT AS share_amount,
+        CONCAT(
+            tx_hash,
+            '-',
+            nft_address,
+            '-',
+            tokenid,
+            '-',
+            nft_owner
+        ) AS tx_identifier
+    FROM
+        raw_logs
+    WHERE
+        topics_event_name = 'ShareIncome'
+        AND contract_address = LOWER('0xd106ec6e81E9B7F5Bd33A6091A3c3e45B6183dc3')
+),
+share_income_agg AS (
+    SELECT
+        tx_identifier,
+        SUM(share_amount) AS total_share_amount
+    FROM
+        share_income_raw
+    GROUP BY
+        ALL
+),
 commission_raw AS (
     SELECT
         tx_hash,
@@ -112,7 +209,7 @@ commission_raw AS (
         ) AS nft_address,
         utils.udf_hex_to_int(
             topics [2] :: STRING
-        ) AS tokenid,
+        ) :: STRING AS tokenid,
         '0x' || SUBSTR(
             segmented_data [0] :: STRING,
             25,
@@ -142,7 +239,7 @@ royalty_raw AS (
         ) AS nft_address,
         utils.udf_hex_to_int(
             topics [2] :: STRING
-        ) AS tokenid,
+        ) :: STRING AS tokenid,
         '0x' || SUBSTR(
             topics [3] :: STRING,
             27,
@@ -204,6 +301,14 @@ base AS (
             creator_fee_raw,
             0
         ) AS creator_fee_raw,
+        COALESCE(
+            highest_bid,
+            0
+        ) AS total_bid_raw,
+        COALESCE(
+            total_share_amount,
+            0
+        ) AS total_share_raw,
         block_number,
         block_timestamp,
         origin_from_address,
@@ -220,6 +325,11 @@ base AS (
             nft_owner
         )
         LEFT JOIN royalty_agg USING (tx_identifier)
+        LEFT JOIN share_income_agg USING (tx_identifier)
+        LEFT JOIN auction_settled_raw USING (
+            tx_hash,
+            tx_identifier
+        )
         LEFT JOIN auction_tag USING (tx_hash)
 ),
 nft_transfers AS (
@@ -305,8 +415,20 @@ SELECT
     sale_amount_raw,
     platform_fee_raw,
     creator_fee_raw,
+    total_bid_raw,
+    total_share_raw,
     platform_fee_raw + creator_fee_raw AS total_fees_raw,
-    total_fees_raw + sale_amount_raw AS total_price_raw,
+    CASE
+        WHEN auction_label IS NOT NULL THEN total_bid_raw
+        WHEN auction_label IS NULL
+        AND sale_amount_raw = 0 THEN (
+            total_share_raw + total_fees_raw
+        )
+        WHEN auction_label IS NULL
+        AND sale_amount_raw > 0 THEN (
+            sale_amount_raw + total_fees_raw
+        )
+    END AS total_price_raw,
     'AVAX' AS currency_address,
     origin_from_address,
     origin_to_address,

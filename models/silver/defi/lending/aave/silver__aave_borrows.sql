@@ -103,7 +103,7 @@ SELECT
     aave_version AS platform,
     atoken_meta.underlying_symbol AS symbol,
     atoken_meta.underlying_decimals AS underlying_decimals,
-    'gnosis' AS blockchain,
+    'avalanche' AS blockchain,
     _log_id,
     _inserted_timestamp
 FROM

@@ -25,7 +25,7 @@ WITH aave AS (
     payer AS payer_address,
     borrower,
     'Aave V3' AS platform,
-    'gnosis' AS blockchain,
+    'avalanche' AS blockchain,
     _LOG_ID,
     _INSERTED_TIMESTAMP
   FROM

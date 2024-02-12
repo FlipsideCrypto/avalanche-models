@@ -28,7 +28,7 @@ WITH aave AS (
     debt_asset,
     debt_token_symbol AS debt_asset_symbol,
     'Aave V3' AS platform,
-    'gnosis' AS blockchain,
+    'avalanche' AS blockchain,
     _LOG_ID,
     _INSERTED_TIMESTAMP
   FROM

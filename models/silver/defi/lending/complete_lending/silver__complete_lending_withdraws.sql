@@ -24,7 +24,7 @@ WITH aave AS (
         amount,
         depositor_address,
         'Aave V3' AS platform,
-        'gnosis' AS blockchain,
+        'avalanche' AS blockchain,
         _LOG_ID,
         _INSERTED_TIMESTAMP
     FROM

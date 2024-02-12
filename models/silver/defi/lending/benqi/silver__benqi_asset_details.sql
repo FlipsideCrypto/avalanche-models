@@ -71,7 +71,10 @@ contract_pull AS (
         token_name,
         token_symbol,
         token_decimals,
-        t.underlying_asset,
+        CASE 
+            WHEN TOKEN_NAME = 'Benqi AVAX' THEN '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' 
+            ELSE t.underlying_asset
+        END AS underlying_asset,
         l._inserted_timestamp,
         l._log_id
     FROM

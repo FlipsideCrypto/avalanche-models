@@ -46,9 +46,6 @@ SELECT
     COALESCE(
         modified_timestamp,
         '2000-01-01'
-    ) AS modified_timestamp,
-    VALUE AS avax_value,
-    value_precise_raw AS avax_value_precise_raw,
-    value_precise AS avax_value_precise
+    ) AS modified_timestamp
 FROM
     {{ ref('silver__transactions') }}

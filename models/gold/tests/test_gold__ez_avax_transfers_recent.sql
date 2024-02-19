@@ -17,7 +17,7 @@ WITH last_3_days AS (
 SELECT
     *
 FROM
-    {{ ref('core__ez_avax_transfers') }}
+    {{ ref('core__ez_native_transfers') }}
 WHERE
     block_number >= (
         SELECT

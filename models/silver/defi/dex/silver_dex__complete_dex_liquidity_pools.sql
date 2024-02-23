@@ -361,6 +361,32 @@ WHERE
   )
 {% endif %}
 ),
+univ2 AS (
+SELECT
+    block_number,
+    block_timestamp,
+    tx_hash,
+    contract_address,
+    pool_address,
+    NULL AS pool_name,
+    token0,
+    token1,
+    'uniswap-v2' AS platform,
+    'v2' AS version,
+    _log_id AS _id,
+    _inserted_timestamp
+FROM
+    {{ ref('silver_dex__univ2_pools') }}
+{% if is_incremental() %}
+WHERE
+  _inserted_timestamp >= (
+    SELECT
+      MAX(_inserted_timestamp) - INTERVAL '12 hours'
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
 all_pools_standard AS (
   SELECT
     *
@@ -386,6 +412,11 @@ all_pools_standard AS (
     *
   FROM
     sushi
+  UNION ALL
+  SELECT
+    *
+  FROM
+    univ2
   UNION ALL
   SELECT
     *

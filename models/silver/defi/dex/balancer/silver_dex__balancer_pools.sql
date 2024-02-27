@@ -127,7 +127,7 @@ build_rpc_requests AS (
 pool_token_reads AS ({% for item in range(10) %}
     (
 SELECT
-    live.udf_api('POST', CONCAT('{service}', '/', '{Authentication}'),{}, batch_rpc_request, 'Vault/prod/avalanche/quicknode/mainnet') AS read_output, SYSDATE() AS _inserted_timestamp
+    live.udf_api('POST', CONCAT('{service}', '/', '{Authentication}', '/ext/bc/C/rpc'),{}, batch_rpc_request, 'Vault/prod/avalanche/quicknode/mainnet') AS read_output, SYSDATE() AS _inserted_timestamp
 FROM
     (
 SELECT

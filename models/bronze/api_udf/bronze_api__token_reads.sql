@@ -82,7 +82,8 @@ node_call AS (
             CONCAT(
                 '{service}',
                 '/',
-                '{Authentication}'
+                '{Authentication}',
+                '/ext/bc/C/rpc'
             ),{},
             batch_rpc_request,
             'Vault/prod/avalanche/quicknode/mainnet'

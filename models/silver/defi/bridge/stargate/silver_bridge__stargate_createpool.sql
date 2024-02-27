@@ -79,7 +79,8 @@ contract_reads AS (
             CONCAT(
                 '{service}',
                 '/',
-                '{Authentication}'
+                '{Authentication}',
+                '/ext/bc/C/rpc'
             ),{},
             rpc_request,
             'Vault/prod/avalanche/quicknode/mainnet'

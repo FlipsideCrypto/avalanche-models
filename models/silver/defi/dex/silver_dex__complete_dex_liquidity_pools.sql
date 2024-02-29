@@ -39,7 +39,7 @@ balancer AS (
   FROM
     {{ ref('silver_dex__balancer_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'balancer' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -104,7 +104,7 @@ curve AS (
   FROM
     {{ ref('silver_dex__curve_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'curve' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -133,7 +133,7 @@ frax AS (
   FROM
     {{ ref('silver_dex__fraxswap_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'frax' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -160,7 +160,7 @@ kyberswap_v1_dynamic AS (
   FROM
     {{ ref('silver_dex__kyberswap_v1_dynamic_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'kyberswap_v1_dynamic' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -187,7 +187,7 @@ kyberswap_v1_static AS (
   FROM
     {{ ref('silver_dex__kyberswap_v1_static_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'kyberswap_v1_static' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -215,7 +215,7 @@ kyberswap_v2_elastic AS (
   FROM
     {{ ref('silver_dex__kyberswap_v2_elastic_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'kyberswap_v2_elastic' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -242,7 +242,7 @@ pangolin AS (
   FROM
     {{ ref('silver_dex__pangolin_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'pangolin' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -269,7 +269,7 @@ sushi AS (
   FROM
     {{ ref('silver_dex__sushi_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'sushi' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -296,7 +296,7 @@ trader_joe_v1 AS (
   FROM
     {{ ref('silver_dex__trader_joe_v1_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'trader_joe_v1' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -323,7 +323,7 @@ trader_joe_v2 AS (
   FROM
     {{ ref('silver_dex__trader_joe_v2_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'trader_joe_v2' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -351,7 +351,7 @@ uni_v3 AS (
   FROM
     {{ ref('silver_dex__univ3_pools') }}
 
-{% if is_incremental() %}
+{% if is_incremental() and 'uni_v3' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -377,7 +377,8 @@ SELECT
     _inserted_timestamp
 FROM
     {{ ref('silver_dex__univ2_pools') }}
-{% if is_incremental() %}
+    
+{% if is_incremental() and 'univ2' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT

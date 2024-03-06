@@ -361,7 +361,7 @@ WHERE
   )
 {% endif %}
 ),
-univ2 AS (
+uni_v2 AS (
 SELECT
     block_number,
     block_timestamp,
@@ -377,8 +377,8 @@ SELECT
     _inserted_timestamp
 FROM
     {{ ref('silver_dex__univ2_pools') }}
-    
-{% if is_incremental() and 'univ2' not in var('HEAL_CURATED_MODEL') %}
+
+{% if is_incremental() and 'uni_v2' not in var('HEAL_CURATED_MODEL') %}
 WHERE
   _inserted_timestamp >= (
     SELECT
@@ -417,7 +417,7 @@ all_pools_standard AS (
   SELECT
     *
   FROM
-    univ2
+    uni_v2
   UNION ALL
   SELECT
     *

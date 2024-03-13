@@ -32,7 +32,7 @@ There is more information on how to use dbt docs in the last section of this doc
 
 **Convenience Tables:**
 - [ez_decoded_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_decoded_event_logs)
-- [ez_avax_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_avax_transfers)
+- [ez_native_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_native_transfers)
 - [ez_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_token_transfers)
 
 ### Price Tables (avalanche.price)

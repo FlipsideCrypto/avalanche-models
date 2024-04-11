@@ -32,11 +32,11 @@ WITH base_data AS (
     FROM
 
 {% if is_incremental() %}
-{{ ref('bronze__decoded_logs') }} 
+{{ ref('bronze__decoded_logs') }}
 WHERE
     TO_TIMESTAMP_NTZ(_inserted_timestamp) >= (
         SELECT
-            MAX(_inserted_timestamp)
+            MAX(_inserted_timestamp) - INTERVAL '4 hours'
         FROM
             {{ this }}
     )

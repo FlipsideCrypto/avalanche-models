@@ -36,16 +36,16 @@ There is more information on how to use dbt docs in the last section of this doc
 - [ez_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_token_transfers)
 
 ### Price Tables (avalanche.price)
-- [fact_hourly_token_prices](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__fact_hourly_token_prices)
-- [ez_hourly_token_prices](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__ez_hourly_token_prices)
-- [dim_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__dim_asset_metadata)
+- [dim_asset_metadata_provider](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__dim_asset_metadata_provider)
+- [fact_prices_provider_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__fact_prices_provider_hourly)
 - [ez_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__ez_asset_metadata)
+- [ez_prices_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__ez_prices_hourly)
 
 ### DeFi Tables (avalanche.defi)
 - [dim_dex_liquidity_pools](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__dim_dex_liquidity_pools)
 - [ez_dex_swaps](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_dex_swaps)
 - [ez_bridge_activity](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_bridge_activity)
-- [ez_lending_borrows](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_borrows)) 
+- [ez_lending_borrows](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_borrows)
 - [ez_lending_deposits](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_deposits)
 - [ez_lending_flashloans](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_flashloans)
 - [ez_lending_liquidations](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_liquidations)
@@ -56,7 +56,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [ez_nft_sales](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.nft__ez_nft_sales)
 - [ez_nft_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.nft__ez_nft_transfers)
 
-### Stats Tables (ethereum.stats)
+### Stats Tables (avalanche.stats)
 - [ez_core_metrics_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.stats__ez_core_metrics_hourly)
 
 ## **Helpful User-Defined Functions (UDFs)**

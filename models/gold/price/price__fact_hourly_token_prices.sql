@@ -9,7 +9,7 @@ SELECT
     token_address,
     price,
     is_imputed,
-    provider,    
+    provider,
     COALESCE (
         hourly_prices_all_providers_id,
         {{ dbt_utils.generate_surrogate_key(

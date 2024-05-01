@@ -99,7 +99,7 @@ SELECT
     '{{ invocation_id }}' AS _invocation_id
 FROM
     avax_base A
-    LEFT JOIN {{ ref('silver__hourly_prices_priority') }}
+    LEFT JOIN {{ ref('silver__complete_token_prices') }}
     ON DATE_TRUNC(
         'hour',
         A.block_timestamp

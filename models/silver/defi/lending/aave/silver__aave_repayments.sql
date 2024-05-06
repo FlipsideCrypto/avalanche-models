@@ -43,15 +43,25 @@ atoken_meta AS (
         utils.udf_hex_to_int(
             segmented_data [0] :: STRING
         ) :: INTEGER AS repayed_amount,
-        'Aave V3' AS aave_version,
-        origin_to_address AS lending_pool_contract,
+        CASE
+            WHEN contract_address = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN contract_address = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2'
+            ELSE 'ERROR'
+        END AS aave_version,
+        COALESCE(
+            origin_to_address,
+            contract_address
+        ) AS lending_pool_contract,
         origin_from_address AS repayer_address,
         _log_id,
         _inserted_timestamp
     FROM
         {{ ref('silver__logs') }}
     WHERE
-        topics [0] :: STRING = '0xa534c8dbe71f871f9f3530e97a74601fea17b426cae02e1c5aee42c96c784051'
+        topics [0] :: STRING IN (
+            '0x4cdde6e09bb755c9a5589ebaec640bbfedff1362d4b255ebf8339782b9942faa',
+            '0xa534c8dbe71f871f9f3530e97a74601fea17b426cae02e1c5aee42c96c784051'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

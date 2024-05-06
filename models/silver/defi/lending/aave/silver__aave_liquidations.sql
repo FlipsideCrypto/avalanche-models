@@ -47,7 +47,11 @@ liquidation AS(
             segmented_data [1] :: STRING
         ) :: INTEGER AS liquidated_amount,
         CONCAT('0x', SUBSTR(segmented_data [2] :: STRING, 25, 40)) AS liquidator_address,
-        'Aave V3' AS aave_version,
+        CASE
+            WHEN contract_address = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN contract_address = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2'
+            ELSE 'ERROR'
+        END AS aave_version,
         COALESCE(
             origin_to_address,
             contract_address
@@ -57,7 +61,10 @@ liquidation AS(
     FROM
         {{ ref('silver__logs') }}
     WHERE
-        topics [0] :: STRING = '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286'
+        topics [0] :: STRING IN (
+            '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286',
+            '0x56864757fd5b1fc9f38f5f3a981cd8ae512ce41b902cf73fc506ee369c6bc237'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

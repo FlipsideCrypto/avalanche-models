@@ -46,7 +46,11 @@ deposits AS(
         utils.udf_hex_to_int(
             segmented_data [1] :: STRING
         ) :: INTEGER AS deposit_quantity,
-        'Aave V3' AS aave_version,
+        CASE
+            WHEN contract_address = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN contract_address = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2'
+            ELSE 'ERROR'
+        END AS aave_version,
         origin_from_address AS depositor_address,
         COALESCE(
             origin_to_address,
@@ -57,7 +61,10 @@ deposits AS(
     FROM
         {{ ref('silver__logs') }}
     WHERE
-        topics [0] :: STRING = '0x2b627736bca15cd5381dcf80b0bf11fd197d01a037c52b927a881a10fb73ba61'
+        topics [0] :: STRING IN (
+            '0xde6857219544bb5b7746f48ed30be6386fefc61b2f864cacf559893bf50fd951',
+            '0x2b627736bca15cd5381dcf80b0bf11fd197d01a037c52b927a881a10fb73ba61'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

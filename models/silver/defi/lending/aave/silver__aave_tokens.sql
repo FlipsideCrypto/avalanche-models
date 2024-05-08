@@ -144,8 +144,8 @@ a_token_step_2 AS (
         _inserted_timestamp,
         _log_id,
         CASE
-            WHEN contract_address = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
-            WHEN contract_address = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2' 
+            WHEN aave_version_pool = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN aave_version_pool = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2' 
         END AS aave_version,
     FROM
         a_token_step_1

@@ -27,7 +27,7 @@ WITH aave AS (
     collateral_token_symbol AS collateral_asset_symbol,
     debt_asset,
     debt_token_symbol AS debt_asset_symbol,
-    'Aave V3' AS platform,
+    platform,
     'avalanche' AS blockchain,
     _LOG_ID,
     _INSERTED_TIMESTAMP

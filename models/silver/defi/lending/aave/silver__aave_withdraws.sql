@@ -3,7 +3,7 @@
     incremental_strategy = 'delete+insert',
     unique_key = "block_number",
     cluster_by = ['block_timestamp::DATE'],
-    tags = ['reorg','curated']
+    tags = ['curated','reorg']
 ) }}
 
 WITH 
@@ -43,14 +43,23 @@ withdraw AS(
             segmented_data [0] :: STRING
         ) :: INTEGER AS withdraw_amount,
         tx_hash,
-        'Aave V3' AS aave_version,
-        origin_to_address AS lending_pool_contract,
+        CASE
+            WHEN contract_address = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN contract_address = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2' 
+        END AS aave_version,
+        COALESCE(
+            origin_to_address,
+            contract_address
+        ) AS lending_pool_contract,
         _inserted_timestamp,
         _log_id
     FROM
         {{ ref('silver__logs') }}
     WHERE
-        topics [0] :: STRING = '0x3115d1449a7b732c986cba18244e897a450f61e1bb8d589cd2e69e6c8924f9f7'
+        topics [0] :: STRING IN (
+            '0x3115d1449a7b732c986cba18244e897a450f61e1bb8d589cd2e69e6c8924f9f7',
+            '0x9c4ed599cd8555b9c1e8cd7643240d7d71eb76b792948c49fcb4d411f7b6b3c6'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

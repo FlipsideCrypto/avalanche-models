@@ -3,8 +3,43 @@
     tags = ['curated']
 ) }}
 
-WITH DECODE AS (
+WITH contracts AS (
 
+    SELECT
+        *
+    FROM
+        {{ ref('silver__contracts') }}
+),
+logs AS (
+    SELECT
+        *
+    FROM
+        {{ ref('silver__logs') }}
+    WHERE
+        tx_status = 'SUCCESS'
+        AND topics [0] IN (
+            '0xb19e051f8af41150ccccb3fc2c2d8d15f4a4cf434f32a559ba75fe73d6eea20b',
+            '0x3a0ca721fc364424566385a1aa271ed508cc2c0949c2272575fb3013a163a45f'
+        )
+
+{% if is_incremental() %}
+AND _inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        ) - INTERVAL '12 hours'
+    FROM
+        {{ this }}
+)
+AND contract_address NOT IN (
+    SELECT
+        DISTINCT(atoken_address)
+    FROM
+        {{ this }}
+)
+{% endif %}
+),
+DECODE AS (
     SELECT
         block_number AS atoken_created_block,
         origin_from_address AS token_creator_address,
@@ -28,10 +63,13 @@ WITH DECODE AS (
         l._inserted_timestamp,
         l._log_id
     FROM
-        {{ ref('silver__logs') }}
-        l
+        logs l
     WHERE
         topics [0] = '0xb19e051f8af41150ccccb3fc2c2d8d15f4a4cf434f32a559ba75fe73d6eea20b'
+        AND aave_version_pool IN (
+            '0x794a61358d6845594f94dc1db02a252b5b4814ad',
+            '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c'
+        )
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -41,10 +79,12 @@ AND _inserted_timestamp >= (
         ) - INTERVAL '12 hours'
     FROM
         {{ this }}
+    WHERE
+        atoken_version = 'Aave V3'
 )
 AND contract_address NOT IN (
     SELECT
-        atoken_address
+        DISTINCT(atoken_address)
     FROM
         {{ this }}
 )
@@ -58,7 +98,7 @@ a_token_step_1 AS (
         segmented_data,
         underlying_asset,
         aave_version_pool,
-        atoken_decimals,    
+        atoken_decimals,
         atoken_name,
         atoken_symbol,
         _inserted_timestamp,
@@ -80,7 +120,7 @@ debt_tokens AS (
         _inserted_timestamp,
         _log_id
     FROM
-        {{ ref('silver__logs') }}
+        logs
     WHERE
         topics [0] = '0x3a0ca721fc364424566385a1aa271ed508cc2c0949c2272575fb3013a163a45f'
         AND CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) IN (
@@ -103,32 +143,150 @@ a_token_step_2 AS (
         atoken_symbol,
         _inserted_timestamp,
         _log_id,
-        'Aave V3' AS protocol
+        CASE
+            WHEN aave_version_pool = '0x794a61358d6845594f94dc1db02a252b5b4814ad' THEN 'Aave V3'
+            WHEN aave_version_pool = '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' THEN 'Aave V2' 
+        END AS protocol
     FROM
         a_token_step_1
+),
+aave_token_pull AS (
+    SELECT
+        block_number AS atoken_created_block,
+        origin_from_address AS token_creator_address,
+        '0x4f01aed16d97e3ab5ab2b501154dc9bb0f1a5a2c' AS aave_version_pool,
+        C.token_symbol AS a_token_symbol,
+        regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
+        CONCAT('0x', SUBSTR(topics [2] :: STRING, 27, 40)) AS a_token_address,
+        CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 27, 40)) :: STRING AS atoken_stable_debt_address,
+        CONCAT('0x', SUBSTR(segmented_data [1] :: STRING, 27, 40)) :: STRING AS atoken_variable_debt_address,
+        C.token_decimals AS a_token_decimals,
+        'Aave V2' AS aave_version,
+        C.token_name AS a_token_name,
+        c2.token_symbol AS underlying_symbol,
+        CONCAT('0x', SUBSTR(topics [1] :: STRING, 27, 40)) AS underlying_address,
+        c2.token_name AS underlying_name,
+        c2.token_decimals AS underlying_decimals,
+        l._inserted_timestamp,
+        l._log_id
+    FROM
+        logs l
+        LEFT JOIN contracts C
+        ON a_token_address = C.contract_address
+        LEFT JOIN contracts c2
+        ON underlying_address = c2.contract_address
+    WHERE
+        topics [0] = '0x3a0ca721fc364424566385a1aa271ed508cc2c0949c2272575fb3013a163a45f'
+        AND (
+            a_token_name LIKE '%Aave%'
+            OR c2.token_symbol = 'GHO'
+        )
+
+{% if is_incremental() %}
+AND l._inserted_timestamp >= (
+    SELECT
+        MAX(
+            _inserted_timestamp
+        ) - INTERVAL '12 hours'
+    FROM
+        {{ this }}
+    WHERE
+        atoken_version = 'Aave V2'
+)
+AND a_token_address NOT IN (
+    SELECT
+        DISTINCT(atoken_address)
+    FROM
+        {{ this }}
+)
+{% endif %}
+),
+aave_token_pull_2 AS (
+    SELECT
+        atoken_created_block,
+        aave_version_pool,
+        a_token_symbol,
+        a_token_address,
+        atoken_stable_debt_address,
+        atoken_variable_debt_address,
+        a_token_decimals,
+        aave_version,
+        a_token_name,
+        underlying_symbol,
+        underlying_name,
+        underlying_decimals,
+        underlying_address,
+        _inserted_timestamp,
+        _log_id
+    FROM
+        aave_token_pull
+),
+aave_backfill_1 AS (
+    SELECT
+        atoken_created_block,
+        aave_version_pool,
+        a_token_symbol AS atoken_symbol,
+        a_token_address AS atoken_address,
+        atoken_stable_debt_address,
+        atoken_variable_debt_address,
+        a_token_decimals AS atoken_decimals,
+        aave_version AS atoken_version,
+        a_token_name AS atoken_name,
+        underlying_symbol,
+        underlying_address,
+        underlying_decimals,
+        underlying_name,
+        _inserted_timestamp,
+        _log_id
+    FROM
+        aave_token_pull_2
+),
+FINAL AS (
+    SELECT
+        A.atoken_created_block,
+        A.aave_version_pool,
+        A.atoken_symbol AS atoken_symbol,
+        A.a_token_address AS atoken_address,
+        b.atoken_stable_debt_address,
+        b.atoken_variable_debt_address,
+        A.atoken_decimals AS atoken_decimals,
+        A.protocol AS atoken_version,
+        atoken_name AS atoken_name,
+        C.token_symbol AS underlying_symbol,
+        A.underlying_asset AS underlying_address,
+        C.token_decimals AS underlying_decimals,
+        C.token_name AS underlying_name,
+        A._inserted_timestamp,
+        A._log_id
+    FROM
+        a_token_step_2 A
+        INNER JOIN debt_tokens b
+        ON A.a_token_address = b.atoken_address
+        INNER JOIN contracts C
+        ON contract_address = A.underlying_asset
+    UNION ALL
+    SELECT
+        atoken_created_block,
+        aave_version_pool,
+        atoken_symbol,
+        atoken_address,
+        atoken_stable_debt_address,
+        atoken_variable_debt_address,
+        atoken_decimals,
+        atoken_version,
+        atoken_name,
+        underlying_symbol,
+        underlying_address,
+        underlying_decimals,
+        underlying_name,
+        _inserted_timestamp,
+        _log_id
+    FROM
+        aave_backfill_1
 )
 SELECT
-    A.atoken_created_block,
-    a.token_creator_address,
-    a.aave_version_pool,
-    A.atoken_symbol AS atoken_symbol,
-    A.a_token_address AS atoken_address,
-    b.atoken_stable_debt_address,
-    b.atoken_variable_debt_address,
-    A.atoken_decimals AS atoken_decimals,
-    A.protocol AS atoken_version,
-    atoken_name AS atoken_name,
-    C.token_symbol AS underlying_symbol,
-    A.underlying_asset AS underlying_address,
-    C.token_decimals AS underlying_decimals,
-    C.token_name AS underlying_name,
-    A._inserted_timestamp,
-    A._log_id
+    *
 FROM
-    a_token_step_2 A
-    INNER JOIN debt_tokens b
-    ON A.a_token_address = b.atoken_address
-    INNER JOIN {{ ref('silver__contracts') }} C
-    ON contract_address = A.underlying_asset qualify(ROW_NUMBER() over(PARTITION BY atoken_address
+    FINAL qualify(ROW_NUMBER() over(PARTITION BY atoken_address
 ORDER BY
-    a.atoken_created_block DESC)) = 1
+    atoken_created_block DESC)) = 1

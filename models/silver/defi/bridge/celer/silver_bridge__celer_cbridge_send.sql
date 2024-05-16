@@ -50,6 +50,7 @@ WITH base_evt AS (
             '0x9b36f165bab9ebe611d491180418d8de4b8f3a1f',
             '0xef3c714c9425a8f3697a9c969dc1af30ba82e5d4'
         )
+        AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

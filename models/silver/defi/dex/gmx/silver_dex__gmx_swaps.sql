@@ -69,6 +69,7 @@ WITH swaps_base AS (
     WHERE
         contract_address = '0x9ab2de34a33fb459b538c43f251eb825645e8595'
         AND topics [0] :: STRING = '0x0874b2d545cb271cdbda4e093020c452328b24af12382ed62c4d00f5c26709db'
+        AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

@@ -791,7 +791,7 @@ heal_model AS (
           CONCAT(SUBSTRING(token1, 1, 5), '...', SUBSTRING(token1, 39, 42))
         )
       )
-    END AS pool_name,
+    END AS pool_name_heal,
     fee,
     tick_spacing,
     token0,
@@ -802,24 +802,7 @@ heal_model AS (
     token5,
     token6,
     token7,
-    OBJECT_CONSTRUCT(
-      'token0',
-      token0,
-      'token1',
-      token1,
-      'token2',
-      token2,
-      'token3',
-      token3,
-      'token4',
-      token4,
-      'token5',
-      token5,
-      'token6',
-      token6,
-      'token7',
-      token7
-    ) AS tokens,
+    tokens,
     OBJECT_CONSTRUCT(
       'token0',
       c0.token_symbol,
@@ -837,7 +820,7 @@ heal_model AS (
       c6.token_symbol,
       'token7',
       c7.token_symbol
-    ) AS symbols,
+    ) AS symbols_heal,
     OBJECT_CONSTRUCT(
       'token0',
       c0.token_decimals,
@@ -855,7 +838,7 @@ heal_model AS (
       c6.token_decimals,
       'token7',
       c7.token_decimals
-    ) AS decimals,
+    ) AS decimals_heal,
     platform,
     version,
     _id,
@@ -1214,7 +1197,29 @@ heal_model AS (
 ) %}
 UNION ALL
 SELECT
-  *
+  block_number,
+  block_timestamp,
+  tx_hash,
+  contract_address,
+  pool_address,
+  pool_name_heal AS pool_name,
+  fee,
+  tick_spacing,
+  token0,
+  token1,
+  token2,
+  token3,
+  token4,
+  token5,
+  token6,
+  token7,
+  tokens,
+  symbols_heal AS symbols,
+  decimals_heal AS decimals,
+  platform,
+  version,
+  _id,
+  _inserted_timestamp
 FROM
   heal_model
 {% endif %}

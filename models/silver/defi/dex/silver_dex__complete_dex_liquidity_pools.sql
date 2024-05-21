@@ -470,7 +470,7 @@ WHERE
   )
 {% endif %}
 ),
-all_pools_standard AS (
+all_pools AS (
   SELECT
     *
   FROM

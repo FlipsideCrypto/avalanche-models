@@ -33,7 +33,7 @@ verified_abis AS (
     FROM
         {{ ref('silver__verified_abis') }}
     WHERE
-        abi_source = 'snowscan'
+        abi_source IN ('snowscan', 'routescan')
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -44,7 +44,10 @@ AND _inserted_timestamp >= (
     FROM
         {{ this }}
     WHERE
-        abi_source = 'snowscan'
+        abi_source IN (
+            'snowscan',
+            'routescan'
+        )
 )
 {% endif %}
 ),

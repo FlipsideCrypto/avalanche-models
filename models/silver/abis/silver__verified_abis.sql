@@ -31,12 +31,12 @@ AND _inserted_timestamp >= (
 )
 {% endif %}
 ),
-snowscan_abis AS (
+routescan_abis AS (
     SELECT
         contract_address,
         DATA,
         _inserted_timestamp,
-        'snowscan' AS abi_source
+        'routescan' AS abi_source
     FROM
         base
 ),
@@ -83,7 +83,7 @@ all_abis AS (
         NULL AS discord_username,
         SHA2(DATA) AS abi_hash
     FROM
-        snowscan_abis
+        routescan_abis
     UNION
     SELECT
         contract_address,

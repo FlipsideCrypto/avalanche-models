@@ -6,20 +6,11 @@ sources:
     schema: core
     tables:
       - name: dim_labels
-  - name: ethereum
-    database: ethereum
-    schema: core
-    tables:
-      - name: fact_hourly_token_prices
   - name: crosschain_silver
     database: crosschain
     schema: silver
     tables:
       - name: address_labels
-      - name: token_prices_priority_hourly
-      - name: asset_metadata_priority
-      - name: token_prices_all_providers_hourly
-      - name: asset_metadata_all_providers
       - name: near_address_encoded
       - name: labels_combined
       - name: complete_token_asset_metadata

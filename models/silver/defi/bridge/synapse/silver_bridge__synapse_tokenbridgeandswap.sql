@@ -54,6 +54,7 @@ WITH base_evt AS (
             '0x79c15604b92ef54d3f61f0c40caab8857927ca3d5092367163b4562c1699eb5f' --depositandswap
         )
         AND contract_address = '0xc05e61d0e7a63d27546389b7ad62fdff5a91aace'
+        AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

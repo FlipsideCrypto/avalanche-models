@@ -64,6 +64,7 @@ WITH router_swaps_base AS (
             '0xc22fbb3133df781e6c25ea6acebe2d2bb8cea2f9' --v2
         )
         AND topics [0] :: STRING = '0x27c98e911efdd224f4002f6cd831c3ad0d2759ee176f9ee8466d95826af22a1c' --WooRouterSwap
+        AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -135,6 +136,7 @@ swaps_base AS (
             FROM
                 router_swaps_base
         )
+        AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (

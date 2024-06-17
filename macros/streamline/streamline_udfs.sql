@@ -64,3 +64,15 @@
         'https://28hv9m0ra8.execute-api.us-east-1.amazonaws.com/dev/bulk_decode_logs'
     {%- endif %};
 {% endmacro %}
+
+{% macro create_udf_bulk_rest_api_v2() %}
+    CREATE
+    OR REPLACE EXTERNAL FUNCTION streamline.udf_bulk_rest_api_v2(
+        json OBJECT
+    ) returns ARRAY api_integration = 
+    {% if target.name == "prod" %}
+        aws_avalanche_api_prod_v2 AS 'https://94k2zsc41f.execute-api.us-east-1.amazonaws.com/prod/udf_bulk_rest_api'
+    {% else %}
+        aws_avalanche_api_stg_v2 AS 'https://eb9c29d4el.execute-api.us-east-1.amazonaws.com/stg/udf_bulk_rest_api'
+    {%- endif %};
+{% endmacro %}

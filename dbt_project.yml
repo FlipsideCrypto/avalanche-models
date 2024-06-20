@@ -68,7 +68,31 @@ vars:
   HEAL_MODEL: False
   HEAL_MODELS: []
   START_GHA_TASKS: False
-  API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}' 
+
+#### STREAMLINE 2.0 BEGIN ####
+
+  API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}'
   EXTERNAL_FUNCTION_URI: '{{ var("config")[target.name]["EXTERNAL_FUNCTION_URI"] if var("config")[target.name] else var("config")["dev"]["EXTERNAL_FUNCTION_URI"] }}'
-  ROLES: |
-      ["INTERNAL_DEV"]
+  API_AWS_ROLE_ARN: '{{ var("config")[target.name]["API_AWS_ROLE_ARN"] if var("config")[target.name] else var("config")["dev"]["API_AWS_ROLE_ARN"] }}'
+  ROLES: '{{ var("config")[target.name]["ROLES"] }}'
+
+  config:
+  # The keys correspond to dbt profiles and are case sensitive
+    dev:
+      API_INTEGRATION: aws_avalanche_api_stg_v2
+      EXTERNAL_FUNCTION_URI: eb9c29d4el.execute-api.us-east-1.amazonaws.com/stg/
+      API_AWS_ROLE_ARN: arn:aws:iam::704693948482:role/avalanche-api-stg-rolesnowflakeudfsAF733095-CCDPFHsmlGmu
+      ROLES:
+        - AWS_LAMBDA_AVALANCHE_API
+        - INTERNAL_DEV
+
+    prod:
+      API_INTEGRATION: aws_avalanche_api_prod_v2
+      EXTERNAL_FUNCTION_URI: 94k2zsc41f.execute-api.us-east-1.amazonaws.com/prod/
+      API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/avalanche-api-prod-rolesnowflakeudfsAF733095-jBvAIUHiR70D
+      ROLES:
+        - AWS_LAMBDA_AVALANCHE_API
+        - INTERNAL_DEV
+        - DBT_CLOUD_AVALANCHE
+
+#### STREAMLINE 2.0 END ####

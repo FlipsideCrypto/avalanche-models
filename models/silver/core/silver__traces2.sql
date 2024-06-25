@@ -24,7 +24,17 @@ WITH bronze_traces AS (
 WHERE
     _inserted_timestamp >= (
         SELECT
+<<<<<<< HEAD
             MAX(_inserted_timestamp) _inserted_timestamp
+=======
+            MAX(partition_key)
+        FROM
+            {{ this }}
+    )
+    AND (
+        SELECT
+            MAX(partition_key) + 3000000
+>>>>>>> 14bfac4f5a014845e3fe45f6c8756906b5c04c15
         FROM
             {{ this }}
     )

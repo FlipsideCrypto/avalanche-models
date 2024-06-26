@@ -5,7 +5,7 @@
     unique_key = "tx_hash",
     cluster_by = "ROUND(block_number, -3)",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(tx_hash)",
-    tags = ['non_realtime']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 WITH base AS (

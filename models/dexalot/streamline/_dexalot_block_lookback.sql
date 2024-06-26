@@ -3,6 +3,4 @@
 ) }}
 
 SELECT
-   19711177 as block_number
-
-   
+    20030082 AS block_number

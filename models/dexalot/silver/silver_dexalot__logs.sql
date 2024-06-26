@@ -4,7 +4,7 @@
     unique_key = "logs_id",
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    tags = ['non_realtime']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 WITH base AS (

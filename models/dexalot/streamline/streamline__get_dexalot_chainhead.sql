@@ -1,6 +1,6 @@
 {{ config (
     materialized = 'table',
-    tags = ['streamline_dexalot_complete']
+    tags = ['streamline_dexalot_blocks']
 ) }}
 
 SELECT

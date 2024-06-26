@@ -36,6 +36,7 @@ sources:
       - name: dexalot_receipts
       - name: dexalot_traces
       - name: dexalot_confirm_blocks
+      - name: dexalot_receipts_by_hash
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

@@ -1,10 +1,9 @@
--- depends_on: {{ ref('bronze__dexalot_traces') }}
+-- depends_on: {{ ref('bronze_dexalot__traces') }}
 {{ config (
     materialized = "incremental",
     unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)",
-    tags = ['streamline_dexalot_complete']
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)"
 ) }}
 
 SELECT
@@ -19,7 +18,7 @@ SELECT
 FROM
 
 {% if is_incremental() %}
-{{ ref('bronze__dexalot_traces') }}
+{{ ref('bronze_dexalot__traces') }}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -27,7 +26,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze__FR_dexalot_traces') }}
+            {{ ref('bronze_dexalot__FR_traces') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY block_number

@@ -9,7 +9,7 @@
         "worker_batch_size" :"10000",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['streamline_dexalot_realtime']
+    tags = ['streamline_dexalot_blocks']
 ) }}
 
 WITH last_3_days AS (
@@ -54,7 +54,8 @@ ready_blocks AS (
         to_do {# add retry here #}
     ORDER BY
         block_number DESC
-    limit 10
+    LIMIT
+        10
 )
 SELECT
     block_number,

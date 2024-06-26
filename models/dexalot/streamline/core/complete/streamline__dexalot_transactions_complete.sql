@@ -1,4 +1,4 @@
--- depends_on: {{ ref('bronze__dexalot_transactions') }}
+-- depends_on: {{ ref('bronze_dexalot__transactions') }}
 {{ config (
     materialized = "incremental",
     unique_key = "block_number",
@@ -19,7 +19,7 @@ SELECT
 FROM
 
 {% if is_incremental() %}
-{{ ref('bronze__dexalot_transactions') }}
+{{ ref('bronze_dexalot__transactions') }}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -27,7 +27,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze__FR_dexalot_transactions') }}
+            {{ ref('bronze_dexalot__FR_transactions') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY block_number

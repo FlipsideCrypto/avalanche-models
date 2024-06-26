@@ -1,16 +1,18 @@
--- depends_on: {{ ref('bronze_dexalot__receipts') }}
+-- depends_on: {{ ref('bronze_dexalot__receipts_by_hash') }}
 {{ config (
     materialized = "incremental",
-    unique_key = "block_number",
+    unique_key = "complete_receipts_by_hash_id",
     cluster_by = "ROUND(block_number, -3)",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)"
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(complete_receipts_by_hash_id)",
+    tags = ['streamline_dexalot_complete']
 ) }}
 
 SELECT
     VALUE :BLOCK_NUMBER :: INT AS block_number,
+    VALUE: "TX_HASH" :: STRING AS tx_hash,
     {{ dbt_utils.generate_surrogate_key(
-        ['block_number']
-    ) }} AS complete_receipts_id,
+        ['block_number', 'tx_hash']
+    ) }} AS complete_receipts_by_hash_id,
     SYSDATE() AS inserted_timestamp,
     SYSDATE() AS modified_timestamp,
     _inserted_timestamp,
@@ -18,7 +20,7 @@ SELECT
 FROM
 
 {% if is_incremental() %}
-{{ ref('bronze_dexalot__receipts') }}
+{{ ref('bronze_dexalot__receipts_by_hash') }}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -26,9 +28,9 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze_dexalot__FR_receipts') }}
+            {{ ref('bronze_dexalot__FR_receipts_by_hash') }}
         {% endif %}
 
-        qualify(ROW_NUMBER() over (PARTITION BY block_number
+        qualify(ROW_NUMBER() over (PARTITION BY complete_receipts_by_hash_id
         ORDER BY
             _inserted_timestamp DESC)) = 1

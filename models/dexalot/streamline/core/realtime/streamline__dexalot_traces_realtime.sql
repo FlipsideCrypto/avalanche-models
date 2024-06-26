@@ -9,8 +9,7 @@
         "worker_batch_size" :"700",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
-    ),
-    tags = ['streamline_dexalot_realtime']
+    )
 ) }}
 
 WITH last_3_days AS (
@@ -53,7 +52,8 @@ ready_blocks AS (
         block_number
     FROM
         to_do
-limit 10
+    LIMIT
+        10
 )
 SELECT
     block_number,

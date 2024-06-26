@@ -5,8 +5,7 @@
     unique_key = "block_number",
     cluster_by = ['modified_timestamp::DATE','partition_key'],
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    full_refresh = false,
-    tags = ['non_realtime']
+    full_refresh = false
 ) }}
 
 WITH bronze_traces AS (
@@ -18,6 +17,16 @@ WITH bronze_traces AS (
         DATA :result AS full_traces,
         _inserted_timestamp
     FROM
+        {{ ref('bronze__streamline_FR_traces') }}
+        t
+        JOIN avalanche_dev.silver.broken_blocks b
+        ON t.block_number = b.block_number
+        AND t._partition_by_block_id = ROUND(
+            b.block_number,
+            -3
+        )
+    WHERE
+        t.data :result IS NOT NULL {#
 
 {% if is_incremental() %}
 {{ ref('bronze__streamline_traces') }}
@@ -35,6 +44,7 @@ WHERE
     _partition_by_block_id <= 5000000
 {% endif %}
 
+#}
 qualify(ROW_NUMBER() over (PARTITION BY block_number, tx_position
 ORDER BY
     _inserted_timestamp DESC)) = 1

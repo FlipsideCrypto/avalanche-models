@@ -19,6 +19,7 @@ sources:
       - name: complete_provider_prices
       - name: complete_native_asset_metadata
       - name: complete_native_prices
+      - name: number_sequence
   - name: bronze_streamline
     database: streamline
     schema: |
@@ -30,6 +31,12 @@ sources:
       - name: debug_traceBlockByNumber
       - name: decoded_logs
       - name: confirm_blocks
+      - name: dexalot_blocks
+      - name: dexalot_transactions
+      - name: dexalot_receipts
+      - name: dexalot_traces
+      - name: dexalot_confirm_blocks
+      - name: dexalot_receipts_by_hash
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

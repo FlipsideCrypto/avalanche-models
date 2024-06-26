@@ -3,8 +3,7 @@
     materialized = 'incremental',
     unique_key = "block_number",
     cluster_by = "block_timestamp::date",
-    tags = ['dexalot_non_realtime','streamline_dexalot_realtime'],
-    full_refresh = false
+    tags = ['dexalot_non_realtime','streamline_dexalot_realtime']
 ) }}
 
 SELECT

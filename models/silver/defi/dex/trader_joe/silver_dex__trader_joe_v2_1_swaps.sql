@@ -71,6 +71,7 @@ swaps_base AS (
         ) AS protocolFee1,
         tokenX,
         tokenY,
+        p.version,
         l._log_id,
         l._inserted_timestamp
     FROM
@@ -80,7 +81,6 @@ swaps_base AS (
         ON lb_pair = l.contract_address
     WHERE
         topics [0] :: STRING = '0xad7d6f97abf51ce18e17a38f4d70e975be9c0708474987bb3e26ad21bd93ca70' --Swap
-        AND version = 'v2.1'
         AND tx_status = 'SUCCESS'
 
 {% if is_incremental() %}
@@ -139,6 +139,7 @@ SELECT
     END AS token_out,
     'Swap' AS event_name,
     'trader-joe-v2' AS platform,
+    version,
     _log_id,
     _inserted_timestamp
 FROM

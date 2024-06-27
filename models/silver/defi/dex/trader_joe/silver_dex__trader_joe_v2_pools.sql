@@ -35,8 +35,10 @@ WITH pool_creation AS (
     WHERE
         contract_address IN (
             '0x8e42f2f4101563bf679975178e880fd87d3efd4e',
+            --v2
             '0x6e77932a92582f504ff6c4bdbcef7da6c198aeef',
-            '0xb43120c4745967fa9b93e79c149e66b0f2d6fe0c'
+            --v2.1
+            '0xb43120c4745967fa9b93e79c149e66b0f2d6fe0c' --v2.2
         )
         AND topics [0] :: STRING = '0x2c8d104b27c6b7f4492017a6f5cf3803043688934ebcaa6a03540beeaf976aff' --LB PairCreated
         AND tx_status = 'SUCCESS'

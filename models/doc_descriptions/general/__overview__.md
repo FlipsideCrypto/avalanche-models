@@ -59,6 +59,13 @@ There is more information on how to use dbt docs in the last section of this doc
 ### Stats Tables (avalanche.stats)
 - [ez_core_metrics_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.stats__ez_core_metrics_hourly)
 
+### Dexalot Tables (avalanche.dexalot)
+
+**Fact Tables:**
+- [fact_blocks](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_blocks)
+- [fact_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_event_logs)
+- [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_transactions)
+
 ## **Helpful User-Defined Functions (UDFs)**
 
 UDFs are custom functions built by the Flipside team that can be used in your queries to make your life easier. 

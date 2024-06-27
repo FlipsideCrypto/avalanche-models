@@ -384,7 +384,7 @@ trader_joe_v2 AS (
     NULL AS token6,
     NULL AS token7,
     'trader-joe-v2' AS platform,
-    version,
+    'v2' AS version,
     _log_id AS _id,
     _inserted_timestamp
   FROM

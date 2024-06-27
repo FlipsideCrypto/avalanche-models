@@ -1,0 +1,38 @@
+version: 2
+models:
+  - name: dexalot__fact_event_logs
+    description: '{{ doc("dexalot_logs_table_doc") }}'
+
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("dexalot_block_number") }}'   
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("dexalot_block_timestamp") }}'
+      - name: TX_HASH
+        description: '{{ doc("dexalot_logs_tx_hash") }}'
+      - name: EVENT_INDEX
+        description: '{{ doc("dexalot_event_index") }}'
+      - name: CONTRACT_ADDRESS
+        description: '{{ doc("dexalot_logs_contract_address") }}'
+      - name: TOPICS
+        description: '{{ doc("dexalot_topics") }}'
+      - name: DATA
+        description: '{{ doc("dexalot_logs_data") }}'
+      - name: EVENT_REMOVED
+        description: '{{ doc("dexalot_event_removed") }}'  
+      - name: _LOG_ID
+        description: '{{ doc("internal_column") }}'
+      - name: TX_SUCCEEDED
+        description: '{{ doc("dexalot_tx_status") }}' 
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("dexalot_origin_sig") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("dexalot_origin_from") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("dexalot_origin_to") }}'
+      - name: FACT_EVENT_LOGS_ID
+        description: '{{ doc("pk") }}'   
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("inserted_timestamp") }}'   
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("modified_timestamp") }}' 

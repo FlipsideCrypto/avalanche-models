@@ -1,0 +1,10 @@
+version: 2
+models:
+  - name: test_gold_dexalot__blocks_full
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_NUMBER
+      - fsc_utils.sequence_gaps:
+          column_name: BLOCK_NUMBER
+          where: BLOCK_TIMESTAMP < CURRENT_DATE - 1

@@ -4,7 +4,7 @@
     incremental_strategy = 'delete+insert',
     merge_exclude_columns = ["inserted_timestamp"],
     cluster_by = "block_timestamp::date",
-    tags = ['dexalot_incremental']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 SELECT

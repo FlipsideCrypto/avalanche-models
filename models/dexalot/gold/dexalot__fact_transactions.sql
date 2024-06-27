@@ -3,7 +3,7 @@
     unique_key = "fact_transactions_id",
     incremental_strategy = 'delete+insert',
     cluster_by = "block_timestamp::date",
-    tags = ['dexalot_incremental']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 SELECT

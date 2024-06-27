@@ -4,7 +4,7 @@
     unique_key = "fact_event_logs_id",
     cluster_by = "block_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    tags = ['dexalot_incremental']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 SELECT

@@ -26,13 +26,18 @@ WITH pool_creation AS (
         CASE
             WHEN contract_address = '0x6e77932a92582f504ff6c4bdbcef7da6c198aeef' THEN 'v2'
             WHEN contract_address = '0x8e42f2f4101563bf679975178e880fd87d3efd4e' THEN 'v2.1'
+            WHEN contract_address = '0xb43120c4745967fa9b93e79c149e66b0f2d6fe0c' THEN 'v2.2'
         END AS version,
         _log_id,
         _inserted_timestamp
-    FROM 
+    FROM
         {{ ref('silver__logs') }}
     WHERE
-        contract_address IN ('0x8e42f2f4101563bf679975178e880fd87d3efd4e','0x6e77932a92582f504ff6c4bdbcef7da6c198aeef')
+        contract_address IN (
+            '0x8e42f2f4101563bf679975178e880fd87d3efd4e',
+            '0x6e77932a92582f504ff6c4bdbcef7da6c198aeef',
+            '0xb43120c4745967fa9b93e79c149e66b0f2d6fe0c'
+        )
         AND topics [0] :: STRING = '0x2c8d104b27c6b7f4492017a6f5cf3803043688934ebcaa6a03540beeaf976aff' --LB PairCreated
         AND tx_status = 'SUCCESS'
 
@@ -60,7 +65,6 @@ SELECT
     _log_id,
     _inserted_timestamp
 FROM
-    pool_creation
-qualify(ROW_NUMBER() over(PARTITION BY lb_pair
+    pool_creation qualify(ROW_NUMBER() over(PARTITION BY lb_pair
 ORDER BY
     _inserted_timestamp DESC)) = 1

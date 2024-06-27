@@ -31,7 +31,7 @@ FROM
 WHERE
     modified_timestamp > (
         SELECT
-            MAX(modified_timestamp) _INSERTED_TIMESTAMP
+            MAX(modified_timestamp)
         FROM
             {{ this }}
     )

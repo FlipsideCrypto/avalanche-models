@@ -57,6 +57,9 @@ models:
               column_type_list:
                 - STRING
                 - VARCHAR
+      - name: VERSION
+        tests:
+          - not_null
       - name: EVENT_INDEX
         tests:
           - dbt_expectations.expect_column_values_to_be_in_type_list:

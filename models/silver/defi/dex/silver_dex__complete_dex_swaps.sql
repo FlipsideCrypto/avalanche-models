@@ -128,7 +128,7 @@ trader_joe_v2_1 AS (
     tx_to,
     event_index,
     platform,
-    'v2.1' AS version,
+    version,
     _log_id,
     _inserted_timestamp
   FROM

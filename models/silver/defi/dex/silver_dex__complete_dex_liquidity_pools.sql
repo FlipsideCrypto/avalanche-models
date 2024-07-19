@@ -471,6 +471,76 @@ WHERE
   )
 {% endif %}
 ),
+pharaoh_v2 AS (
+  SELECT
+    created_block AS block_number,
+    created_time AS block_timestamp,
+    created_tx_hash AS tx_hash,
+    contract_address,
+    pool_address,
+    NULL AS pool_name,
+    fee,
+    tick_spacing,
+    token0_address AS token0,
+    token1_address AS token1,
+    NULL AS token2,
+    NULL AS token3,
+    NULL AS token4,
+    NULL AS token5,
+    NULL AS token6,
+    NULL AS token7,
+    'pharaoh-v2' AS platform,
+    'v2' AS version,
+    _log_id AS _id,
+    _inserted_timestamp
+  FROM
+    {{ ref('silver_dex__pharaoh_v2_pools') }}
+
+{% if is_incremental() and 'pharaoh_v2' not in var('HEAL_MODELS') %}
+WHERE
+  _inserted_timestamp >= (
+    SELECT
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
+pharaoh_v1 AS (
+  SELECT
+    block_number,
+    block_timestamp,
+    tx_hash,
+    contract_address,
+    pool_address,
+    NULL AS pool_name,
+    NULL AS fee,
+    NULL AS tick_spacing,
+    token0,
+    token1,
+    NULL AS token2,
+    NULL AS token3,
+    NULL AS token4,
+    NULL AS token5,
+    NULL AS token6,
+    NULL AS token7,
+    'pharaoh_v1' AS platform,
+    'v1' AS version,
+    _log_id AS _id,
+    _inserted_timestamp
+  FROM
+    {{ ref('silver_dex__pharaoh_v1_pools') }}
+
+{% if is_incremental() and 'pharaoh_v1' not in var('HEAL_MODELS') %}
+WHERE
+  _inserted_timestamp >= (
+    SELECT
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
 all_pools AS (
   SELECT
     *
@@ -516,6 +586,16 @@ all_pools AS (
     *
   FROM
     uni_v3
+  UNION ALL
+  SELECT
+    *
+  FROM
+    pharaoh_v1
+  UNION ALL
+  SELECT
+    *
+  FROM
+    pharaoh_v2
   UNION ALL
   SELECT
     *

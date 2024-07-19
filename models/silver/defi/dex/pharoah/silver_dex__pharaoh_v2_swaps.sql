@@ -59,7 +59,7 @@ pool_data AS (
         tick_spacing,
         pool_address
     FROM
-        {{ ref('silver_dex__univ3_pools') }}
+        {{ ref('silver_dex__pharaoh_v2_pools') }}
 ),
 FINAL AS (
     SELECT

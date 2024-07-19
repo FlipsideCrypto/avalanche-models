@@ -624,6 +624,7 @@ complete_lps AS (
       WHEN pool_name IS NULL
       AND platform IN (
         'uniswap-v3',
+        'pharaoh-v2',
         'kyberswap-v2'
       ) THEN CONCAT(
         COALESCE(
@@ -647,6 +648,7 @@ complete_lps AS (
         ),
         CASE
           WHEN platform = 'uniswap-v3' THEN ' UNI-V3 LP'
+          WHEN platform = 'pharaoh-v2' THEN ''
           WHEN platform = 'kyberswap-v2' THEN ''
         END
       )
@@ -800,6 +802,7 @@ heal_model AS (
       WHEN pool_name IS NULL
       AND platform IN (
         'uniswap-v3',
+        'pharaoh-v2',
         'kyberswap-v2'
       ) THEN CONCAT(
         COALESCE(
@@ -823,6 +826,7 @@ heal_model AS (
         ),
         CASE
           WHEN platform = 'uniswap-v3' THEN ' UNI-V3 LP'
+          WHEN platform = 'pharaoh-v2' THEN ''
           WHEN platform = 'kyberswap-v2' THEN ''
         END
       )

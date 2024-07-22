@@ -78,7 +78,7 @@ SELECT
             'params',
             ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'fastCallTracer', 'timeout', '180s'))
         ),
-        'Vault/prod/avalanche/dexalot/internal'
+        'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS request
 FROM
     ready_blocks

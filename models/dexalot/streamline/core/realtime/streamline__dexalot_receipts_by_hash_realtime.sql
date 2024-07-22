@@ -9,7 +9,7 @@
         "worker_batch_size" :"2000",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['streamline_dexalot_realtime']
+    tags = ['stale']
 ) }}
 
 WITH last_3_days AS (
@@ -81,7 +81,7 @@ SELECT
             'params',
             ARRAY_CONSTRUCT(tx_hash)
         ),
-        'Vault/prod/avalanche/dexalot/internal'
+        'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS request
 FROM
     ready_blocks

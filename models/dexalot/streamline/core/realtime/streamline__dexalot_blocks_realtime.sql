@@ -75,7 +75,7 @@ SELECT
             'eth_getBlockByNumber',
             'params',
             ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), FALSE)),
-            'Vault/prod/avalanche/dexalot/internal'
+            'Vault/prod/avalanche/dexalot/internal/mainnet'
         ) AS request
         FROM
             ready_blocks

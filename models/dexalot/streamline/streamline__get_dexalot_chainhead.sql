@@ -23,7 +23,7 @@ SELECT
             'params',
             []
         ),
-        'Vault/prod/avalanche/dexalot/internal'
+        'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS resp,
     utils.udf_hex_to_int(
         resp :data :result :: STRING

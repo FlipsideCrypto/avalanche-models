@@ -6,7 +6,7 @@
 SELECT
     {{ target.database }}.live.udf_api(
         'POST',
-        'https://subnets.avax.network/dexalot/mainnet/rpc',
+        '{Service}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json',
@@ -23,7 +23,7 @@ SELECT
             'params',
             []
         ),
-        ''
+        'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS resp,
     utils.udf_hex_to_int(
         resp :data :result :: STRING

@@ -7,6 +7,21 @@
 ) }}
 
 SELECT
+    block_number,
+    complete_receipts_by_hash_id AS complete_receipts_id,
+    inserted_timestamp,
+    modified_timestamp,
+    _inserted_timestamp,
+    _invocation_id
+FROM
+    {{ ref('streamline__dexalot_receipts_by_hash_complete') }}
+
+{% if is_incremental() %}
+WHERE
+    1 = 2
+{% endif %}
+UNION ALL
+SELECT
     VALUE :BLOCK_NUMBER :: INT AS block_number,
     {{ dbt_utils.generate_surrogate_key(
         ['block_number']

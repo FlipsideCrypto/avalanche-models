@@ -63,7 +63,7 @@ SELECT
     ) :: INT AS partition_key,
     {{ target.database }}.live.udf_api(
         'POST',
-        'https://subnets.avax.network/dexalot/mainnet/rpc',
+        '{Service}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
@@ -78,7 +78,7 @@ SELECT
             'params',
             ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'fastCallTracer', 'timeout', '180s'))
         ),
-        ''
+        'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS request
 FROM
     ready_blocks

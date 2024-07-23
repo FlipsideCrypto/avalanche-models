@@ -1,8 +1,8 @@
--- depends_on: {{ ref('bronze_dexalot__receipts_by_hash') }}
+-- depends_on: {{ ref('bronze_dexalot__receipts') }}
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
-    unique_key = "tx_hash",
+    unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_hash, tx_hash, from_address, to_address)",
     tags = ['dexalot_non_realtime']
@@ -18,12 +18,12 @@ WITH base AS (
                 metadata :request :"data"
             ) :id :: INT
         ) AS block_number,
-        DATA :result AS DATA,
+        DATA,
         _inserted_timestamp
     FROM
 
 {% if is_incremental() %}
-{{ ref('bronze_dexalot__receipts_by_hash') }}
+{{ ref('bronze_dexalot__receipts') }}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -33,7 +33,7 @@ WHERE
     )
     AND IS_OBJECT(DATA)
 {% else %}
-    {{ ref('bronze_dexalot__FR_receipts_by_hash') }}
+    {{ ref('bronze_dexalot__FR_receipts') }}
 WHERE
     IS_OBJECT(DATA)
 {% endif %}

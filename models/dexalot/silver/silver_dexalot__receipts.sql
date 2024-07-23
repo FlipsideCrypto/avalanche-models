@@ -2,9 +2,9 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'delete+insert',
-    unique_key = "tx_hash",
+    unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(tx_hash)",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_hash, tx_hash, from_address, to_address)",
     tags = ['dexalot_non_realtime']
 ) }}
 
@@ -18,7 +18,7 @@ WITH base AS (
                 metadata :request :"data"
             ) :id :: INT
         ) AS block_number,
-        DATA :result AS DATA,
+        DATA,
         _inserted_timestamp
     FROM
 

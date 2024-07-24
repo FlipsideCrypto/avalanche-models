@@ -83,4 +83,3 @@ FROM
     ready_blocks
 ORDER BY
     block_number DESC
-LIMIT 11

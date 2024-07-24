@@ -37,7 +37,7 @@ WHERE
 {% else %}
     {{ ref('bronze_dexalot__FR_traces') }}
 WHERE
-    partition_key <= 20500000
+    partition_key <= 22000000
     AND DATA :result IS NOT NULL
 {% endif %}
 

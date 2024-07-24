@@ -5,7 +5,7 @@
     cluster_by = "block_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
     full_refresh = false,
-    tags = ['non_realtime']
+    tags = ['dexalot_non_realtime']
 ) }}
 
 SELECT

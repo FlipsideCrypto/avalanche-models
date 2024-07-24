@@ -4,9 +4,9 @@
     unique_key = "block_number",
     cluster_by = "block_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
+    full_refresh = false,
     tags = ['non_realtime']
 ) }}
---     full_refresh = false
 
 SELECT
     block_number,

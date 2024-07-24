@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: test_gold_dexalot__traces_recent
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_NUMBER
+            - TX_POSITION
+            - TRACE_INDEX
+    columns:
+      - name: BLOCK_TIMESTAMP
+        tests:
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              datepart: day
+              interval: 1
+     

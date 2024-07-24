@@ -10,7 +10,7 @@
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
     ),
-    tags = ['streamline_dexalot_realtime']
+    tags = ['streamline_dexalot_history']
 ) }}
 
 WITH last_3_days AS (
@@ -27,7 +27,7 @@ to_do AS (
         {{ ref("streamline__dexalot_blocks") }}
     WHERE
         (
-            block_number >= (
+            block_number <= (
                 SELECT
                     block_number
                 FROM
@@ -41,7 +41,7 @@ to_do AS (
     FROM
         {{ ref("streamline__dexalot_traces_complete") }}
     WHERE
-        block_number >= (
+        block_number <= (
             SELECT
                 block_number
             FROM
@@ -83,4 +83,4 @@ FROM
     ready_blocks
 ORDER BY
     block_number DESC
-LIMIT 11
+LIMIT 10

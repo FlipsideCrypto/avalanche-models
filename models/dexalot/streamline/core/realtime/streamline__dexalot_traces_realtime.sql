@@ -9,7 +9,8 @@
         "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result"]) }
-    )
+    ),
+    tags = ['streamline_dexalot_realtime']
 ) }}
 
 WITH last_3_days AS (
@@ -52,8 +53,6 @@ ready_blocks AS (
         block_number
     FROM
         to_do
-    LIMIT
-        10
 )
 SELECT
     block_number,
@@ -76,7 +75,7 @@ SELECT
             'method',
             'debug_traceBlockByNumber',
             'params',
-            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'fastCallTracer', 'timeout', '180s'))
+            ARRAY_CONSTRUCT(utils.udf_int_to_hex(block_number), OBJECT_CONSTRUCT('tracer', 'callTracer', 'timeout', '180s'))
         ),
         'Vault/prod/avalanche/dexalot/internal/mainnet'
     ) AS request

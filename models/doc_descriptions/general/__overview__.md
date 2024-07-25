@@ -65,6 +65,7 @@ There is more information on how to use dbt docs in the last section of this doc
 - [fact_blocks](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_blocks)
 - [fact_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_event_logs)
 - [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_transactions)
+- [fact_traces](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.dexalot__fact_traces)
 
 ## **Helpful User-Defined Functions (UDFs)**
 

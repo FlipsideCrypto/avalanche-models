@@ -15,9 +15,15 @@ models:
               column_type_list:
                 - NUMBER    
                 - FLOAT    
+      - name: TX_POSITION
+        tests:
+          - not_null  
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT  
       - name: TRACE_ADDRESS
         tests:
-          - not_null:
-              where: NOT IS_PENDING --find a way to replace this now that is_pending doesnt exist
+          - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+

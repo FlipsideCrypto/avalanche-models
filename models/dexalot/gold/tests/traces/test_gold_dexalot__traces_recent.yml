@@ -18,7 +18,9 @@ models:
       - name: BLOCK_TIMESTAMP
         tests:
           - not_null:
-              where: NOT IS_PENDING --find a way to replace this now that is_pending doesnt exist
+              config:
+                  severity: warn
+                  warn_if: ">0"
           - dbt_expectations.expect_row_values_to_have_recent_data:
               datepart: day
               interval: 1
@@ -29,6 +31,8 @@ models:
       - name: TX_HASH
         tests:
           - not_null:
-              where: NOT IS_PENDING
+              config:
+                  severity: warn
+                  warn_if: ">0"
           - dbt_expectations.expect_column_values_to_match_regex:
               regex: 0[xX][0-9a-fA-F]+

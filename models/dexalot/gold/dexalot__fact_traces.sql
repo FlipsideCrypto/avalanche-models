@@ -51,7 +51,7 @@ AND (
         {{ this }}
 )
 {% else %}
-    AND block_number <= 22000000
+    AND block_number <= 23000000
 {% endif %}
 ),
 sub_traces AS (
@@ -213,11 +213,6 @@ aggregated_errors AS (
                     TYPE,
                     trace_address
                 ) AS identifier,
-                IFF(
-                    trace_succeeded,
-                    'SUCCESS',
-                    'FAIL'
-                ) AS trace_status,
                 traces_id
             FROM
                 trace_index_sub_traces
@@ -232,7 +227,7 @@ aggregated_errors AS (
                 f.block_number,
                 t.tx_hash,
                 t.block_timestamp,
-                t.tx_status,
+                t.tx_status AS tx_succeeded,
                 f.tx_position,
                 f.trace_index,
                 f.from_address,
@@ -249,7 +244,6 @@ aggregated_errors AS (
                 f.sub_traces,
                 f.error_reason,
                 f.revert_reason,
-                f.trace_status,
                 f.data,
                 f.traces_id,
                 f.trace_succeeded,
@@ -278,7 +272,7 @@ heal_missing_data AS (
         t.block_number,
         txs.tx_hash,
         txs.block_timestamp,
-        txs.tx_status,
+        txs.tx_status AS tx_succeeded,
         t.tx_position,
         t.trace_index,
         t.from_address,
@@ -295,7 +289,6 @@ heal_missing_data AS (
         t.sub_traces,
         t.error_reason,
         t.revert_reason,
-        t.trace_status,
         t.data,
         t.fact_traces_id AS traces_id,
         t.trace_succeeded,
@@ -303,14 +296,14 @@ heal_missing_data AS (
     FROM
         {{ this }}
         t
-        INNER JOIN {{ ref('silver__transactions') }}
+        INNER JOIN {{ ref('silver_dexalot__transactions') }}
         txs
         ON t.tx_position = txs.position
         AND t.block_number = txs.block_number
     WHERE
         t.tx_hash IS NULL
         OR t.block_timestamp IS NULL
-        OR t.tx_status IS NULL
+        OR t.tx_succeeded IS NULL
 )
 {% endif %},
 all_traces AS (
@@ -318,7 +311,7 @@ all_traces AS (
         block_number,
         tx_hash,
         block_timestamp,
-        tx_status,
+        tx_succeeded,
         tx_position,
         trace_index,
         from_address,
@@ -335,7 +328,6 @@ all_traces AS (
         sub_traces,
         error_reason,
         revert_reason,
-        trace_status,
         DATA,
         traces_id,
         trace_succeeded,
@@ -349,7 +341,7 @@ SELECT
     block_number,
     tx_hash,
     block_timestamp,
-    tx_status,
+    tx_succeeded,
     tx_position,
     trace_index,
     from_address,
@@ -366,7 +358,6 @@ SELECT
     sub_traces,
     error_reason,
     revert_reason,
-    trace_status,
     DATA,
     traces_id,
     trace_succeeded,
@@ -395,13 +386,7 @@ SELECT
     identifier,
     DATA,
     sub_traces,
-    tx_status,
-    trace_status,
-    IFF(
-        tx_status = 'SUCCESS',
-        TRUE,
-        FALSE
-    ) AS tx_succeeded,
+    tx_succeeded,
     trace_succeeded,
     error_reason,
     revert_reason,

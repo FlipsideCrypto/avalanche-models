@@ -367,9 +367,9 @@ FROM
 {% endif %}
 )
 SELECT
-    tx_hash,
     block_number,
     block_timestamp,
+    tx_hash,
     tx_position,
     trace_index,
     from_address,
@@ -384,7 +384,6 @@ SELECT
     TYPE,
     trace_address,
     identifier,
-    DATA,
     sub_traces,
     tx_succeeded,
     trace_succeeded,

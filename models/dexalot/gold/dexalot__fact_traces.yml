@@ -20,6 +20,8 @@ models:
         description: '{{ doc("precise_amount_unadjusted") }}'
       - name: VALUE_PRECISE
         description: '{{ doc("precise_amount_adjusted") }}'
+      - name: VALUE_HEX
+        description: '{{ doc("dexalot_traces_value_hex") }}'
       - name: GAS
         description: '{{ doc("dexalot_traces_gas") }}'
       - name: GAS_USED
@@ -39,11 +41,13 @@ models:
       - name: SUB_TRACES
         description: '{{ doc("dexalot_traces_sub") }}' 
       - name: TRACE_SUCCEEDED
-        description: The status of the trace, where TRUE = SUCCESS and FALSE = FAILED.
+        description: '{{ doc("dexalot_traces_trace_succeeded") }}'
       - name: ERROR_REASON
-        description: The reason for the trace failure, if any.
+        description: '{{ doc("dexalot_traces_error_reason") }}'
+      - name: REVERT_REASON
+        description: '{{ doc("dexalot_traces_revert_reason") }}'
       - name: TRACE_INDEX
-        description: The index of the trace within the transaction. 
+        description: '{{ doc("dexalot_traces_trace_index") }}'
       - name: FACT_TRACES_ID
         description: '{{ doc("pk") }}'   
       - name: INSERTED_TIMESTAMP

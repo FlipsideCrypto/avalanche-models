@@ -189,6 +189,10 @@ aggregated_errors AS (
                 trace_json :from :: STRING AS from_address,
                 trace_json :to :: STRING AS to_address,
                 IFNULL(
+                    trace_json :value :: STRING,
+                    '0x0'
+                ) AS value_hex,
+                IFNULL(
                     utils.udf_hex_to_int(
                         trace_json :value :: STRING
                     ),
@@ -232,6 +236,7 @@ aggregated_errors AS (
                 f.trace_index,
                 f.from_address,
                 f.to_address,
+                f.value_hex,
                 f.value_precise_raw,
                 f.value_precise,
                 f.value,
@@ -277,6 +282,7 @@ heal_missing_data AS (
         t.trace_index,
         t.from_address,
         t.to_address,
+        t.value_hex,
         t.value_precise_raw,
         t.value_precise,
         t.value,
@@ -289,7 +295,6 @@ heal_missing_data AS (
         t.sub_traces,
         t.error_reason,
         t.revert_reason,
-        t.data,
         t.fact_traces_id AS traces_id,
         t.trace_succeeded,
         t.trace_address
@@ -316,6 +321,7 @@ all_traces AS (
         trace_index,
         from_address,
         to_address,
+        value_hex,
         value_precise_raw,
         value_precise,
         VALUE,
@@ -328,7 +334,6 @@ all_traces AS (
         sub_traces,
         error_reason,
         revert_reason,
-        DATA,
         traces_id,
         trace_succeeded,
         trace_address
@@ -346,6 +351,7 @@ SELECT
     trace_index,
     from_address,
     to_address,
+    value_hex,
     value_precise_raw,
     value_precise,
     VALUE,
@@ -358,7 +364,6 @@ SELECT
     sub_traces,
     error_reason,
     revert_reason,
-    DATA,
     traces_id,
     trace_succeeded,
     trace_address
@@ -377,6 +382,7 @@ SELECT
     VALUE,
     value_precise_raw,
     value_precise,
+    value_hex,
     gas,
     gas_used,
     input,

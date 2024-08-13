@@ -10,6 +10,12 @@ models:
         description: '{{ doc("dexalot_traces_blocktime") }}'
       - name: TX_HASH
         description: '{{ doc("dexalot_traces_tx_hash") }}' 
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("dexalot_origin_sig") }}'
+      - name: ORIGIN_FROM_ADDRESS
+        description: '{{ doc("dexalot_origin_from") }}'
+      - name: ORIGIN_TO_ADDRESS
+        description: '{{ doc("dexalot_origin_to") }}'
       - name: FROM_ADDRESS
         description: '{{ doc("dexalot_traces_from") }}'
       - name: TO_ADDRESS

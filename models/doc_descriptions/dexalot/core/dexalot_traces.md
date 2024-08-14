@@ -77,7 +77,7 @@ The amount of nested sub traces for this trace.
 
 {% docs dexalot_traces_table_doc %}
 
-Data is reliable starting on June 1st, 2024. We are in the process of backfilling this data further. This table contains flattened trace data for internal contract calls on the Dexalot Blockchain. Hex encoded fields can be decoded to integers by using `utils.udf_hex_to_int()`.
+Data is reliable starting on block 21248026. This table contains flattened trace data for internal contract calls on the Dexalot Blockchain. Hex encoded fields can be decoded to integers by using `utils.udf_hex_to_int()`.
 
 {% enddocs %}
 
@@ -110,3 +110,33 @@ The amount of ETH transferred in this trace.
 {% enddocs %}
 
 
+{% docs dexalot_traces_value_hex %}
+
+The amount of ETH transferred in this trace, in hexadecimal format.
+
+{% enddocs %}
+
+
+{% docs dexalot_traces_trace_succeeded %}
+
+The status of the trace, where TRUE = SUCCESS and FALSE = FAILED.
+
+{% enddocs %}
+
+{% docs dexalot_traces_error_reason %}
+
+The reason for the trace failure, if any.
+
+{% enddocs %}
+
+{% docs dexalot_traces_revert_reason %}
+
+The reason for the trace revert, if any.
+
+{% enddocs %}
+
+{% docs dexalot_traces_trace_index %}
+
+The index of the trace within the transaction. 
+
+{% enddocs %}

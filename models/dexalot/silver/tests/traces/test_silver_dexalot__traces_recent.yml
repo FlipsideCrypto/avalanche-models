@@ -1,0 +1,27 @@
+version: 2
+models:
+  - name: test_silver_dexalot__traces_recent
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - BLOCK_NUMBER
+            - TX_POSITION
+            - TRACE_ADDRESS
+    columns:
+      - name: BLOCK_NUMBER
+        tests:
+          - not_null  
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT    
+      - name: TX_POSITION
+        tests:
+          - not_null  
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              column_type_list:
+                - NUMBER    
+                - FLOAT  
+      - name: TRACE_ADDRESS
+        tests:
+          - not_null

@@ -27,7 +27,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze_dexalot__FR_traces') }}
+            {{ ref('bronze_dexalot__fr_traces') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY block_number

@@ -34,7 +34,7 @@ WHERE
     )
     AND DATA :result IS NOT NULL
 {% else %}
-    {{ ref('bronze_dexalot__FR_traces') }}
+    {{ ref('bronze_dexalot__fr_traces') }}
 WHERE
     partition_key <= 23000000
     AND DATA :result IS NOT NULL

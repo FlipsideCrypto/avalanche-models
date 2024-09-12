@@ -28,7 +28,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze_dexalot__FR_receipts_by_hash') }}
+            {{ ref('bronze_dexalot__fr_receipts_by_hash') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY complete_receipts_by_hash_id

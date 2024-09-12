@@ -33,7 +33,7 @@ WHERE
     )
     AND IS_OBJECT(DATA)
 {% else %}
-    {{ ref('bronze_dexalot__FR_transactions') }}
+    {{ ref('bronze_dexalot__fr_transactions') }}
 WHERE
     IS_OBJECT(DATA)
 {% endif %}

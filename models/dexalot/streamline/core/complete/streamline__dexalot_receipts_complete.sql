@@ -42,7 +42,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze_dexalot__FR_receipts') }}
+            {{ ref('bronze_dexalot__fr_receipts') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY block_number

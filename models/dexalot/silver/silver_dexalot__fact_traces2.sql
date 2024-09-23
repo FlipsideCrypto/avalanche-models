@@ -8,7 +8,7 @@
 ) }}
 
 {{ fsc_evm.gold_traces_v2(
-    full_reload_start_block = 24000000,
+    full_reload_start_block = 25000000,
     full_reload_blocks = 2000000,
     schema_name = 'silver_dexalot',
     full_reload_mode = true

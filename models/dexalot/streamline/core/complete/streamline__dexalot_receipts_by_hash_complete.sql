@@ -1,4 +1,4 @@
--- depends_on: {{ ref('bronze_dexalot__receipts_by_hash') }}
+-- depends_on: {{ ref('bronze_dexalot__streamline_receipts_by_hash') }}
 {{ config (
     materialized = "incremental",
     unique_key = "complete_receipts_by_hash_id",
@@ -20,7 +20,7 @@ SELECT
 FROM
 
 {% if is_incremental() %}
-{{ ref('bronze_dexalot__receipts_by_hash') }}
+{{ ref('bronze_dexalot__streamline_receipts_by_hash') }}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -28,7 +28,7 @@ WHERE
         FROM
             {{ this }})
         {% else %}
-            {{ ref('bronze_dexalot__fr_receipts_by_hash') }}
+            {{ ref('bronze_dexalot__streamline_fr_receipts_by_hash') }}
         {% endif %}
 
         qualify(ROW_NUMBER() over (PARTITION BY complete_receipts_by_hash_id

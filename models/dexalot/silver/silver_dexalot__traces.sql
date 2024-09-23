@@ -4,6 +4,7 @@
     incremental_strategy = 'delete+insert',
     unique_key = "block_number",
     cluster_by = ['modified_timestamp::DATE','partition_key'],
+    full_refresh = false,
     tags = ['dexalot_non_realtime']
 ) }}
 

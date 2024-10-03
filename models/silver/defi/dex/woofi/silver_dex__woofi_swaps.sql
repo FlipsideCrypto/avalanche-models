@@ -61,7 +61,8 @@ WITH router_swaps_base AS (
         contract_address IN (
             '0x5aa6a4e96a9129562e2fc06660d07feddaaf7854',
             --v1
-            '0xc22fbb3133df781e6c25ea6acebe2d2bb8cea2f9' --v2
+            '0xc22fbb3133df781e6c25ea6acebe2d2bb8cea2f9',
+            '0x4c4af8dbc524681930a27b2f1af5bcc8062e6fb7' --v2
         )
         AND topics [0] :: STRING = '0x27c98e911efdd224f4002f6cd831c3ad0d2759ee176f9ee8466d95826af22a1c' --WooRouterSwap
         AND tx_status = 'SUCCESS'
@@ -124,7 +125,8 @@ swaps_base AS (
         contract_address IN (
             '0xf8ce0d043891b62c55380fb1efbfb4f186153d96',
             '0x1df3009c57a8b143c6246149f00b090bce3b8f88',
-            '0x3b3e4b4741e91af52d0e9ad8660573e951c88524'
+            '0x3b3e4b4741e91af52d0e9ad8660573e951c88524',
+            '0xed9e3f98bbed560e66b89aac922e29d4596a9642'
         )
         AND topics [0] :: STRING IN (
             '0x74ef34e2ea7c5d9f7b7ed44e97ad44b4303416c3a660c3fb5b3bdb95a1d6abd3',

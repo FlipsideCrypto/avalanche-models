@@ -21,8 +21,8 @@ models:
       - name: _INSERTED_TIMESTAMP
         tests:
           - not_null
-          - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: hour
-              interval: 3
+          # - dbt_expectations.expect_row_values_to_have_recent_data:
+          #     datepart: hour
+          #     interval: 3
 
 

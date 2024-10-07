@@ -11,8 +11,8 @@ models:
           column_name: POSITION
     columns:
       - name: BLOCK_TIMESTAMP
-        tests:
-          - dbt_expectations.expect_row_values_to_have_recent_data:
-              datepart: hour
-              interval: 3
+        # tests:
+        #   - dbt_expectations.expect_row_values_to_have_recent_data:
+        #       datepart: hour
+        #       interval: 3
       

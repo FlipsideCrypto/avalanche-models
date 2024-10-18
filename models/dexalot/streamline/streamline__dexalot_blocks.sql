@@ -25,5 +25,6 @@ WHERE
         FROM
             {{ ref("streamline__get_dexalot_chainhead") }}
     )
+    and _id > 21248026
 ORDER BY
     _id ASC

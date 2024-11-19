@@ -105,7 +105,7 @@
               object_construct(
                 'sql_source', '{{view_name}}',
                 'producer_batch_size', {{ params.producer_batch_size }},
-                'producer_limit_size', {{ params.producer_limit_size }}
+                'producer_limit_size', {{ params.producer_limit_size }})
               );
           {% endset %}
 

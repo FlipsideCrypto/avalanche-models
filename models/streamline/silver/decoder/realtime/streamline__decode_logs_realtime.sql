@@ -26,7 +26,7 @@ existing_logs_to_exclude AS (
         l
         INNER JOIN target_blocks b USING (block_number)
     WHERE
-        l._inserted_timestamp :: DATE >= DATEADD('day', -2, SYSDATE())
+        l._inserted_timestamp :: DATE >= DATEADD('day', -5, SYSDATE())
 ),
 candidate_logs AS (
     SELECT
@@ -47,7 +47,7 @@ candidate_logs AS (
         l USING (block_number)
     WHERE
         l.tx_status = 'SUCCESS'
-        AND l.inserted_timestamp :: DATE >= DATEADD('day', -2, SYSDATE())
+        AND l.inserted_timestamp :: DATE >= DATEADD('day', -5, SYSDATE())
 )
 SELECT
     l.block_number,

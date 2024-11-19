@@ -4,6 +4,7 @@
     select 1
     from {{ ref('silver__user_verified_abis') }}
     where _inserted_timestamp::date = sysdate()::date
+    and dayname(sysdate()) <> 'Sat'
 {% endset %}
 
 {% set results = run_query(check_for_new_user_abis_query) %}

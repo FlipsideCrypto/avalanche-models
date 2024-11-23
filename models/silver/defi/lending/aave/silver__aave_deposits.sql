@@ -64,16 +64,14 @@ deposits AS(
             '0xde6857219544bb5b7746f48ed30be6386fefc61b2f864cacf559893bf50fd951',
             '0x2b627736bca15cd5381dcf80b0bf11fd197d01a037c52b927a881a10fb73ba61'
         )
-
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(
-            _inserted_timestamp
-        ) - INTERVAL '12 hours'
+        MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
+AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 AND contract_address IN (SELECT distinct(aave_version_pool) from atoken_meta)
 AND tx_status = 'SUCCESS' --excludes failed txs

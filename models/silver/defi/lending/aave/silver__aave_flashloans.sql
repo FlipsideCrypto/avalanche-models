@@ -71,16 +71,14 @@ flashloan AS (
             '0xefefaba5e921573100900a3ad9cf29f222d995fb3b6045797eaea7521bd8d6f0', --v3
             '0x631042c832b07452973831137f2d73e395028b44b250dedc5abb0ee766e168ac' --v2
         )
-
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(
-            _inserted_timestamp
-        ) - INTERVAL '12 hours'
+        MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
+AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 AND contract_address IN (SELECT distinct(aave_version_pool) from atoken_meta)
 AND tx_status = 'SUCCESS' --excludes failed txs

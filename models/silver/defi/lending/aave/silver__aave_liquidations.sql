@@ -64,16 +64,14 @@ liquidation AS(
             '0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286',
             '0x56864757fd5b1fc9f38f5f3a981cd8ae512ce41b902cf73fc506ee369c6bc237'
         )
-
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(
-            _inserted_timestamp
-        ) - INTERVAL '12 hours'
+        MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
+AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 AND contract_address IN (SELECT distinct(aave_version_pool) from atoken_meta)
 AND tx_status = 'SUCCESS' --excludes failed txs

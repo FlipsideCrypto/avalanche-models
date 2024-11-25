@@ -70,16 +70,14 @@ borrow AS (
             '0xc6a898309e823ee50bac64e45ca8adba6690e99e7841c45d754e2a38e9019d9b',
             '0xb3d084820fb1a9decffb176436bd02558d15fac9b0ddfed8c465bc7359d7dce0'
         )
-
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
     SELECT
-        MAX(
-            _inserted_timestamp
-        ) - INTERVAL '12 hours'
+        MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
+AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 AND contract_address IN (SELECT distinct(aave_version_pool) from atoken_meta)
 AND tx_status = 'SUCCESS' --excludes failed txs

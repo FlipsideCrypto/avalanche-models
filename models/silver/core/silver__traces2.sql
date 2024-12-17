@@ -8,7 +8,7 @@
     full_refresh = false,
     tags = ['non_realtime']
 ) }}
-{{ fsc_evm.silver_traces_v1(
+{{ silver_traces_v1(
     full_reload_start_block = 5000000,
     full_reload_blocks = 3000000
 ) }}

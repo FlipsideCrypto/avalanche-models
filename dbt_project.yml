@@ -77,16 +77,13 @@ vars:
 
   API_INTEGRATION: '{{ var("config")[target.name]["API_INTEGRATION"] if var("config")[target.name] else var("config")["dev"]["API_INTEGRATION"] }}'
   EXTERNAL_FUNCTION_URI: '{{ var("config")[target.name]["EXTERNAL_FUNCTION_URI"] if var("config")[target.name] else var("config")["dev"]["EXTERNAL_FUNCTION_URI"] }}'
-  API_AWS_ROLE_ARN: '{{ var("config")[target.name]["API_AWS_ROLE_ARN"] if var("config")[target.name] else var("config")["dev"]["API_AWS_ROLE_ARN"] }}'
   ROLES: |
     ["INTERNAL_DEV"]
-
   config:
   # The keys correspond to dbt profiles and are case sensitive
     dev:
       API_INTEGRATION: aws_avalanche_api_stg_v2
       EXTERNAL_FUNCTION_URI: eb9c29d4el.execute-api.us-east-1.amazonaws.com/stg/
-      API_AWS_ROLE_ARN: arn:aws:iam::704693948482:role/avalanche-api-stg-rolesnowflakeudfsAF733095-CCDPFHsmlGmu
       ROLES:
         - AWS_LAMBDA_AVALANCHE_API
         - INTERNAL_DEV
@@ -94,10 +91,42 @@ vars:
     prod:
       API_INTEGRATION: aws_avalanche_api_prod_v2
       EXTERNAL_FUNCTION_URI: 94k2zsc41f.execute-api.us-east-1.amazonaws.com/prod/
-      API_AWS_ROLE_ARN: arn:aws:iam::924682671219:role/avalanche-api-prod-rolesnowflakeudfsAF733095-jBvAIUHiR70D
       ROLES:
         - AWS_LAMBDA_AVALANCHE_API
         - INTERNAL_DEV
         - DBT_CLOUD_AVALANCHE
 
 #### STREAMLINE 2.0 END ####
+
+#### FSC_EVM BEGIN ####
+# Visit https://github.com/FlipsideCrypto/fsc-evm/wiki for more information on required and optional variables
+
+  ### GLOBAL VARIABLES BEGIN ###
+  ## REQUIRED
+  GLOBAL_PROD_DB_NAME: 'avalanche' 
+  GLOBAL_NODE_SECRET_PATH: 'Vault/prod/avalanche/c_chain/quicknode/mainnet'
+  GLOBAL_BLOCKS_PER_HOUR: 1800 
+  GLOBAL_USES_STREAMLINE_V1: True
+  GLOBAL_USES_SINGLE_FLIGHT_METHOD: True
+
+  ### GLOBAL VARIABLES END ###
+
+  ### MAIN_PACKAGE VARIABLES BEGIN ###
+
+  ### CORE ###
+  ## REQUIRED
+
+  ## OPTIONAL
+
+  # GOLD_FULL_REFRESH: True
+  # SILVER_FULL_REFRESH: True
+  
+  # BLOCKS_COMPLETE_FULL_REFRESH: True
+  # CONFIRM_BLOCKS_COMPLETE_FULL_REFRESH: True
+  # RECEIPTS_COMPLETE_FULL_REFRESH: True
+  # TRACES_COMPLETE_FULL_REFRESH: True
+  # TRANSACTIONS_COMPLETE_FULL_REFRESH: True
+
+  ### MAIN_PACKAGE VARIABLES END ###
+
+#### FSC_EVM END ####

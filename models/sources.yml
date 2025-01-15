@@ -23,12 +23,12 @@ sources:
   - name: bronze_streamline
     database: streamline
     schema: |
-      {{ "AVALANCHE_DEV" if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else "AVALANCHE" }}
+      {{ var('GLOBAL_PROD_DB_NAME') ~ ('_dev' if var("STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES", False) else '') }}
     tables:
       - name: receipts
       - name: blocks
       - name: transactions
-      - name: debug_traceBlockByNumber
+      - name: debug_traceblockbynumber
       - name: decoded_logs
       - name: confirm_blocks
       - name: dexalot_blocks
@@ -37,6 +37,11 @@ sources:
       - name: dexalot_traces
       - name: dexalot_confirm_blocks
       - name: dexalot_receipts_by_hash
+      - name: blocks_v2
+      - name: transactions_v2
+      - name: receipts_v2
+      - name: traces_v2
+      - name: confirm_blocks_v2
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

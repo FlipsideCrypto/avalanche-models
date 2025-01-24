@@ -15,17 +15,26 @@ WITH avax_base AS (
         block_timestamp,
         from_address,
         to_address,
-        avax_value,
+        VALUE AS avax_value,
         identifier,
-        _call_id,
+        concat_ws(
+            '-',
+            block_number,
+            tx_position,
+            CONCAT(
+                TYPE,
+                '_',
+                trace_address
+            )
+        ) AS _call_id,
         input,
-        _INSERTED_TIMESTAMP,
-        avax_value_precise_raw,
-        avax_value_precise,
+        modified_timestamp AS _INSERTED_TIMESTAMP,
+        value_precise_raw AS avax_value_precise_raw,
+        value_precise AS avax_value_precise,
         tx_position,
         trace_index
     FROM
-        {{ ref('silver__traces') }}
+        {{ ref('core__fact_traces') }}
     WHERE
         avax_value > 0
         AND tx_status = 'SUCCESS'

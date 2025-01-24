@@ -6,15 +6,14 @@
     tags = ['reorg','curated']
 ) }}
 
-WITH 
-contracts AS (
+WITH contracts AS (
+
     SELECT
         *
     FROM
         {{ ref('silver__contracts') }}
 ),
 log_pull AS (
-
     SELECT
         l.tx_hash,
         l.block_number,
@@ -26,16 +25,13 @@ log_pull AS (
         l._inserted_timestamp,
         l._log_id
     FROM
-        {{ ref('silver__logs') }} l 
-    LEFT JOIN
-        contracts c
-    ON
-        l.contract_address = c.contract_address
+        {{ ref('silver__logs') }}
+        l
+        LEFT JOIN contracts C
+        ON l.contract_address = C.contract_address
     WHERE
         topics [0] :: STRING = '0x17d6db5ffe5a3d1c3d7a98194dca4f7d808d621e6ff9077ed574513d553a2a85'
-    AND 
-        TOKEN_NAME LIKE '%Banker Joe %'
-
+        AND token_name LIKE '%Banker Joe %'
 
 {% if is_incremental() %}
 AND l._inserted_timestamp >= (
@@ -54,7 +50,7 @@ traces_pull AS (
         from_address AS token_address,
         to_address AS underlying_asset
     FROM
-        {{ ref('silver__traces') }}
+        {{ ref('core__fact_traces') }}
     WHERE
         tx_hash IN (
             SELECT
@@ -102,4 +98,4 @@ FROM
     LEFT JOIN contracts C
     ON C.contract_address = l.underlying_asset
 WHERE
-     l.token_name IS NOT NULL
+    l.token_name IS NOT NULL

@@ -42,6 +42,7 @@ sources:
       - name: receipts_v2
       - name: traces_v2
       - name: confirm_blocks_v2
+      - name: decoded_logs_v2
   - name: crosschain_public
     database: crosschain
     schema: bronze_public

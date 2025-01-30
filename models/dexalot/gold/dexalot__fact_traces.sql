@@ -3,10 +3,17 @@
     incremental_strategy = 'delete+insert',
     unique_key = ['block_number'],
     cluster_by = "block_timestamp::date",
-    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_number,tx_hash,from_address,to_address,trace_address,type,identifier), SUBSTRING(input,output,type,trace_address,identifier,error_reason,revert_reason)",
+    post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_number,tx_hash,from_address,to_address,trace_address,type), SUBSTRING(input,output,type,trace_address,error_reason,revert_reason)",
+    full_refresh = false,
     tags = ['dexalot_non_realtime']
 ) }}
-
+{# {{ fsc_evm.gold_traces_v2(
+full_reload_start_block = 25000000,
+full_reload_blocks = 2000000,
+schema_name = 'silver_dexalot',
+uses_tx_status = TRUE
+) }}
+#}
 WITH silver_traces AS (
 
     SELECT
@@ -23,17 +30,13 @@ WITH silver_traces AS (
     WHERE
         1 = 1
 
-{% if is_incremental() and not var(
-    'RELOAD_TRACES',
-) %}
+{% if is_incremental() and not full_reload_mode %}
 AND modified_timestamp > (
     SELECT
         MAX(modified_timestamp)
     FROM
         {{ this }}
-) {% elif is_incremental() and var(
-    'RELOAD_TRACES',
-) %}
+) {% elif is_incremental() and full_reload_mode %}
 AND block_number BETWEEN (
     SELECT
         MAX(
@@ -46,12 +49,12 @@ AND (
     SELECT
         MAX(
             block_number
-        ) + 1000000
+        ) + 2000000
     FROM
         {{ this }}
 )
 {% else %}
-    AND block_number <= 23000000
+    AND block_number <= 25000000
 {% endif %}
 ),
 sub_traces AS (
@@ -112,7 +115,8 @@ trace_index_sub_traces AS (
                 number_array ASC
         ) - 1 AS trace_index,
         b.trace_json,
-        b.traces_id
+        b.traces_id,
+        b.source
     FROM
         silver_traces b
         LEFT JOIN sub_traces s
@@ -148,9 +152,10 @@ error_logic AS (
         LEFT JOIN errored_traces b1
         ON b0.block_number = b1.block_number
         AND b0.tx_position = b1.tx_position
-        AND b0.trace_address LIKE CONCAT(
+        AND b0.trace_address RLIKE CONCAT(
+            '^',
             b1.trace_address,
-            '_%'
+            '(_[0-9]+)*$'
         )
         LEFT JOIN errored_traces b2
         ON b0.block_number = b2.block_number
@@ -182,7 +187,6 @@ aggregated_errors AS (
                 sub_traces,
                 number_array,
                 trace_index,
-                trace_json AS DATA,
                 trace_succeeded,
                 trace_json :error :: STRING AS error_reason,
                 trace_json :revertReason :: STRING AS revert_reason,
@@ -212,11 +216,6 @@ aggregated_errors AS (
                 trace_json :input :: STRING AS input,
                 trace_json :output :: STRING AS output,
                 trace_json :type :: STRING AS TYPE,
-                concat_ws(
-                    '_',
-                    TYPE,
-                    trace_address
-                ) AS identifier,
                 traces_id
             FROM
                 trace_index_sub_traces
@@ -234,11 +233,10 @@ aggregated_errors AS (
                 t.origin_function_signature,
                 t.from_address AS origin_from_address,
                 t.to_address AS origin_to_address,
-                t.tx_status AS tx_succeeded,
                 f.tx_position,
                 f.trace_index,
-                f.from_address,
-                f.to_address,
+                f.from_address AS from_address,
+                f.to_address AS to_address,
                 f.value_hex,
                 f.value_precise_raw,
                 f.value_precise,
@@ -248,14 +246,13 @@ aggregated_errors AS (
                 f.input,
                 f.output,
                 f.type,
-                f.identifier,
                 f.sub_traces,
                 f.error_reason,
                 f.revert_reason,
-                f.data,
                 f.traces_id,
                 f.trace_succeeded,
-                f.trace_address
+                f.trace_address,
+                t.tx_status AS tx_succeeded
             FROM
                 json_traces f
                 LEFT OUTER JOIN {{ ref('silver_dexalot__transactions') }}
@@ -263,9 +260,7 @@ aggregated_errors AS (
                 ON f.tx_position = t.position
                 AND f.block_number = t.block_number
 
-{% if is_incremental() and not var(
-    'RELOAD_TRACES',
-) %}
+{% if is_incremental() and not full_reload_mode %}
 AND t.modified_timestamp >= (
     SELECT
         DATEADD('hour', -24, MAX(modified_timestamp))
@@ -275,6 +270,14 @@ AND t.modified_timestamp >= (
 )
 
 {% if is_incremental() %},
+overflow_blocks AS (
+    SELECT
+        DISTINCT block_number
+    FROM
+        silver_traces
+    WHERE
+        source = 'overflow'
+),
 heal_missing_data AS (
     SELECT
         t.block_number,
@@ -283,7 +286,6 @@ heal_missing_data AS (
         txs.origin_function_signature,
         txs.from_address AS origin_from_address,
         txs.to_address AS origin_to_address,
-        txs.tx_status AS tx_succeeded,
         t.tx_position,
         t.trace_index,
         t.from_address,
@@ -297,17 +299,17 @@ heal_missing_data AS (
         t.input,
         t.output,
         t.type,
-        t.identifier,
         t.sub_traces,
         t.error_reason,
         t.revert_reason,
         t.fact_traces_id AS traces_id,
         t.trace_succeeded,
-        t.trace_address
+        t.trace_address,
+        txs.tx_status AS tx_succeeded
     FROM
         {{ this }}
         t
-        INNER JOIN {{ ref('silver_dexalot__transactions') }}
+        JOIN {{ ref('silver_dexalot__transactions') }}
         txs
         ON t.tx_position = txs.position
         AND t.block_number = txs.block_number
@@ -325,7 +327,6 @@ all_traces AS (
         origin_function_signature,
         origin_from_address,
         origin_to_address,
-        tx_succeeded,
         tx_position,
         trace_index,
         from_address,
@@ -339,13 +340,12 @@ all_traces AS (
         input,
         output,
         TYPE,
-        identifier,
         sub_traces,
         error_reason,
         revert_reason,
-        traces_id,
         trace_succeeded,
-        trace_address
+        trace_address,
+        tx_succeeded
     FROM
         incremental_traces
 
@@ -358,7 +358,6 @@ SELECT
     origin_function_signature,
     origin_from_address,
     origin_to_address,
-    tx_succeeded,
     tx_position,
     trace_index,
     from_address,
@@ -372,15 +371,44 @@ SELECT
     input,
     output,
     TYPE,
-    identifier,
     sub_traces,
     error_reason,
     revert_reason,
-    traces_id,
     trace_succeeded,
-    trace_address
+    trace_address,
+    tx_succeeded
 FROM
     heal_missing_data
+UNION ALL
+SELECT
+    block_number,
+    tx_hash,
+    block_timestamp,
+    origin_function_signature,
+    origin_from_address,
+    origin_to_address,
+    tx_position,
+    trace_index,
+    from_address,
+    to_address,
+    value_hex,
+    value_precise_raw,
+    value_precise,
+    VALUE,
+    gas,
+    gas_used,
+    input,
+    output,
+    TYPE,
+    sub_traces,
+    error_reason,
+    revert_reason,
+    trace_succeeded,
+    trace_address,
+    tx_succeeded
+FROM
+    {{ this }}
+    JOIN overflow_blocks USING (block_number)
 {% endif %}
 )
 SELECT
@@ -388,28 +416,27 @@ SELECT
     block_timestamp,
     tx_hash,
     tx_position,
-    origin_function_signature,
-    origin_from_address,
-    origin_to_address,
     trace_index,
     from_address,
     to_address,
+    input,
+    output,
+    TYPE,
+    trace_address,
+    sub_traces,
     VALUE,
     value_precise_raw,
     value_precise,
     value_hex,
     gas,
     gas_used,
-    input,
-    output,
-    tx_succeeded,
+    origin_from_address,
+    origin_to_address,
+    origin_function_signature,
     trace_succeeded,
     error_reason,
     revert_reason,
-    sub_traces,
-    TYPE,
-    trace_address,
-    identifier,
+    tx_succeeded,
     {{ dbt_utils.generate_surrogate_key(
         ['tx_hash', 'trace_index']
     ) }} AS fact_traces_id,

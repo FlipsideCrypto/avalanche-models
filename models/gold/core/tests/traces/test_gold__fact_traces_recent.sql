@@ -1,16 +1,16 @@
 {{ config (
-    materialized = 'view',
+    materialized = "view",
     tags = ['recent_test']
 ) }}
 
 SELECT
     *
 FROM
-    {{ ref('dexalot__fact_transactions') }}
+    {{ ref('core__fact_traces') }}
 WHERE
     block_number > (
         SELECT
             block_number
         FROM
-            {{ ref("_dexalot_block_lookback") }}
+            {{ ref('_block_lookback') }}
     )

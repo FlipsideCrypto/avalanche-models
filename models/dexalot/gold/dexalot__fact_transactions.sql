@@ -10,18 +10,20 @@
 SELECT
     block_number,
     block_timestamp,
-    block_hash,
     tx_hash,
-    nonce,
-    POSITION,
-    origin_function_signature,
     from_address,
     to_address,
-    VALUE,
+    origin_function_signature,
+    value,
     value_precise_raw,
     value_precise,
     tx_fee,
     tx_fee_precise,
+    tx_status AS tx_succeeded,
+    tx_type,
+    nonce,
+    position as tx_position,
+    input_data,
     gas_price,
     effective_gas_price,
     gas AS gas_limit,
@@ -29,14 +31,15 @@ SELECT
     cumulative_gas_used,
     max_fee_per_gas,
     max_priority_fee_per_gas,
-    input_data,
-    tx_status AS tx_succeeded,
     r,
     s,
     v,
     transactions_id AS fact_transactions_id,
     inserted_timestamp,
-    modified_timestamp
+    modified_timestamp,
+    block_hash,
+    -- deprecate
+    position -- deprecate
 FROM
     {{ ref('silver_dexalot__transactions') }}
 

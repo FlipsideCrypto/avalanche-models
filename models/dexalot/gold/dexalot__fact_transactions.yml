@@ -9,7 +9,7 @@ models:
       - name: BLOCK_TIMESTAMP
         description: '{{ doc("dexalot_block_timestamp") }}'
       - name: BLOCK_HASH
-        description: '{{ doc("dexalot_tx_block_hash") }}' 
+        description: '{{ doc("evm_column_deprecation_notice_block_hash") }}' 
       - name: TX_HASH
         description: '{{ doc("dexalot_tx_hash") }}' 
       - name: NONCE

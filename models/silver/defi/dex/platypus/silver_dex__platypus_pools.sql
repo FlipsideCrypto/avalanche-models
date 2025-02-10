@@ -19,7 +19,7 @@ WITH contract_deployments AS (
     WHERE
         from_address = '0x416a7989a964c9ed60257b064efc3a30fe6bf2ee'
         AND TYPE ILIKE 'create%'
-        AND tx_status = 'SUCCESS'
+        AND tx_succeeded
         AND trace_status = 'SUCCESS'
 
 {% if is_incremental() %}

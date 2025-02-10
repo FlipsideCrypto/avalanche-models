@@ -51,6 +51,14 @@ models:
         description: '{{ doc("avax_origin_to") }}'
       - name: TOPICS
         description: '{{ doc("avax_topics") }}'
+      - name: TOPIC_0
+        description: '{{ doc("evm_topic_0") }}'
+      - name: TOPIC_1
+        description: '{{ doc("evm_topic_1") }}'
+      - name: TOPIC_2
+        description: '{{ doc("evm_topic_2") }}'
+      - name: TOPIC_3
+        description: '{{ doc("evm_topic_3") }}'
       - name: DATA
         description: '{{ doc("avax_logs_data") }}'
       - name: EVENT_REMOVED
@@ -58,7 +66,7 @@ models:
       - name: TX_STATUS
         description: '{{ doc("avax_tx_status") }}' 
       - name: EZ_DECODED_EVENT_LOGS_ID
-        description: '{{ doc("pk") }}'   
+        description: '{{ doc("evm_pk") }}'   
       - name: INSERTED_TIMESTAMP
         description: '{{ doc("inserted_timestamp") }}'   
       - name: MODIFIED_TIMESTAMP

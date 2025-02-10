@@ -11,7 +11,7 @@ WITH raw_decoded_logs AS (
     SELECT
         *
     FROM
-        {{ ref('silver__decoded_logs') }}
+        {{ ref('core__ez_decoded_event_logs') }}
     WHERE
         block_timestamp >= '2022-04-01'
         AND contract_address IN (
@@ -41,13 +41,13 @@ sale_events AS (
         tx_hash,
         event_name,
         contract_address AS platform_address,
-        decoded_flat,
-        decoded_flat :amount :: INT AS quantity,
-        decoded_flat :collection :: STRING AS nft_address,
-        decoded_flat :tokenId :: STRING AS tokenid,
-        decoded_flat :currency :: STRING AS currency_address,
-        decoded_flat :maker :: STRING AS maker,
-        decoded_flat :taker :: STRING AS taker,
+        decoded_log,
+        decoded_log :amount :: INT AS quantity,
+        decoded_log :collection :: STRING AS nft_address,
+        decoded_log :tokenId :: STRING AS tokenid,
+        decoded_log :currency :: STRING AS currency_address,
+        decoded_log :maker :: STRING AS maker,
+        decoded_log :taker :: STRING AS taker,
         IFF(
             event_name = 'TakerBid',
             taker,
@@ -58,10 +58,10 @@ sale_events AS (
             maker,
             taker
         ) AS seller_address,
-        decoded_flat :price :: INT AS total_price_raw,
-        decoded_flat :strategy :: STRING AS strategy,
-        decoded_flat :orderHash :: STRING AS orderhash,
-        decoded_flat :orderNonce :: STRING AS ordernonce,
+        decoded_log :price :: INT AS total_price_raw,
+        decoded_log :strategy :: STRING AS strategy,
+        decoded_log :orderHash :: STRING AS orderhash,
+        decoded_log :orderNonce :: STRING AS ordernonce,
         ROW_NUMBER() over (
             PARTITION BY tx_hash
             ORDER BY
@@ -77,8 +77,12 @@ sale_events AS (
         origin_from_address,
         origin_to_address,
         origin_function_signature,
-        _log_id,
-        _inserted_timestamp
+        CONCAT(
+            tx_hash :: STRING,
+            '-',
+            event_index :: STRING
+        ) AS _log_id,
+        modified_timestamp AS _inserted_timestamp
     FROM
         raw_decoded_logs
     WHERE
@@ -92,12 +96,12 @@ royalty_events AS (
     SELECT
         tx_hash,
         event_index AS royalty_event_index,
-        decoded_flat,
-        decoded_flat :amount :: INT AS creator_fee_raw_,
-        decoded_flat :currency :: STRING AS royalty_currency,
-        decoded_flat :collection :: STRING AS nft_address,
-        decoded_flat :tokenId :: STRING AS tokenid,
-        decoded_flat :royaltyRecipient :: STRING AS royalty_recipient,
+        decoded_log,
+        decoded_log :amount :: INT AS creator_fee_raw_,
+        decoded_log :currency :: STRING AS royalty_currency,
+        decoded_log :collection :: STRING AS nft_address,
+        decoded_log :tokenId :: STRING AS tokenid,
+        decoded_log :royaltyRecipient :: STRING AS royalty_recipient,
         ROW_NUMBER() over (
             PARTITION BY tx_hash
             ORDER BY
@@ -178,9 +182,9 @@ platform_fee_transfers AS (
     SELECT
         tx_hash,
         event_index AS platform_event_index,
-        decoded_flat :dst :: STRING AS platform_fee_recipient,
-        decoded_flat :src :: STRING AS platform_fee_payer,
-        decoded_flat :wad :: INT AS platform_fee_raw_
+        decoded_log :dst :: STRING AS platform_fee_recipient,
+        decoded_log :src :: STRING AS platform_fee_payer,
+        decoded_log :wad :: INT AS platform_fee_raw_
     FROM
         raw_decoded_logs
     WHERE
@@ -316,7 +320,7 @@ tx_data AS (
         tx_fee,
         input_data
     FROM
-        {{ ref('silver__transactions') }}
+        {{ ref('core__fact_transactions') }}
     WHERE
         block_timestamp :: DATE >= '2022-04-01'
         AND tx_hash IN (
@@ -327,13 +331,13 @@ tx_data AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 )
 SELECT

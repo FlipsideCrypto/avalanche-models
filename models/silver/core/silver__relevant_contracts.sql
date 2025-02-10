@@ -36,8 +36,8 @@ function_calls AS (
     FROM
         {{ ref('core__fact_traces') }}
     WHERE
-        tx_status = 'SUCCESS'
-        AND trace_status = 'SUCCESS'
+        tx_succeeded
+        AND trace_succeeded
         AND to_address IS NOT NULL
         AND input IS NOT NULL
         AND input <> '0x'

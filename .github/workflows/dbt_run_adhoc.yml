@@ -22,7 +22,7 @@ on:
           - DBT
           - DBT_CLOUD
           - DBT_EMERGENCY
-          - DBT_META
+          - DBT_MEGA
         default: DBT
       dbt_command:
         type: string

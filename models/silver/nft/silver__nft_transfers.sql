@@ -10,7 +10,7 @@
 WITH base AS (
 
     SELECT
-        _log_id,
+        concat_ws('-', tx_hash, event_index) AS _log_id,
         block_number,
         tx_hash,
         block_timestamp,
@@ -19,11 +19,11 @@ WITH base AS (
         topics,
         DATA,
         regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
-        TO_TIMESTAMP_NTZ(_inserted_timestamp) AS _inserted_timestamp
+        modified_timestamp AS _inserted_timestamp
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
-        tx_status = 'SUCCESS'
+        tx_succeeded
         AND (
             (
                 topics [0] :: STRING = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
@@ -39,9 +39,9 @@ WITH base AS (
         )
 
 {% if is_incremental() %}
-AND TO_TIMESTAMP_NTZ(_inserted_timestamp) >= (
+AND modified_timestamp >= (
     SELECT
-        MAX(_inserted_timestamp) - INTERVAL '24 hours'
+        MAX(modified_timestamp) - INTERVAL '24 hours'
     FROM
         {{ this }}
 )

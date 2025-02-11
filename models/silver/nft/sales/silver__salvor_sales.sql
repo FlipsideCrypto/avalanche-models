@@ -343,7 +343,7 @@ nft_transfers AS (
         tokenid,
         erc1155_value
     FROM
-        {{ ref('silver__nft_transfers') }}
+        {{ ref('nft__ez_nft_transfers') }}
     WHERE
         block_timestamp :: DATE >= '2022-10-01'
         AND tx_hash IN (

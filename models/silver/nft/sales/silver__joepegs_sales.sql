@@ -246,7 +246,7 @@ nft_address_type AS (
         contract_address AS nft_address,
         token_transfer_type
     FROM
-        {{ ref('silver__nft_transfers') }}
+        {{ ref('nft__ez_nft_transfers') }}
     WHERE
         block_timestamp :: DATE >= '2022-04-01'
         AND contract_address IN (
@@ -257,13 +257,13 @@ nft_address_type AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
-        MAX(_inserted_timestamp) - INTERVAL '12 hours'
+        MAX(modified_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 

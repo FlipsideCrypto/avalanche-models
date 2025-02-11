@@ -82,7 +82,7 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 AND contract_address IN (SELECT distinct(aave_version_pool) from atoken_meta)
 AND tx_succeeded --excludes failed txs

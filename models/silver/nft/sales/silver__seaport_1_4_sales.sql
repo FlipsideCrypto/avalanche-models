@@ -35,7 +35,7 @@ AND modified_timestamp >= (
     FROM
         {{ this }}
 )
-AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 mao_buy_tx AS (
@@ -1675,7 +1675,7 @@ AND modified_timestamp >= (
         {{ this }}
 )
 AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 nft_transfer_operator AS (

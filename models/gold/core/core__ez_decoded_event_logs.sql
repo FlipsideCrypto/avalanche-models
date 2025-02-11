@@ -42,8 +42,13 @@ SELECT
             ['tx_hash', 'event_index']
         ) }}
     ) AS ez_decoded_event_logs_id,
-    GREATEST(COALESCE(l.inserted_timestamp, '2000-01-01'), COALESCE(C.inserted_timestamp, '2000-01-01')) AS inserted_timestamp,
-    GREATEST(COALESCE(l.modified_timestamp, '2000-01-01'), COALESCE(C.modified_timestamp, '2000-01-01')) AS modified_timestamp,
+{% if is_incremental() %}
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+{% else %}
+    GREATEST(block_timestamp, dateaadd('day', -10, SYSDATE())) AS inserted_timestamp,
+    GREATEST(block_timestamp, dateaadd('day', -10, SYSDATE())) AS modified_timestamp,
+{% endif %}
     tx_status --deprecate
 FROM
     {{ ref('silver__decoded_logs') }}

@@ -46,7 +46,7 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 initial_info AS (
@@ -73,7 +73,7 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 

@@ -29,12 +29,13 @@ raw_decoded_logs AS (
         AND event_name = 'OrderFulfilled'
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '24 hours'
     FROM
         {{ this }}
 )
+AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 mao_buy_tx AS (
@@ -42,11 +43,11 @@ mao_buy_tx AS (
         tx_hash,
         event_index,
         CASE
-            WHEN decoded_data :data [4] :value [0] [0] IN (
+            WHEN full_decoded_log :data [4] :value [0] [0] IN (
                 2,
                 3
             ) THEN 'buy'
-            WHEN decoded_data :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
+            WHEN full_decoded_log :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
             ELSE NULL
         END AS trade_type
     FROM
@@ -59,11 +60,11 @@ mao_offer_accepted_tx AS (
         block_number,
         tx_hash,
         CASE
-            WHEN decoded_data :data [4] :value [0] [0] IN (
+            WHEN full_decoded_log :data [4] :value [0] [0] IN (
                 2,
                 3
             ) THEN 'buy'
-            WHEN decoded_data :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
+            WHEN full_decoded_log :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
             ELSE NULL
         END AS trade_type
     FROM
@@ -159,11 +160,11 @@ mao_orderhash AS (
         mao_raw_decoded AS (
             SELECT
                 CASE
-                    WHEN decoded_data :data [4] :value [0] [0] IN (
+                    WHEN full_decoded_log :data [4] :value [0] [0] IN (
                         2,
                         3
                     ) THEN 'buy'
-                    WHEN decoded_data :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
+                    WHEN full_decoded_log :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
                     ELSE NULL
                 END AS trade_type,
                 decoded_log :orderHash :: STRING AS orderhash,
@@ -203,24 +204,28 @@ mao_orderhash AS (
                 tx_hash,
                 decoded_log,
                 event_index,
-                decoded_data,
+                full_decoded_log,
                 CONCAT(
                     tx_hash,
                     '-',
                     decoded_log :orderHash :: STRING
                 ) AS tx_hash_orderhash,
-                _log_id,
-                _inserted_timestamp,
+                CONCAT(
+                    event_index :: STRING,
+                    '-',
+                    tx_hash :: STRING
+                ) AS _log_id,
+                modified_timestamp AS _inserted_timestamp,
                 LOWER(
-                    decoded_data :address :: STRING
+                    full_decoded_log :address :: STRING
                 ) AS contract_address,
-                decoded_data :name :: STRING AS event_name,
+                full_decoded_log :name :: STRING AS event_name,
                 CASE
-                    WHEN decoded_data :data [4] :value [0] [0] IN (
+                    WHEN full_decoded_log :data [4] :value [0] [0] IN (
                         2,
                         3
                     ) THEN 'buy'
-                    WHEN decoded_data :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
+                    WHEN full_decoded_log :data [4] :value [0] [0] IN (1) THEN 'offer_accepted'
                     ELSE NULL
                 END AS trade_type
             FROM
@@ -317,7 +322,11 @@ mao_orderhash AS (
                 ) AS offer_length_raw --> this is the number of nfts in a batch buy. If n = 1, then price is known. If n > 1 then price is estimated
             FROM
                 decoded,
-                TABLE(FLATTEN(input => decoded_data :data [4] :value))
+                TABLE(
+                    FLATTEN(
+                        input => full_decoded_log :data [4] :value
+                    )
+                )
             WHERE
                 trade_type = 'buy'
                 AND VALUE [0] IN (
@@ -339,7 +348,11 @@ mao_orderhash AS (
                 ) AS offer_length_raw --> this is the number of nfts in a batch buy. If n = 1, then price is known. If n > 1 then price is estimated
             FROM
                 decoded,
-                TABLE(FLATTEN(input => decoded_data :data [5] :value))
+                TABLE(
+                    FLATTEN(
+                        input => full_decoded_log :data [5] :value
+                    )
+                )
             WHERE
                 trade_type = 'offer_accepted'
                 AND VALUE [0] IN (
@@ -358,7 +371,7 @@ mao_orderhash AS (
                 contract_address,
                 event_name,
                 trade_type,
-                decoded_data :data AS full_data,
+                full_decoded_log :data AS full_data,
                 _log_id,
                 _inserted_timestamp,
                 OBJECT_AGG(
@@ -368,7 +381,7 @@ mao_orderhash AS (
             FROM
                 decoded,
                 LATERAL FLATTEN(
-                    input => decoded_data :data
+                    input => full_decoded_log :data
                 ) f
             WHERE
                 event_name IN (
@@ -1194,7 +1207,7 @@ mao_orderhash AS (
                 contract_address,
                 trade_type,
                 offer_length_raw,
-                decoded_data,
+                full_decoded_log,
                 decoded_log,
                 decoded_log :offerer :: STRING AS offerer,
                 -- or the one who proposed the sale so that they receive the nft
@@ -1209,8 +1222,12 @@ mao_orderhash AS (
                 (
                     decoded_log :offer [0] :amount :: INT
                 ) / offer_length_raw AS total_sale_price_raw,
-                _inserted_timestamp,
-                _log_id
+                r.modified_timestamp AS _inserted_timestamp,
+                CONCAT(
+                    r.event_index :: STRING,
+                    '-',
+                    r.tx_hash :: STRING
+                ) AS _log_id
             FROM
                 mao_raw_decoded r
                 LEFT JOIN mao_orderhash_full A
@@ -1679,7 +1696,7 @@ nft_transfer_operator AS (
             )
         ) AS erc1155_value
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
         block_timestamp :: DATE >= '2022-07-01'
         AND tx_hash IN (
@@ -1694,14 +1711,15 @@ nft_transfer_operator AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '24 hours'
     FROM
         {{ this }}
 )
 {% endif %}
-), final_seaport AS (
+),
+final_seaport AS (
     SELECT
         t.block_number,
         t.block_timestamp,
@@ -1759,12 +1777,12 @@ AND _inserted_timestamp >= (
     FROM
         base_sales_buy_and_offer s
         INNER JOIN tx_data t USING (tx_hash)
-    LEFT JOIN nft_transfer_operator o USING (
-        tx_hash,
-        nft_address_temp,
-        tokenid,
-        recipient
-    ) qualify(ROW_NUMBER() over(PARTITION BY nft_log_id
+        LEFT JOIN nft_transfer_operator o USING (
+            tx_hash,
+            nft_address_temp,
+            tokenid,
+            recipient
+        ) qualify(ROW_NUMBER() over(PARTITION BY nft_log_id
     ORDER BY
         _inserted_timestamp DESC)) = 1
 )

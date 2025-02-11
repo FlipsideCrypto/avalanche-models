@@ -20,22 +20,26 @@ WITH token_transfers AS (
         from_address,
         to_address,
         raw_amount,
-        _log_id,
-        _inserted_timestamp
+        CONCAT(
+            tx_hash :: STRING,
+            '-',
+            event_index :: STRING
+        ) AS _log_id,
+        modified_timestamp AS _inserted_timestamp
     FROM
-        {{ ref('silver__transfers') }}
+        {{ ref('core__ez_token_transfers') }}
     WHERE
         from_address <> '0x0000000000000000000000000000000000000000'
         AND to_address = '0x25ab3efd52e6470681ce037cd546dc60726948d3'
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
@@ -51,12 +55,21 @@ native_transfers AS (
         et.to_address,
         amount_precise_raw,
         identifier,
-        _call_id,
-        et._inserted_timestamp
+        concat_ws(
+            '-',
+            et.block_number,
+            et.tx_position,
+            CONCAT(
+                et.type,
+                '_',
+                et.trace_address
+            )
+        ) AS _call_id,
+        et.modified_timestamp AS _inserted_timestamp
     FROM
-        {{ ref('silver__native_transfers') }}
+        {{ ref('core__ez_native_transfers') }}
         et
-        INNER JOIN {{ ref('silver__transactions') }}
+        INNER JOIN {{ ref('core__fact_transactions') }}
         tx
         ON et.block_number = tx.block_number
         AND et.tx_hash = tx.tx_hash
@@ -64,7 +77,7 @@ native_transfers AS (
         et.to_address = '0x25ab3efd52e6470681ce037cd546dc60726948d3'
 
 {% if is_incremental() %}
-AND et._inserted_timestamp >= (
+AND et.modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM

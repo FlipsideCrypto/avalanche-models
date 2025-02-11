@@ -138,7 +138,7 @@ old_token_transfers AS (
             ELSE 0
         END AS creator_amount_raw
     FROM
-        {{ ref('silver__transfers') }}
+        {{ ref('core__ez_token_transfers') }}
     WHERE
         block_timestamp :: DATE >= (
             SELECT
@@ -162,13 +162,13 @@ old_token_transfers AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),

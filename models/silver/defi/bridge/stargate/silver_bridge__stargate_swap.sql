@@ -98,11 +98,7 @@ SELECT
     topic_0,
     event_name,
     event_removed,
-            IFF(
-            tx_succeeded,
-            'SUCCESS',
-            'FAIL'
-        ) AS tx_status,
+    tx_status,
     LOWER('0x9d1B1669c73b033DFe47ae5a0164Ab96df25B944') AS bridge_address,
     NAME AS platform,
     from_address AS sender,

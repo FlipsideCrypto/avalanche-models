@@ -80,11 +80,7 @@ requestsent AS (
         decoded_log :"to" :: STRING AS to_address,
         decoded_log,
         event_removed,
-                IFF(
-            tx_succeeded,
-            'SUCCESS',
-            'FAIL'
-        ) AS tx_status,
+        tx_status,
         _log_id,
         _inserted_timestamp
     FROM
@@ -113,11 +109,7 @@ locked AS (
         decoded_log :"token" :: STRING AS token,
         decoded_log,
         event_removed,
-                IFF(
-            tx_succeeded,
-            'SUCCESS',
-            'FAIL'
-        ) AS tx_status,
+        tx_status,
         _log_id,
         _inserted_timestamp
     FROM
@@ -136,11 +128,7 @@ SELECT
     r.topic_0,
     r.event_name,
     r.event_removed,
-    r.        IFF(
-            tx_succeeded,
-            'SUCCESS',
-            'FAIL'
-        ) AS tx_status,
+    r.tx_status,
     r.contract_address AS bridge_address,
     r.name AS platform,
     l.from_address AS sender,

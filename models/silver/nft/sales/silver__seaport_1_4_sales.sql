@@ -1696,7 +1696,7 @@ nft_transfer_operator AS (
             )
         ) AS erc1155_value
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
         block_timestamp :: DATE >= '2022-07-01'
         AND tx_hash IN (
@@ -1711,7 +1711,7 @@ nft_transfer_operator AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '24 hours'
     FROM

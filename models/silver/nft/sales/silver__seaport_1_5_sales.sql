@@ -1162,7 +1162,7 @@ mao_consideration_all AS (
             ORDER BY
                 INDEX ASC
         ) AS orderhash_within_event_index_rn,
-        concat(
+        CONCAT(
             event_index :: STRING,
             '-',
             tx_hash :: STRING
@@ -1885,7 +1885,6 @@ AND modified_timestamp >= (
     FROM
         {{ this }}
 )
-AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
@@ -1907,7 +1906,7 @@ nft_transfer_operator AS (
             )
         ) AS erc1155_value
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
         block_timestamp :: DATE >= '2023-05-01'
         AND tx_hash IN (
@@ -1922,13 +1921,12 @@ nft_transfer_operator AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 AND block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),

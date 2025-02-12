@@ -41,12 +41,11 @@ WITH raw_logs AS (
 {% if is_incremental() %}
 AND modified_timestamp >= (
     SELECT
-        MAX(modified_timestamp) - INTERVAL '12 hours'
+        DATEADD('hour', -12, MAX(_inserted_timestamp))
     FROM
         {{ this }}
 )
-AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
-
+AND modified_timestamp >= DATEADD('day', -7, SYSDATE())
 {% endif %}
 ),
 auction_tag AS (

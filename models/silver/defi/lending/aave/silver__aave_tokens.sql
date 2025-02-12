@@ -1,5 +1,6 @@
 {{ config(
     materialized = 'incremental',
+    unique_key = 'atoken_address',
     tags = ['curated']
 ) }}
 
@@ -14,7 +15,7 @@ logs AS (
     SELECT
         *,
         modified_timestamp AS _inserted_timestamp,
-        concat(tx_hash, '-', trace_index) AS _log_id
+        concat(tx_hash, '-', event_index) AS _log_id
     FROM
         {{ ref('core__fact_event_logs') }}
     WHERE
@@ -248,6 +249,7 @@ FINAL AS (
     SELECT
         A.atoken_created_block,
         A.aave_version_pool,
+        A._log_id,
         A.atoken_symbol AS atoken_symbol,
         A.a_token_address AS atoken_address,
         b.atoken_stable_debt_address,

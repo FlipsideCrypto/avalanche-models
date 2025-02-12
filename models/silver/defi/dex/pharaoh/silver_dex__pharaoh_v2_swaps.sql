@@ -33,7 +33,7 @@ WITH base_swaps AS (
             's2c',
             segmented_data [4] :: STRING
         ) :: FLOAT AS tick,
-        concat(tx_hash, '-', trace_index) AS _log_id,
+        concat(tx_hash, '-', event_index) AS _log_id,
         modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__fact_event_logs') }}

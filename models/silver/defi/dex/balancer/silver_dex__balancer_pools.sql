@@ -66,7 +66,7 @@ tokens_registered AS (
         tokens [6] :: STRING AS token6,
         tokens [7] :: STRING AS token7,
         decoded_log :assetManagers AS asset_managers,
-        concat(tx_hash, '-', trace_index) AS _log_id,
+        concat(tx_hash, '-', event_index) AS _log_id,
         modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__ez_decoded_event_logs') }}
@@ -80,6 +80,10 @@ tokens_registered AS (
                 pools_registered
         )
         AND tx_succeeded
+
+{% if is_incremental() %}
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
+{% endif %}
 ),
 function_sigs AS (
     SELECT

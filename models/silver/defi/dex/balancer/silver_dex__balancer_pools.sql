@@ -25,7 +25,7 @@ WITH pools_registered AS (
             '-',
             event_index :: STRING
         ) AS _log_id,
-        modified_timestamp AS _inserted_timestamp
+        modified_timestamp AS _inserted_timestamp,
         ROW_NUMBER() over (
             ORDER BY
                 pool_address

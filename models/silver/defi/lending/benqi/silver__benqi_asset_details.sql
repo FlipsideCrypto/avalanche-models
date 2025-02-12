@@ -37,7 +37,7 @@ log_pull AS (
 AND l.modified_timestamp >= (
     SELECT
         MAX(
-            modified_timestamp
+            _inserted_timestamp
         ) - INTERVAL '12 hours'
     FROM
         {{ this }}

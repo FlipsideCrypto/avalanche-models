@@ -59,11 +59,7 @@ native_transfers AS (
             '-',
             et.block_number,
             et.tx_position,
-            CONCAT(
-                et.type,
-                '_',
-                et.trace_address
-            )
+            et.identifier
         ) AS _call_id,
         et.modified_timestamp AS _inserted_timestamp
     FROM

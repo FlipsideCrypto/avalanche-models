@@ -32,7 +32,9 @@ WITH base_swaps AS (
         utils.udf_hex_to_int(
             's2c',
             segmented_data [4] :: STRING
-        ) :: FLOAT AS tick
+        ) :: FLOAT AS tick,
+        concat(tx_hash, '-', trace_index) AS _log_id,
+        modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__fact_event_logs') }}
     WHERE
@@ -42,13 +44,13 @@ WITH base_swaps AS (
         AND event_removed = 'false'
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 
 {% endif %}
 ),

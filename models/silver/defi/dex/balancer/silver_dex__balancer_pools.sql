@@ -66,8 +66,8 @@ tokens_registered AS (
         tokens [6] :: STRING AS token6,
         tokens [7] :: STRING AS token7,
         decoded_log :assetManagers AS asset_managers,
-        _log_id,
-        _inserted_timestamp
+        concat(tx_hash, '-', trace_index) AS _log_id,
+        modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__ez_decoded_event_logs') }}
     WHERE

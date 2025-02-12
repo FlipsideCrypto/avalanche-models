@@ -43,7 +43,7 @@ WITH avax_base AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '72 hours'
     FROM

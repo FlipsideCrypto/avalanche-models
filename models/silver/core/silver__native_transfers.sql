@@ -17,15 +17,10 @@ WITH avax_base AS (
         to_address,
         VALUE AS avax_value,
         identifier,
-        concat_ws(
+        CONCAT(
+            tx_hash :: STRING,
             '-',
-            block_number,
-            tx_position,
-            CONCAT(
-                TYPE,
-                '_',
-                trace_address
-            )
+            trace_index :: STRING
         ) AS _call_id,
         input,
         modified_timestamp AS _INSERTED_TIMESTAMP,

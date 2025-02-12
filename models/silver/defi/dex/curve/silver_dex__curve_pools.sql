@@ -42,8 +42,8 @@ WITH contract_deployments AS (
             '0xb17b674d9c5cb2e441f8e196a2f048a81355d031'
         )
         AND TYPE ILIKE 'create%'
-        AND tx_status = 'SUCCESS'
-        AND trace_status = 'SUCCESS'
+        AND tx_succeeded
+        AND trace_succeeded
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -53,6 +53,7 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 
 qualify(ROW_NUMBER() over(PARTITION BY to_address

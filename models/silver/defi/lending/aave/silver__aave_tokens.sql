@@ -14,9 +14,9 @@ logs AS (
     SELECT
         *
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
-        tx_status = 'SUCCESS'
+        tx_succeeded
         AND topics [0] IN (
             '0xb19e051f8af41150ccccb3fc2c2d8d15f4a4cf434f32a559ba75fe73d6eea20b',
             '0x3a0ca721fc364424566385a1aa271ed508cc2c0949c2272575fb3013a163a45f'

@@ -9,12 +9,14 @@ models:
       - name: BLOCK_TIMESTAMP
         description: '{{ doc("dexalot_block_timestamp") }}'
       - name: BLOCK_HASH
-        description: '{{ doc("dexalot_tx_block_hash") }}' 
+        description: '{{ doc("evm_column_deprecation_notice_block_hash") }}' 
       - name: TX_HASH
         description: '{{ doc("dexalot_tx_hash") }}' 
       - name: NONCE
         description: '{{ doc("dexalot_tx_nonce") }}' 
       - name: POSITION
+        description: '{{ doc("evm_column_deprecation_notice_position") }}' 
+      - name: TX_POSITION
         description: '{{ doc("dexalot_tx_position") }}' 
       - name: FROM_ADDRESS
         description: '{{ doc("dexalot_from_address") }}' 

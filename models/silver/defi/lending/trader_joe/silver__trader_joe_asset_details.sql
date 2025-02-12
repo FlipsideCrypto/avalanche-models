@@ -22,10 +22,10 @@ log_pull AS (
         C.token_name,
         C.token_symbol,
         C.token_decimals,
-        l._inserted_timestamp,
-        l._log_id
+        l.modified_timestamp AS _inserted_timestamp,
+        concat_ws('-', l.tx_hash, l.event_index) AS _log_id
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
         l
         LEFT JOIN contracts C
         ON l.contract_address = C.contract_address
@@ -34,7 +34,7 @@ log_pull AS (
         AND token_name LIKE '%Banker Joe %'
 
 {% if is_incremental() %}
-AND l._inserted_timestamp >= (
+AND l.modified_timestamp >= (
     SELECT
         MAX(
             _inserted_timestamp
@@ -42,7 +42,7 @@ AND l._inserted_timestamp >= (
     FROM
         {{ this }}
 )
-AND l._inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND l.modified_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 traces_pull AS (

@@ -1,14 +1,22 @@
 {% test missing_decoded_logs(model) %}
 SELECT
     l.block_number,
-    l._log_id
+    CONCAT(
+        l.tx_hash,
+        '-',
+        l.event_index
+    ) AS _log_id
 FROM
-    {{ ref('silver__logs') }}
+    {{ ref('core__fact_event_logs') }}
     l
     LEFT JOIN {{ model }}
     d
     ON l.block_number = d.block_number
-    AND l._log_id = d._log_id
+    AND CONCAT(
+        l.tx_hash,
+        '-',
+        l.event_index
+    ) = d._log_id
 WHERE
     l.contract_address = LOWER('0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7') -- WAVAX
     AND l.topics [0] :: STRING = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' -- Transfer

@@ -70,17 +70,21 @@ swaps_base AS (
             WHEN swapForY THEN tokenX
             ELSE tokenY
         END AS token_in_address,
-        l._log_id,
-        l._inserted_timestamp
+        CONCAT(
+            l.tx_hash :: STRING,
+            '-',
+            l.event_index :: STRING
+        ) AS _log_id,
+        l.modified_timestamp AS _inserted_timestamp
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
         l
         INNER JOIN pools p
         ON lb_pair = l.contract_address
     WHERE
         topics [0] :: STRING = '0xc528cda9e500228b16ce84fadae290d9a49aecb17483110004c5af0a07f6fd73' --Swap
         AND version = 'v2'
-        AND tx_status = 'SUCCESS'
+        AND tx_succeeded
 
 {% if is_incremental() %}
 AND _inserted_timestamp >= (
@@ -90,6 +94,7 @@ AND _inserted_timestamp >= (
         {{ this }}
 )
 AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 )
 SELECT

@@ -19,7 +19,7 @@ WITH raw_logs AS (
             WHEN topics [0] :: STRING = '0x2f258d8ad9499ea044033d10f2d28e770de5366a12c487afee76b4083e8edfb9' THEN 'ShareIncome'
         END AS topics_event_name
     FROM
-        {{ ref('silver__logs') }}
+        {{ ref('core__fact_event_logs') }}
     WHERE
         block_timestamp :: DATE >= '2022-10-01'
         AND contract_address IN (
@@ -35,16 +35,17 @@ WITH raw_logs AS (
             '0x15d4649ef85f6d7a1e2068dd3d0c51d49d0257fa627d1e46abe3e1b3458d8b00',
             '0x2f258d8ad9499ea044033d10f2d28e770de5366a12c487afee76b4083e8edfb9'
         )
-        AND tx_status = 'SUCCESS'
+        AND tx_succeeded
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
-        MAX(_inserted_timestamp) - INTERVAL '12 hours'
+        MAX(modified_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 auction_tag AS (
@@ -342,7 +343,7 @@ nft_transfers AS (
         tokenid,
         erc1155_value
     FROM
-        {{ ref('silver__nft_transfers') }}
+        {{ ref('nft__ez_nft_transfers') }}
     WHERE
         block_timestamp :: DATE >= '2022-10-01'
         AND tx_hash IN (
@@ -358,7 +359,7 @@ tx_data AS (
         tx_fee,
         input_data
     FROM
-        {{ ref('silver__transactions') }}
+        {{ ref('core__fact_transactions') }}
     WHERE
         block_timestamp :: DATE >= '2022-10-01'
         AND tx_hash IN (
@@ -369,13 +370,14 @@ tx_data AS (
         )
 
 {% if is_incremental() %}
-AND _inserted_timestamp >= (
+AND modified_timestamp >= (
     SELECT
         MAX(_inserted_timestamp) - INTERVAL '12 hours'
     FROM
         {{ this }}
 )
-AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
+AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
+
 {% endif %}
 ),
 final_base AS (

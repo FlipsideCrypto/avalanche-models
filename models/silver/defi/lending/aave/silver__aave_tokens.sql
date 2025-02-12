@@ -1,5 +1,6 @@
 {{ config(
     materialized = 'incremental',
+    unique_key = 'atoken_address',
     tags = ['curated']
 ) }}
 
@@ -13,8 +14,7 @@ WITH contracts AS (
 logs AS (
     SELECT
         *,
-        modified_timestamp AS _inserted_timestamp,
-        concat(tx_hash, '-', trace_index) AS _log_id
+        modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__fact_event_logs') }}
     WHERE

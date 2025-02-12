@@ -244,7 +244,7 @@ platform_fee_filter_agg AS (
 nft_address_type AS (
     SELECT
         nft_address,
-        token_transfer_type
+        event_type as token_transfer_type
     FROM
         {{ ref('nft__ez_nft_transfers') }}
     WHERE
@@ -259,16 +259,15 @@ nft_address_type AS (
 {% if is_incremental() %}
 AND modified_timestamp >= (
     SELECT
-        MAX(modified_timestamp) - INTERVAL '12 hours'
+        DATEADD('hour', -12, MAX(_inserted_timestamp))
     FROM
         {{ this }}
 )
-AND modified_timestamp >= SYSDATE() - INTERVAL '7 day'
-
+AND modified_timestamp >= DATEADD('day', -7, SYSDATE())
 {% endif %}
 
 qualify ROW_NUMBER() over (
-    PARTITION BY contract_address
+    PARTITION BY nft_address
     ORDER BY
         block_timestamp ASC
 ) = 1

@@ -24,10 +24,7 @@ SELECT
     origin_from_address,
     origin_to_address,
     origin_function_signature,
-    CASE
-        WHEN tx_status = 'SUCCESS' THEN TRUE
-        ELSE FALSE
-    END AS tx_succeeded,
+    tx_status AS tx_succeeded,
     logs_id AS fact_event_logs_id,
     inserted_timestamp,
     modified_timestamp,

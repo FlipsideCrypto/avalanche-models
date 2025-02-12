@@ -43,7 +43,6 @@ AND l.modified_timestamp >= (
         {{ this }}
 )
 AND l.modified_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND l.block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 traces_pull AS (

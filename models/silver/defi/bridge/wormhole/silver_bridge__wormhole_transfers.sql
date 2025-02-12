@@ -146,7 +146,6 @@ AND et.modified_timestamp >= (
         {{ this }}
 )
 AND et.modified_timestamp >= SYSDATE() - INTERVAL '7 day'
-AND et.block_timestamp >= SYSDATE() - INTERVAL '7 day'
 {% endif %}
 ),
 all_transfers AS (

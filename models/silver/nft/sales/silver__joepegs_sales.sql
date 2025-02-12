@@ -243,13 +243,13 @@ platform_fee_filter_agg AS (
 ),
 nft_address_type AS (
     SELECT
-        contract_address AS nft_address,
+        nft_address,
         token_transfer_type
     FROM
         {{ ref('nft__ez_nft_transfers') }}
     WHERE
         block_timestamp :: DATE >= '2022-04-01'
-        AND contract_address IN (
+        AND nft_address IN (
             SELECT
                 nft_address
             FROM

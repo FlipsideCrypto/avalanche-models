@@ -12,7 +12,9 @@ WITH contracts AS (
 ),
 logs AS (
     SELECT
-        *
+        *,
+        modified_timestamp AS _inserted_timestamp,
+        concat(tx_hash, '-', trace_index) AS _log_id
     FROM
         {{ ref('core__fact_event_logs') }}
     WHERE

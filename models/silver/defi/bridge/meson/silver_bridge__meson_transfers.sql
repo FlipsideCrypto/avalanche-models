@@ -61,7 +61,6 @@ native_transfers AS (
             et.trace_index :: STRING
         ) AS _call_id,
         et.modified_timestamp AS _inserted_timestamp
-        et.modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('core__ez_native_transfers') }}
         et

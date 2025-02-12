@@ -14,15 +14,10 @@ WITH contract_deployments AS (
         block_timestamp,
         from_address AS deployer_address,
         to_address AS contract_address,
-        concat_ws(
+        CONCAT(
+            tx_hash :: STRING,
             '-',
-            block_number,
-            tx_position,
-            CONCAT(
-                TYPE,
-                '_',
-                trace_address
-            )
+            trace_index :: STRING
         ) AS _call_id,
         modified_timestamp AS _inserted_timestamp,
         ROW_NUMBER() over (

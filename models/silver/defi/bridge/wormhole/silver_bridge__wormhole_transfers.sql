@@ -116,14 +116,10 @@ native_transfers AS (
         utils.udf_hex_to_int(
             segmented_data [3] :: STRING
         ) AS nonce,
-        concat_ws(
+        CONCAT(
+            et.tx_hash :: STRING,
             '-',
-            et.block_number,
-            et.tx_position,
-            CONCAT(
-                et.type,
-                '_',
-                et.trace_address
+            et.trace_index :: STRING
         ) AS _call_id,
         et.modified_timestamp AS _inserted_timestamp
     FROM

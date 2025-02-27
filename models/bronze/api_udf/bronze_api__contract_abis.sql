@@ -55,8 +55,12 @@ SELECT
     CONCAT('https://api.routescan.io/v2/network/mainnet/evm/', '43114', --avax C-chain ID
     '/etherscan/api?module=contract&action=getabi&address=', 
     contract_address, '&apikey=none'),
-    { 'User-Agent': 'FlipsideStreamline' },
-    null
+    OBJECT_CONSTRUCT(
+            'Content-Type', 'application/json',
+            'fsc-quantum-state', 'livequery'
+        ),
+        NULL,
+        ''
     ) AS abi_data, 
     SYSDATE() AS _inserted_timestamp
 FROM

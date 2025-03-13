@@ -18,14 +18,14 @@ WITH base_evt AS (
         contract_address,
         event_index,
         TRY_TO_NUMBER(utils.udf_hex_to_int(topic_1 :: STRING)) AS nonce,
-        CONCAT('0x', SUBSTR(topic_2 :: STRING, 27, 40)) AS burnToken,
+        CONCAT('0x', SUBSTR(topic_2 :: STRING, 27, 40)) AS burn_token,
         CONCAT('0x', SUBSTR(topic_3 :: STRING, 27, 40)) AS depositor,
         regexp_SUBSTR_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
-        TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [0] :: STRING)) AS burnAmount,
-        TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [2] :: STRING)) AS destinationDomain,
+        TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [0] :: STRING)) AS burn_amount,
+        TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [2] :: STRING)) AS destination_domain,
         segmented_data [1] :: STRING,
         CASE
-            WHEN destinationDomain IN (
+            WHEN destination_domain IN (
                 0,
                 1,
                 2,
@@ -33,14 +33,14 @@ WITH base_evt AS (
                 6,
                 7
             ) THEN CONCAT('0x', SUBSTR(segmented_data [1] :: STRING, 25, 40)) -- evm
-            WHEN destinationDomain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [1] :: STRING)) -- solana
+            WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [1] :: STRING)) -- solana
             ELSE CONCAT(
                 '0x',
                 segmented_data [1] :: STRING
             ) -- other non-evm chains
-        END AS mintRecipient,
+        END AS mint_recipient,
         CASE
-            WHEN destinationDomain IN (
+            WHEN destination_domain IN (
                 0,
                 1,
                 2,
@@ -48,14 +48,14 @@ WITH base_evt AS (
                 6,
                 7
             ) THEN CONCAT('0x', SUBSTR(segmented_data [3] :: STRING, 25, 40)) -- evm
-            WHEN destinationDomain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [3] :: STRING)) -- solana
+            WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [3] :: STRING)) -- solana
             ELSE CONCAT(
                 '0x',
                 segmented_data [3] :: STRING
             ) -- other non-evm chains
         END AS destinationTokenMessenger,
         CASE
-            WHEN destinationDomain IN (
+            WHEN destination_domain IN (
                 0,
                 1,
                 2,
@@ -63,7 +63,7 @@ WITH base_evt AS (
                 6,
                 7
             ) THEN CONCAT('0x', SUBSTR(segmented_data [4] :: STRING, 25, 40)) -- evm
-            WHEN destinationDomain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [4] :: STRING)) -- solana
+            WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [4] :: STRING)) -- solana
             ELSE CONCAT(
                 '0x',
                 segmented_data [4] :: STRING
@@ -111,15 +111,15 @@ SELECT
     depositor,
     depositor AS sender,
     origin_from_address AS receiver,
-    mintRecipient AS destination_chain_receiver,
+    mint_recipient AS destination_chain_receiver,
     chain AS destination_chain,
-    destinationDomain AS destination_chain_id,
-    burnToken AS token_address,
-    burnAmount AS amount_unadj,
+    destination_domain AS destination_chain_id,
+    burn_token AS token_address,
+    burn_amount AS amount_unadj,
     _log_id,
     e.modified_timestamp
 FROM
     base_evt e
     LEFT JOIN {{ ref('silver_bridge__cctp_chain_id_seed') }}
     d
-    ON domain = destinationDomain
+    ON domain = destination_domain

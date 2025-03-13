@@ -145,7 +145,7 @@ SELECT
     topic_0,
     event_name,
     contract_address AS bridge_address,
-    'circle-cctp' AS platform,
+    'circle-cctp-v2' AS platform,
     burnToken AS token_address,
     amount AS amount_unadj,
     depositor AS sender,

@@ -651,7 +651,7 @@ complete_bridge_activity AS (
                 'meson-v1',
                 'allbridge-v2',
                 'circle-cctp-v1',
-                'circle-cctp-v2'
+                'circle-cctp-v2-v2'
             ) THEN destination_chain_id :: STRING
             WHEN d.chain_id IS NULL THEN destination_chain_id :: STRING
             ELSE d.chain_id :: STRING
@@ -663,7 +663,7 @@ complete_bridge_activity AS (
                 'meson-v1',
                 'allbridge-v2',
                 'circle-cctp-v1',
-                'circle-cctp-v2'
+                'circle-cctp-v2-v2'
             ) THEN LOWER(destination_chain)
             WHEN d.chain IS NULL THEN LOWER(destination_chain)
             ELSE LOWER(

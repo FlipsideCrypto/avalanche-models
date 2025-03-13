@@ -1,4 +1,4 @@
-chain, domain
+chain,domain
 ethereum,0
 avalanche,1
 optimism,2
@@ -9,4 +9,4 @@ base,6
 polygon pos,7
 sui,8
 aptos,9
-unichain, 10
+unichain,10

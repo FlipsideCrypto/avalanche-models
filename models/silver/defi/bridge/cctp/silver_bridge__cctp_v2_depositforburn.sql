@@ -20,7 +20,6 @@ WITH base_evt AS (
         topic_0,
         event_name,
         event_removed,
-        tx_status,
         decoded_log,
         TRY_TO_NUMBER(
             decoded_log :nonce :: STRING
@@ -145,7 +144,6 @@ SELECT
     event_index,
     topic_0,
     event_name,
-    event_removed,
     contract_address AS bridge_address,
     'circle-cctp' AS platform,
     burnToken AS token_address,

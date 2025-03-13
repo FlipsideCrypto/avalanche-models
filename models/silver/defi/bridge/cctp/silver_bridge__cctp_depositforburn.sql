@@ -23,7 +23,6 @@ WITH base_evt AS (
         regexp_SUBSTR_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
         TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [0] :: STRING)) AS burn_amount,
         TRY_TO_NUMBER(utils.udf_hex_to_int(segmented_data [2] :: STRING)) AS destination_domain,
-        segmented_data [1] :: STRING,
         CASE
             WHEN destination_domain IN (
                 0,
@@ -68,11 +67,7 @@ WITH base_evt AS (
                 '0x',
                 segmented_data [4] :: STRING
             ) -- other non-evm chains
-        END AS destinationCaller,
-        CASE
-            WHEN tx_status = 'SUCCESS' THEN TRUE
-            ELSE FALSE
-        END AS tx_succeeded,
+        END AS destination_caller,
         CONCAT(
             tx_hash,
             '-',
@@ -104,7 +99,6 @@ SELECT
     origin_to_address,
     origin_function_signature,
     event_index,
-    contract_address,
     contract_address AS bridge_address,
     'DepositForBurn' AS event_name,
     'circle-cctp' AS platform,

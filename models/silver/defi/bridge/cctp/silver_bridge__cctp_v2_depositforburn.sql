@@ -147,7 +147,7 @@ SELECT
     event_name,
     event_removed,
     contract_address AS bridge_address,
-    'circle-cctp-v2' AS platform,
+    'circle-cctp' AS platform,
     burnToken AS token_address,
     amount AS amount_unadj,
     depositor AS sender,

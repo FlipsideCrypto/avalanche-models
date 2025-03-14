@@ -30,7 +30,8 @@ WITH base_evt AS (
                 2,
                 3,
                 6,
-                7
+                7,
+                10
             ) THEN CONCAT('0x', SUBSTR(segmented_data [1] :: STRING, 25, 40)) -- evm
             WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [1] :: STRING)) -- solana
             ELSE CONCAT(
@@ -45,7 +46,8 @@ WITH base_evt AS (
                 2,
                 3,
                 6,
-                7
+                7,
+                10
             ) THEN CONCAT('0x', SUBSTR(segmented_data [3] :: STRING, 25, 40)) -- evm
             WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [3] :: STRING)) -- solana
             ELSE CONCAT(
@@ -60,7 +62,8 @@ WITH base_evt AS (
                 2,
                 3,
                 6,
-                7
+                7,
+                10
             ) THEN CONCAT('0x', SUBSTR(segmented_data [4] :: STRING, 25, 40)) -- evm
             WHEN destination_domain = 5 THEN utils.udf_hex_to_base58(CONCAT('0x', segmented_data [4] :: STRING)) -- solana
             ELSE CONCAT(

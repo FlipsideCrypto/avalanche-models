@@ -21,7 +21,7 @@ jobs:
         with:
           payload: |
             {
-              "text": ":x: *${{ inputs.workflow_name || github.workflow }}* failed in *${{ github.repository }}*\n• <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+              "text": ":x: *${{ inputs.workflow_name || github.workflow }}* failed in *${{ github.repository }}*\n <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -22,7 +22,7 @@ jobs:
           # Format optimized for multi-repository deployment
           payload: |
             {
-              "text": "${{ inputs.workflow_name || github.workflow }} in ${{ github.repository }} failed!\n*${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": "*${{ inputs.workflow_name || github.workflow }}* in *${{ github.repository }}* failed!\n(View on GitHub)[${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}]"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

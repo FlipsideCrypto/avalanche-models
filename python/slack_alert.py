@@ -11,15 +11,11 @@ def create_message():
     run_id = os.environ.get('GITHUB_RUN_ID', '')
     server_url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com')
     
-    # Get the database name if available (or use a fallback)
-    database = os.environ.get('DATABASE', 'Unknown database')
-    db_prefix = database.split('_DEV')[0] if '_DEV' in database else database
-    
     # Build the workflow URL
     workflow_url = f"{server_url}/{repository}/actions/runs/{run_id}"
     
     message_body = {
-        "text": f"<!here> Workflow failure in :{db_prefix}: {database}",
+        "text": f"<!here> Workflow failure in :{repository}",
         "attachments": [
             {
                 "color": "#f44336",  # Red color for failures

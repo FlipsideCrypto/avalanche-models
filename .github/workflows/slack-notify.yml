@@ -19,29 +19,10 @@ jobs:
       - name: Send notification to Slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
+          # Format optimized for multi-repository deployment
           payload: |
             {
-              "text": "⚠️ Workflow Failed",
-              "attachments": [
-                {
-                  "color": "#FF0000",
-                  "title": "Workflow Failed: ${{ inputs.workflow_name || github.workflow }}",
-                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                  "fields": [
-                    {
-                      "title": "Repository",
-                      "value": "${{ github.repository }}",
-                      "short": true
-                    },
-                    {
-                      "title": "Branch",
-                      "value": "${{ github.ref_name }}",
-                      "short": true
-                    }
-                  ],
-                  "footer": "GitHub Actions"
-                }
-              ]
+              "text": "⚠️ *Workflow Failed*: ${{ inputs.workflow_name || github.workflow }}\n*Repository*: ${{ github.repository }}\n*Branch*: ${{ github.ref_name }}\n*Workflow URL*: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

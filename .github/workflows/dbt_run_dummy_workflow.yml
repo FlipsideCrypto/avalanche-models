@@ -46,8 +46,10 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt run -m models/silver/utilities/silver__dummy_test.sql
-        continue-on-error: true
 
-      - name: Send Slack Notification, if failed
-        run: |
-          python python/slack_alert.py
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack-notify.yml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

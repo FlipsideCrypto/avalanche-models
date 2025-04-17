@@ -7,6 +7,7 @@ def create_message():
     
     # Get GitHub environment variables
     repository = os.environ.get('GITHUB_REPOSITORY', 'Unknown repository')
+    repo_name = repository.split('/')[-1] if '/' in repository else repository
     workflow_name = os.environ.get('GITHUB_WORKFLOW', 'Unknown workflow')
     run_id = os.environ.get('GITHUB_RUN_ID', '')
     server_url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com')
@@ -15,7 +16,7 @@ def create_message():
     workflow_url = f"{server_url}/{repository}/actions/runs/{run_id}"
     
     message_body = {
-        "text": f"<!here> Workflow failure in :{repository}",
+        "text": f"Workflow failure in {repo_name}",
         "attachments": [
             {
                 "color": "#f44336",  # Red color for failures

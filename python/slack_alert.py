@@ -16,7 +16,7 @@ def create_message():
     workflow_url = f"{server_url}/{repository}/actions/runs/{run_id}"
     
     message_body = {
-        "text": f"Workflow failure in {repo_name}",
+        "text": f"Failure in {repo_name}",
         "attachments": [
             {
                 "color": "#f44336",  # Red color for failures

@@ -14,36 +14,14 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    environment: workflow_prod  # Add this line to specify the environment
+    environment: workflow_prod
     steps:
       - name: Send notification to Slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
-              "text": "⚠️ Workflow Failed: ${{ inputs.workflow_name || github.workflow }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Workflow:* ${{ inputs.workflow_name || github.workflow }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Status:* ❌ Failed"
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Workflow Run"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
-                  ]
-                }
-              ]
+              "text": ":x: *${{ inputs.workflow_name || github.workflow }}* failed in *${{ github.repository }}*\n <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

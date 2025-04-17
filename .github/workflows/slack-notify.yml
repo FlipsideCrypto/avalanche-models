@@ -14,34 +14,32 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    environment: workflow_prod  # Add this line to specify the environment
+    environment: workflow_prod
     steps:
       - name: Send notification to Slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
             {
-              "text": "⚠️ Workflow Failed: ${{ inputs.workflow_name || github.workflow }}",
-              "blocks": [
+              "text": "⚠️ Workflow Failed",
+              "attachments": [
                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Workflow:* ${{ inputs.workflow_name || github.workflow }}\n*Repository:* ${{ github.repository }}\n*Branch:* ${{ github.ref_name }}\n*Status:* ❌ Failed"
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
+                  "color": "#FF0000",
+                  "title": "Workflow Failed: ${{ inputs.workflow_name || github.workflow }}",
+                  "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                  "fields": [
                     {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Workflow Run"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Branch",
+                      "value": "${{ github.ref_name }}",
+                      "short": true
                     }
-                  ]
+                  ],
+                  "footer": "GitHub Actions"
                 }
               ]
             }

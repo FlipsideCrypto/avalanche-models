@@ -45,6 +45,11 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt test --exclude "avalanche_models,tag:full_test" "avalanche_models,tag:recent_test" "avalanche_models,tag:gha_tasks" livequery_models
-  
 
 
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

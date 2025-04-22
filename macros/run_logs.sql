@@ -7,7 +7,7 @@
     {% set gha_actor = var("github_actor", "unknown") %}
     {% set run_vars = tojson(var("vars", {})) %}
 
-    INSERT INTO {{ target.database }}.{{ target.schema }}.run_metrics (
+    INSERT INTO {{ target.database }}.monitoring.run_metrics (
         invocation_id,
         elapsed_time,
         invocation_command,
@@ -17,7 +17,8 @@
         gha_workflow,
         gha_ref,
         gha_actor,
-        logged_at
+        logged_at,
+        target_database
     )
     SELECT
         '{{ invocation_id }}' AS invocation_id,
@@ -29,5 +30,6 @@
         '{{ gha_workflow }}' AS gha_workflow,
         '{{ gha_ref }}' AS gha_ref,
         '{{ gha_actor }}' AS gha_actor,
-        CURRENT_TIMESTAMP AS logged_at;
+        CURRENT_TIMESTAMP AS logged_at,
+        '{{ target.database }}' AS target_database;
 {% endmacro %}

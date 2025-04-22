@@ -52,4 +52,10 @@ jobs:
       - name: Execute block_reorg macro
         run: |
           dbt run-operation fsc_utils.block_reorg --args "{reorg_model_list: '${{ steps.list_models.outputs.model_list }}', hours: '169'}" && awk '/SQL status/ {print; next} /DELETE FROM/{getline; print} /\/\* {/ {print}' logs/dbt.log
-        
+
+  notify-failure:
+    needs: [run_dbt_jobs]
+    if: failure()
+    uses: ./.github/workflows/slack_notify.yml
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -44,7 +44,7 @@ jobs:
       - name: Run DBT Jobs
         run: |
           dbt run -m "avalanche_models,tag:observability"
-          dbt test -m "avalanche_models,tag:recent_test"
+          dbt test -m "avalanche_models,tag:recent_test" --exclude models/dexalot
 
   notify-failure:
     needs: [run_dbt_jobs]

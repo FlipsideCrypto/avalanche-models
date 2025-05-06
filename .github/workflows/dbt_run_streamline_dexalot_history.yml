@@ -4,7 +4,6 @@ run-name: dbt_run_streamline_dexalot_history
 on:
   workflow_dispatch:
   schedule:
-    # Runs at minute 37 past every hour
     - cron: '37 * * * *'
 
 env:

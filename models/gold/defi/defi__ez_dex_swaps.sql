@@ -71,7 +71,5 @@ SELECT
     COALESCE(
         modified_timestamp,
         '2000-01-01'
-    ) AS modified_timestamp,
-    _log_id
-    
+    ) AS modified_timestamp
 FROM {{ ref('silver_dex__complete_dex_swaps') }}

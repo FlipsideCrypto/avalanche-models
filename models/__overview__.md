@@ -1,6 +1,6 @@
 {% docs __overview__ %}
 
-# Welcome to the Flipside Crypto Avalanche C-Chain Models Documentation!
+# Welcome to the Flipside Crypto Avalanche Models Documentation!
 
 ## **What does this documentation cover?**
 The documentation included here details the design of the Avalanche tables and views available via [Flipside Crypto.](https://flipsidecrypto.xyz/) For more information on how these models are built, please see [the github repository.](https://github.com/FlipsideCrypto/avalanche-models)
@@ -16,48 +16,49 @@ There is more information on how to use dbt docs in the last section of this doc
 
 **Click on the links below to jump to the documentation for each schema.**
 
-### Core Tables (avalanche.core)
+### Core Tables
 
-**Dimension Tables:**
-- [dim_contracts](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__dim_contracts)
-- [dim_labels](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__dim_labels)
+**Dimensional Tables**
+- [dim_contracts](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__dim_contracts)
+- [dim_contract_abis](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__dim_contract_abis)
+- [dim_labels](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__dim_labels)
 
 **Fact Tables:**
-- [fact_blocks](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_blocks)
-- [fact_decoded_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_decoded_event_logs)
-- [fact_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_event_logs)
-- [fact_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_token_transfers)
-- [fact_traces](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_traces)
-- [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__fact_transactions)
+- [fact_blocks](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__fact_blocks)
+- [fact_transactions](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__fact_transactions)
+- [fact_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__fact_event_logs)
+- [fact_traces](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__fact_traces)
 
 **Convenience Tables:**
-- [ez_decoded_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_decoded_event_logs)
-- [ez_native_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_native_transfers)
-- [ez_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.core__ez_token_transfers)
+- [ez_decoded_event_logs](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__ez_decoded_event_logs)
+- [ez_native_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__ez_native_transfers)
+- [ez_token_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.core__ez_token_transfers)
 
 ### Price Tables (avalanche.price)
-- [dim_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__dim_asset_metadata)
-- [fact_prices_ohlc_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__fact_prices_ohlc_hourly)
-- [ez_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__ez_asset_metadata)
-- [ez_prices_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.price__ez_prices_hourly)
+- [dim_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.price__dim_asset_metadata)
+- [fact_prices_ohlc_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.price__fact_prices_ohlc_hourly)
+- [ez_asset_metadata](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.price__ez_asset_metadata)
+- [ez_prices_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.price__ez_prices_hourly)
 
 ### DeFi Tables (avalanche.defi)
-- [dim_dex_liquidity_pools](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__dim_dex_liquidity_pools)
-- [ez_dex_swaps](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_dex_swaps)
 - [ez_bridge_activity](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_bridge_activity)
-- [ez_lending_borrows](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_borrows)
+- [ez_dex_swaps](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_dex_swaps)
+- [dim_dex_liquidity_pools](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__dim_dex_liquidity_pools)
+- [ez_lending_borrows](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_borrows) 
 - [ez_lending_deposits](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_deposits)
 - [ez_lending_flashloans](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_flashloans)
 - [ez_lending_liquidations](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_liquidations)
 - [ez_lending_repayments](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_repayments)
 - [ez_lending_withdraws](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.defi__ez_lending_withdraws)
 
+### Flipside Partner Tables (avalanche.partner_name)
+
 ### NFT Tables (avalanche.nft)
+- [ez_nft_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.nft__ez_nft_transfers)
 - [ez_nft_sales](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.nft__ez_nft_sales)
-- [ez_nft_transfers](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.nft__ez_nft_transfers)
 
 ### Stats Tables (avalanche.stats)
-- [ez_core_metrics_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.avalanche_models.stats__ez_core_metrics_hourly)
+- [ez_core_metrics_hourly](https://flipsidecrypto.github.io/avalanche-models/#!/model/model.fsc_evm.stats__ez_core_metrics_hourly)
 
 ### Dexalot Tables (avalanche.dexalot)
 
@@ -85,18 +86,7 @@ The dimension tables are sourced from a variety of on-chain and off-chain source
 
 Convenience views (denoted ez_) are a combination of different fact and dimension tables. These views are built to make it easier to query the data.
 
-## **Contract Decoding**
-### Adding a contract for decoding
-To add a contract for decoding, please visit [here](https://science.flipsidecrypto.xyz/abi-requestor/). 
-
-Assuming the submitted ABI is valid, records will be decoded within 24 hours. If records are not decoded within 24 hours, or for any ABI updates, please submit a ticket within our Discord. 
-
-### General Process Overview
-
-The majority of our ABIs have been sourced from Etherscan, and we are constantly asking Etherscan for new ABIs. However, this is not comprehensive, and therefore we must also rely on our users to submit ABIs for decoding.
-If we are unable to locate an ABI for the contract from either Etherscan or our users, we will attempt to match the contract to a similar ABI. This is done by comparing the contract bytecode to a list of known contract bytecodes. If we are able to match the contract to a similar ABI, we will decode the contract using the similar ABI. You can see the source of each ABI in the `dim_contract_abis` table within the `abi_source` column. 
-
-Once ABIs have been verified, events within the last day of blocks will be decoded within approximately 90 minutes. Events older than 1 day will be decoded within 24 hours in the majority of cases. The exception here is if the contract has a massive number of events, in which case it may take longer.
+NOTE: Avalanche is currently operating in it's Testnet phase. Flipside will provide Mainnet data tables once Avalanche Mainnet is deployed. 
 
 ## **Using dbt docs**
 ### Navigation
@@ -105,7 +95,7 @@ You can use the ```Project``` and ```Database``` navigation tabs on the left sid
 
 ### Database Tab
 
-This view shows relations (tables and views) grouped into database schemas. Note that ephemeral models are *not* shown in this interface, as they do not exist in the database.
+This view shows relations (tables and views) grouped into database schemas. Note that ephemeral models are *not* shown in this interface, as they do not exist in the dataavalanche.
 
 ### Graph Exploration
 
@@ -119,10 +109,11 @@ Note that you can also right-click on models to interactively filter and explore
 
 
 ### **More information**
-- [Flipside](https://flipsidecrypto.xyz)
+- [Flipside](https://flipsidecrypto.xyz/)
+- [Velocity](https://app.flipsidecrypto.com/velocity?nav=Discover)
 - [Tutorials](https://docs.flipsidecrypto.com/our-data/tutorials)
 - [Github](https://github.com/FlipsideCrypto/avalanche-models)
-- [Query Editor Shortcuts](https://docs.flipsidecrypto.com/velocity/query-editor-shortcuts)
 - [What is dbt?](https://docs.getdbt.com/docs/introduction)
+
 
 {% enddocs %}

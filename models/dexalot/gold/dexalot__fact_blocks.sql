@@ -31,6 +31,9 @@ SELECT
     state_root,
     transactions_root,
     logs_bloom,
+    blocks_id AS fact_blocks_id,
+    inserted_timestamp,
+    modified_timestamp,
     OBJECT_CONSTRUCT(
         'baseFeePerGas',
         base_fee_per_gas,
@@ -70,12 +73,9 @@ SELECT
         transactions_root,
         'uncles',
         uncles
-    ) AS block_header_json,
-    blocks_id AS fact_blocks_id,
-    inserted_timestamp,
-    modified_timestamp,
-    'dexalot' AS blockchain,
-    hash
+    ) AS block_header_json, --deprecate
+    'dexalot' AS blockchain, --deprecate
+    hash --deprecate
 FROM
     {{ ref('silver_dexalot__blocks') }} A
 

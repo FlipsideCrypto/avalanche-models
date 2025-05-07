@@ -23,9 +23,9 @@ models:
       - name: VALUE
         description: '{{ doc("dexalot_traces_value") }}'
       - name: VALUE_PRECISE_RAW
-        description: '{{ doc("precise_amount_unadjusted") }}'
+        description: '{{ doc("evm_precise_amount_unadjusted") }}'
       - name: VALUE_PRECISE
-        description: '{{ doc("precise_amount_adjusted") }}'
+        description: '{{ doc("evm_precise_amount_adjusted") }}'
       - name: VALUE_HEX
         description: '{{ doc("dexalot_traces_value_hex") }}'
       - name: GAS

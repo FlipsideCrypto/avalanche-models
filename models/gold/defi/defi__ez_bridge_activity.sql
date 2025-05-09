@@ -7,7 +7,8 @@
             'table':{
                 'PROTOCOL': 'ALLBRIDGE, AXELAR, CELER, CBRIDGE, DLN, DEBRIDGE, EYWA, MESON, MULTICHAIN, STARGATE, SYMBIOSIS, SYNAPSE, WORMHOLE, CCTP, CCIP',
                 'PURPOSE': 'BRIDGE'
-        } } }
+        } } },
+    tags = ['gold','defi','bridge','curated','ez']
 ) }}
 
 SELECT

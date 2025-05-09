@@ -4,7 +4,7 @@
   incremental_strategy = 'delete+insert',
   unique_key = ['block_number','platform'],
   post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(tx_hash, origin_from_address, origin_to_address, origin_function_signature, contract_address, event_name, token_address, token_symbol, depositor, protocol_market), SUBSTRING(origin_function_signature, event_name, token_address, token_symbol, depositor, protocol_market)",
-  tags = ['reorg','curated','heal']
+  tags = ['silver','defi','lending','curated','heal']
 ) }}
 
 WITH aave AS (

@@ -11,10 +11,7 @@ SELECT
         ''
     ) AS block_number_hex
 FROM
-    {{ source(
-        'crosschain_silver',
-        'number_sequence'
-    ) }}
+    {{ ref('admin__number_sequence') }}
 WHERE
     _id <= (
         SELECT

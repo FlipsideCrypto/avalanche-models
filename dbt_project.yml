@@ -17,19 +17,14 @@ test-paths: ["tests"]
 seed-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
+docs-paths:
+  ["dbt_packages/fsc_evm/doc_descriptions", "models/doc_descriptions", "models"]
 
 target-path: "target" # directory which will store compiled SQL files
 clean-targets: # directories to be removed by `dbt clean`
   - "target"
   - "dbt_modules"
   - "dbt_packages"
-
-models:
-  +copy_grants: true
-  +persist_docs:
-    relation: true
-    columns: true
-  +on_schema_change: "append_new_columns"
 
 tests:
   +store_failures: true # all tests
@@ -55,6 +50,61 @@ query-comment:
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
+models:
+  avalanche_models: # replace with the name of the chain
+    +copy_grants: true
+    +persist_docs:
+      relation: true
+      columns: true
+    +on_schema_change: "append_new_columns"
+  livequery_models:
+    +materialized: ephemeral
+  fsc_evm:
+    +enabled: false # disable fsc_evm package by default
+    +copy_grants: true
+    +persist_docs:
+      relation: true
+      columns: true
+    +on_schema_change: "append_new_columns"
+    main_package:
+      +enabled: false # disable top level package by default, enabled subpackages as needed
+      admin:
+        +enabled: true
+      core:
+        +enabled: true # enable subpackages, as needed
+        bronze:
+          +enabled: false
+          token_reads:
+            +enabled: true
+      github_actions:
+        +enabled: true
+      labels:
+        +enabled: true
+      observability:
+        +enabled: true
+      prices:
+        +enabled: true
+      utils:
+        +enabled: true
+    decoder_package:
+      +enabled: false
+      abis:
+        +enabled: true
+      decoded_logs:
+        +enabled: false
+        gold:
+          +enabled: true
+        silver:
+          +enabled: true
+        streamline:
+          +enabled: true
+    curated_package:
+      +enabled: false
+      stats:
+        +enabled: true
+    scores_package:
+      +enabled: false
+
 # In this example config, we tell dbt to build all models in the example/ directory
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
@@ -65,13 +115,9 @@ vars:
   STREAMLINE_USE_DEV_FOR_EXTERNAL_TABLES: False
   UPDATE_UDFS_AND_SPS: False
   UPDATE_SNOWFLAKE_TAGS: True
-  LIMIT_PARTITIONS: True
-  WAIT: 0
-  OBSERV_FULL_TEST: False
   HEAL_MODEL: False
   HEAL_MODELS: []
   START_GHA_TASKS: False
-  RELOAD_TRACES: False
 
 #### STREAMLINE 2.0 BEGIN ####
 
@@ -97,44 +143,3 @@ vars:
         - DBT_CLOUD_AVALANCHE
 
 #### STREAMLINE 2.0 END ####
-
-#### FSC_EVM BEGIN ####
-# Visit https://github.com/FlipsideCrypto/fsc-evm/wiki for more information on required and optional variables
-
-  ### GLOBAL VARIABLES BEGIN ###
-  ## REQUIRED
-  GLOBAL_PROD_DB_NAME: 'avalanche' 
-  GLOBAL_NODE_SECRET_PATH: 'Vault/prod/avalanche/c_chain/quicknode/mainnet'
-  GLOBAL_BLOCKS_PER_HOUR: 1800 
-  GLOBAL_USES_STREAMLINE_V1: True
-  GLOBAL_USES_SINGLE_FLIGHT_METHOD: True
-
-  ### GLOBAL VARIABLES END ###
-
-  ### MAIN_PACKAGE VARIABLES BEGIN ###
-
-  ### CORE ###
-  ## REQUIRED
-
-  ## OPTIONAL
-
-  # GOLD_FULL_REFRESH: True
-  # SILVER_FULL_REFRESH: True
-  
-  # BLOCKS_COMPLETE_FULL_REFRESH: True
-  # CONFIRM_BLOCKS_COMPLETE_FULL_REFRESH: True
-  # RECEIPTS_COMPLETE_FULL_REFRESH: True
-  # TRACES_COMPLETE_FULL_REFRESH: True
-  # TRANSACTIONS_COMPLETE_FULL_REFRESH: True
-
-  ### MAIN_PACKAGE VARIABLES END ###
-
-  ### DECODER_PACKAGE VARIABLES BEGIN ###
-
-  ## REQUIRED
-
-  ## OPTIONAL
-
-  ### DECODER_PACKAGE VARIABLES END ###
-
-#### FSC_EVM END ####

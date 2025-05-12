@@ -31,7 +31,10 @@ log_pull AS (
         ON l.contract_address = C.contract_address
     WHERE
         topics [0] :: STRING = '0x7ac369dbd14fa5ea3f473ed67cc9d598964a77501540ba6751eb0b3decf5870d'
-        AND token_name LIKE '%Benqi %'
+        AND (
+            token_name LIKE '%Benqi %'
+            or token_name LIKE '%BENQI %'
+        )
 
 {% if is_incremental() %}
 AND l.modified_timestamp >= (

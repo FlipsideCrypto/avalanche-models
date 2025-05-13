@@ -244,7 +244,7 @@ platform_fee_filter_agg AS (
 nft_address_type AS (
     SELECT
         contract_address AS nft_address,
-        event_type as token_transfer_type
+        token_transfer_type
     FROM
         {{ ref('nft__ez_nft_transfers') }}
     WHERE

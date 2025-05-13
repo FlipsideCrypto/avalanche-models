@@ -4,7 +4,7 @@
     incremental_strategy = 'delete+insert',
     cluster_by = "block_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    tags = ['dexalot_non_realtime']
+    tags = ['dexalot_main']
 ) }}
 
 SELECT

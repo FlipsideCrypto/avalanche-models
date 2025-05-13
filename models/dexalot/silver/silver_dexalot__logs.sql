@@ -4,7 +4,7 @@
     unique_key = "block_number",
     cluster_by = "block_timestamp::date, _inserted_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION",
-    tags = ['dexalot_non_realtime']
+    tags = ['dexalot_main']
 ) }}
 
 WITH base AS (

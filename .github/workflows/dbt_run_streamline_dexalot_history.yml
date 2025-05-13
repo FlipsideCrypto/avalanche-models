@@ -3,8 +3,6 @@ run-name: dbt_run_streamline_dexalot_history
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '37 * * * *'
 
 env:
   DBT_PROFILES_DIR: ./

@@ -5,7 +5,7 @@
     cluster_by = "block_timestamp::date",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_number,tx_hash,from_address,to_address,trace_address,type), SUBSTRING(input,output,type,trace_address,error_reason,revert_reason)",
     full_refresh = false,
-    tags = ['dexalot_non_realtime']
+    tags = ['dexalot_main']
 ) }}
 {# {{ fsc_evm.gold_traces_v2(
 full_reload_start_block = 25000000,

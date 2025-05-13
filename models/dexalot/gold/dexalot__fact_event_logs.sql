@@ -28,8 +28,7 @@ SELECT
     logs_id AS fact_event_logs_id,
     inserted_timestamp,
     modified_timestamp,
-    tx_status,
-    -- deprecate
+    tx_status, -- deprecate
     _log_id -- deprecate
 FROM
     {{ ref('silver_dexalot__logs') }}

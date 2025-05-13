@@ -62,7 +62,7 @@ traces_pull AS (
             FROM
                 log_pull
         )
-        AND identifier = 'STATICCALL_0_2'
+        AND CONCAT(TYPE,'_',TRACE_ADDRESS) = 'STATICCALL_0_2'
 ),
 contract_pull AS (
     SELECT

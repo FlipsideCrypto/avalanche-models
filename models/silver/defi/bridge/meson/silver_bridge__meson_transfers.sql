@@ -54,7 +54,6 @@ native_transfers AS (
         et.from_address,
         et.to_address,
         amount_precise_raw,
-        identifier,
         CONCAT(
             et.tx_hash :: STRING,
             '-',

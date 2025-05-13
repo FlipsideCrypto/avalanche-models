@@ -24,7 +24,7 @@ WITH raw_decoded_logs AS (
             'RoyaltyPayment',
             'Transfer'
         )
-        AND tx_status = 'SUCCESS'
+        AND tx_succeeded
 
 {% if is_incremental() %}
 AND modified_timestamp >= (

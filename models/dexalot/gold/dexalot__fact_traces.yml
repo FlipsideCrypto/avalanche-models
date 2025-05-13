@@ -38,8 +38,6 @@ models:
         description: '{{ doc("dexalot_traces_output") }}'
       - name: TYPE
         description: '{{ doc("dexalot_traces_type") }}'
-      - name: IDENTIFIER
-        description: '{{ doc("dexalot_traces_identifier") }}'
       - name: DATA
         description: '{{ doc("dexalot_traces_call_data") }}'
       - name: TX_SUCCEEDED

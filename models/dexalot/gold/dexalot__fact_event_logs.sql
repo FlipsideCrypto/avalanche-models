@@ -11,7 +11,7 @@ SELECT
     block_number,
     block_timestamp,
     tx_hash,
-    {# tx_position, -- new column #}
+    tx_position,
     event_index,
     contract_address,
     topics,
@@ -27,9 +27,7 @@ SELECT
     tx_status AS tx_succeeded,
     logs_id AS fact_event_logs_id,
     inserted_timestamp,
-    modified_timestamp,
-    tx_status, -- deprecate
-    _log_id -- deprecate
+    modified_timestamp
 FROM
     {{ ref('silver_dexalot__logs') }}
 

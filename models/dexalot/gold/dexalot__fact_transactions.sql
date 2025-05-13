@@ -36,9 +36,7 @@ SELECT
     v,
     transactions_id AS fact_transactions_id,
     inserted_timestamp,
-    modified_timestamp,
-    block_hash, -- deprecate
-    position -- deprecate
+    modified_timestamp
 FROM
     {{ ref('silver_dexalot__transactions') }}
 

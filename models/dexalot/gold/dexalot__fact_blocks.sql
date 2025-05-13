@@ -33,49 +33,7 @@ SELECT
     logs_bloom,
     blocks_id AS fact_blocks_id,
     inserted_timestamp,
-    modified_timestamp,
-    OBJECT_CONSTRUCT(
-        'baseFeePerGas',
-        base_fee_per_gas,
-        'difficulty',
-        difficulty,
-        'extraData',
-        extra_data,
-        'gasLimit',
-        gas_limit,
-        'gasUsed',
-        gas_used,
-        'hash',
-        HASH,
-        'logsBloom',
-        logs_bloom,
-        'miner',
-        miner,
-        'nonce',
-        nonce,
-        'number',
-        NUMBER,
-        'parentHash',
-        parent_hash,
-        'receiptsRoot',
-        receipts_root,
-        'sha3Uncles',
-        sha3_uncles,
-        'size',
-        SIZE,
-        'stateRoot',
-        state_root,
-        'timestamp',
-        block_timestamp,
-        'totalDifficulty',
-        total_difficulty,
-        'transactionsRoot',
-        transactions_root,
-        'uncles',
-        uncles
-    ) AS block_header_json, --deprecate
-    'dexalot' AS blockchain, --deprecate
-    hash --deprecate
+    modified_timestamp
 FROM
     {{ ref('silver_dexalot__blocks') }} A
 

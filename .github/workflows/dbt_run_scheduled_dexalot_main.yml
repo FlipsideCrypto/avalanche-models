@@ -1,8 +1,10 @@
-name: dbt_run_streamline_dexalot_history
-run-name: dbt_run_streamline_dexalot_history
+name: dbt_run_scheduled_dexalot_main
+run-name: dbt_run_scheduled_dexalot_main
 
 on:
   workflow_dispatch:
+    branches:
+      - "main"
 
 env:
   DBT_PROFILES_DIR: ./
@@ -25,5 +27,5 @@ jobs:
     with:
       command_name: Run Chainhead Models
       command: |
-        dbt run --vars '{"STREAMLINE_INVOKE_STREAMS":True}' -m "avalanche_models,tag:streamline_dexalot_complete" "avalanche_models,tag:streamline_dexalot_history"
+        dbt run -m "avalanche_models,tag:dexalot_main"
     secrets: inherit

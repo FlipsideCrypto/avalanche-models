@@ -343,10 +343,10 @@ nft_transfers AS (
     SELECT
         tx_hash,
         contract_address AS nft_address,
-        nft_from_address,
-        nft_to_address,
-        tokenid,
-        erc1155_value
+        from_address AS nft_from_address,
+        to_address AS nft_to_address,
+        token_id AS tokenid,
+        NULL AS erc1155_value
     FROM
         {{ ref('nft__ez_nft_transfers') }}
     WHERE

@@ -22,7 +22,7 @@ SELECT
     tx_status AS tx_succeeded,
     tx_type,
     nonce,
-    position as tx_position,
+    position AS tx_position,
     input_data,
     gas_price,
     effective_gas_price,
@@ -36,9 +36,7 @@ SELECT
     v,
     transactions_id AS fact_transactions_id,
     inserted_timestamp,
-    modified_timestamp,
-    block_hash, -- deprecate
-    position -- deprecate
+    modified_timestamp
 FROM
     {{ ref('silver_dexalot__transactions') }}
 

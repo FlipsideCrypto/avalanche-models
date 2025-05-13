@@ -7,13 +7,7 @@
     full_refresh = false,
     tags = ['dexalot_non_realtime']
 ) }}
-{# {{ fsc_evm.silver_traces_v1(
-full_reload_start_block = 25000000,
-full_reload_blocks = 2000000,
-schema_name = 'bronze_dexalot',
-use_partition_key = TRUE
-) }}
-#}
+
 WITH bronze_traces AS (
 
     SELECT

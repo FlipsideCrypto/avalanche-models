@@ -321,10 +321,10 @@ base AS (
         origin_from_address,
         origin_to_address,
         origin_function_signature,
-        _log_id,
+        p._log_id,
         _inserted_timestamp
     FROM
-        payout_raw
+        payout_raw p
         LEFT JOIN commission_raw USING (
             tx_hash,
             nft_address,
@@ -342,7 +342,7 @@ base AS (
 nft_transfers AS (
     SELECT
         tx_hash,
-        nft_address,
+        contract_address AS nft_address,
         nft_from_address,
         nft_to_address,
         tokenid,

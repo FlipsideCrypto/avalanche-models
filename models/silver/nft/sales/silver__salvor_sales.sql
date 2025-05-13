@@ -18,7 +18,12 @@ WITH raw_logs AS (
             WHEN topics [0] :: STRING = '0x15d4649ef85f6d7a1e2068dd3d0c51d49d0257fa627d1e46abe3e1b3458d8b00' THEN 'AuctionSettled'
             WHEN topics [0] :: STRING = '0x2f258d8ad9499ea044033d10f2d28e770de5366a12c487afee76b4083e8edfb9' THEN 'ShareIncome'
         END AS topics_event_name,
-        modified_timestamp AS _inserted_timestamp
+        modified_timestamp AS _inserted_timestamp,
+        CONCAT(
+            tx_hash :: STRING,
+            '-',
+            event_index :: STRING
+        ) AS _log_id
     FROM
         {{ ref('core__fact_event_logs') }}
     WHERE

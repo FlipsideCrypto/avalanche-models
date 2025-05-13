@@ -1,12 +1,10 @@
-name: dbt_run_streamline_dexalot_non_realtime
-run-name: dbt_run_streamline_dexalot_non_realtime
+name: dbt_run_scheduled_dexalot_main
+run-name: dbt_run_scheduled_dexalot_main
 
 on:
   workflow_dispatch:
     branches:
       - "main"
-  schedule:
-    - cron: '5 * * * *'
 
 env:
   DBT_PROFILES_DIR: ./
@@ -29,5 +27,5 @@ jobs:
     with:
       command_name: Run Chainhead Models
       command: |
-        dbt run -m "avalanche_models,tag:dexalot_non_realtime"
+        dbt run -m "avalanche_models,tag:dexalot_main"
     secrets: inherit

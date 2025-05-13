@@ -22,7 +22,7 @@ SELECT
     tx_status AS tx_succeeded,
     tx_type,
     nonce,
-    position as tx_position,
+    position AS tx_position,
     input_data,
     gas_price,
     effective_gas_price,

@@ -92,7 +92,7 @@ native_gas_paid AS (
         decoded_log :"symbol" :: STRING AS symbol,
         decoded_log,
         event_removed,
-                IFF(
+        IFF(
             tx_succeeded,
             'SUCCESS',
             'FAIL'

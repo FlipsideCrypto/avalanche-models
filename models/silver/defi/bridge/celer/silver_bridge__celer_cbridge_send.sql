@@ -38,7 +38,7 @@ WITH base_evt AS (
         decoded_log :"transferId" :: STRING AS transferId,
         decoded_log,
         event_removed,
-                IFF(
+        IFF(
             tx_succeeded,
             'SUCCESS',
             'FAIL'

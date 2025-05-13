@@ -33,7 +33,7 @@ WITH base_evt AS (
         decoded_log :"token" :: STRING AS token,
         decoded_log,
         event_removed,
-                IFF(
+        IFF(
             tx_succeeded,
             'SUCCESS',
             'FAIL'

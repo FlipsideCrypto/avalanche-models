@@ -56,7 +56,7 @@ base_evt AS (
         decoded_log,
         token_address,
         event_removed,
-                IFF(
+        IFF(
             tx_succeeded,
             'SUCCESS',
             'FAIL'

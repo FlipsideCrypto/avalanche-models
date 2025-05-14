@@ -5,7 +5,7 @@
     unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION ON EQUALITY(block_hash, tx_hash, from_address, to_address)",
-    tags = ['dexalot_main']
+    tags = ['dexalot','dexalot_main']
 ) }}
 
 WITH base AS (

@@ -8,7 +8,7 @@ models:
       - fsc_utils.sequence_gaps:
           partition_by:
             - BLOCK_NUMBER
-          column_name: POSITION
+          column_name: TX_POSITION
           where: BLOCK_TIMESTAMP < CURRENT_DATE - 1
     columns:
       - name: BLOCK_TIMESTAMP

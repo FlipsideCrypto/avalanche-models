@@ -9,7 +9,7 @@
         "worker_batch_size" :"1000",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['streamline_dexalot_history']
+    tags = ['dexalot','streamline_dexalot_history']
 ) }}
 
 WITH last_3_days AS (

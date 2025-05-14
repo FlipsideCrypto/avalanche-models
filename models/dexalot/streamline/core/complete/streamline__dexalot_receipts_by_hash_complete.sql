@@ -4,7 +4,7 @@
     unique_key = "complete_receipts_by_hash_id",
     cluster_by = "ROUND(block_number, -3)",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(complete_receipts_by_hash_id)",
-    tags = ['stale']
+    tags = ['dexalot','stale']
 ) }}
 
 SELECT

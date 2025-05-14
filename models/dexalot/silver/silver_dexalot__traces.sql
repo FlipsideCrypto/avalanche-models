@@ -5,7 +5,7 @@
     unique_key = "block_number",
     cluster_by = ['modified_timestamp::DATE','partition_key'],
     full_refresh = false,
-    tags = ['dexalot_main']
+    tags = ['dexalot','dexalot_main']
 ) }}
 
 WITH bronze_traces AS (

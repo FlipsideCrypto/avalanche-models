@@ -1,6 +1,6 @@
 {{ config (
     materialized = "view",
-    tags = ['streamline_dexalot_complete']
+    tags = ['dexalot','streamline_dexalot_complete']
 ) }}
 
 SELECT

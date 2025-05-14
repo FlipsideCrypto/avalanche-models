@@ -4,7 +4,7 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - _LOG_ID
+            - FACT_EVENT_LOGS_ID
       - fsc_utils.sequence_gaps:
           partition_by:
             - BLOCK_NUMBER

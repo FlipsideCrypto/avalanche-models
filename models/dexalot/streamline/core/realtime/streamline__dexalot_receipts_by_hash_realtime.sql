@@ -9,7 +9,7 @@
         "worker_batch_size" :"2000",
         "sql_source" :"{{this.identifier}}" }
     ),
-    tags = ['stale']
+    tags = ['dexalot','stale']
 ) }}
 
 WITH last_3_days AS (

@@ -4,7 +4,7 @@
     unique_key = "block_number",
     cluster_by = "ROUND(block_number, -3)",
     post_hook = "ALTER TABLE {{ this }} ADD SEARCH OPTIMIZATION on equality(block_number)",
-    tags = ['streamline_dexalot_complete']
+    tags = ['dexalot','streamline_dexalot_complete']
 ) }}
 
 SELECT

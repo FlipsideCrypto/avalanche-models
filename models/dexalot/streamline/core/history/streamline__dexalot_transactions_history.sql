@@ -10,7 +10,7 @@
         "sql_source" :"{{this.identifier}}",
         "exploded_key": tojson(["result.transactions"]) }
     ),
-    tags = ['streamline_dexalot_history']
+    tags = ['dexalot','streamline_dexalot_history']
 ) }}
 
 WITH last_3_days AS (

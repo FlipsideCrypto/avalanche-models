@@ -3,18 +3,8 @@ run-name: dbt_run_streamline_dexalot_history
 
 on:
   workflow_dispatch:
-
-env:
-  DBT_PROFILES_DIR: ./
-
-  ACCOUNT: "${{ vars.ACCOUNT }}"
-  ROLE: "${{ vars.ROLE }}"
-  USER: "${{ vars.USER }}"
-  PASSWORD: "${{ secrets.PASSWORD }}"
-  REGION: "${{ vars.REGION }}"
-  DATABASE: "${{ vars.DATABASE }}"
-  WAREHOUSE: "${{ vars.WAREHOUSE }}"
-  SCHEMA: "${{ vars.SCHEMA }}"
+    branches:
+      - "main"
 
 concurrency:
   group: ${{ github.workflow }}

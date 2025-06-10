@@ -17,6 +17,41 @@ WITH contracts AS (
   FROM
     {{ ref('silver__contracts') }}
 ),
+arena AS (
+  SELECT
+    block_number,
+    block_timestamp,
+    tx_hash,
+    contract_address,
+    pool_address,
+    NULL AS pool_name,
+    NULL AS fee,
+    NULL AS tick_spacing,
+    token0,
+    token1,
+    NULL AS token2,
+    NULL AS token3,
+    NULL AS token4,
+    NULL AS token5,
+    NULL AS token6,
+    NULL AS token7,
+    'arena-trade' AS platform,
+    'v1' AS version,
+    _log_id AS _id,
+    _inserted_timestamp
+  FROM
+    {{ ref('silver_dex__arena_pools') }}
+
+{% if is_incremental() and 'arena' not in var('HEAL_MODELS') %}
+WHERE
+  _inserted_timestamp >= (
+    SELECT
+      MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+    FROM
+      {{ this }}
+  )
+{% endif %}
+),
 balancer AS (
   SELECT
     block_number,
@@ -542,6 +577,11 @@ WHERE
 {% endif %}
 ),
 all_pools AS (
+  SELECT 
+    *
+  FROM
+    arena
+  UNION ALL
   SELECT
     *
   FROM

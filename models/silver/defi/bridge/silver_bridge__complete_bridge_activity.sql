@@ -46,7 +46,6 @@ WHERE
 {% endif %}
 ),
 allbridge_v2 AS (
-
     SELECT
         block_number,
         block_timestamp,
@@ -73,6 +72,42 @@ allbridge_v2 AS (
         {{ ref('silver_bridge__allbridge_tokens_sent') }}
 
 {% if is_incremental() and 'allbridge_v2' not in var('HEAL_MODELS') %}
+WHERE
+    _inserted_timestamp >= (
+        SELECT
+            MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+        FROM
+            {{ this }}
+    )
+{% endif %}
+),
+avaxbridge AS (
+    SELECT
+        block_number,
+        block_timestamp,
+        origin_from_address,
+        origin_to_address,
+        origin_function_signature,
+        tx_hash,
+        event_index,
+        bridge_address,
+        event_name,
+        platform,
+        'v1' AS version,
+        sender,
+        receiver,
+        destination_chain_receiver,
+        destination_chain_id,
+        destination_chain,
+        token_address,
+        NULL AS token_symbol,
+        amount_unadj,
+        _log_id AS _id,
+        modified_timestamp AS _inserted_timestamp
+    FROM
+        {{ ref('silver_bridge__avaxbridge_unwrap') }}
+
+{% if is_incremental() and 'avaxbridge' not in var('HEAL_MODELS') %}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -145,6 +180,42 @@ celer_cbridge AS (
         {{ ref('silver_bridge__celer_cbridge_send') }}
 
 {% if is_incremental() and 'celer_cbridge' not in var('HEAL_MODELS') %}
+WHERE
+    _inserted_timestamp >= (
+        SELECT
+            MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+        FROM
+            {{ this }}
+    )
+{% endif %}
+),
+corebtc AS (
+    SELECT
+        block_number,
+        block_timestamp,
+        origin_from_address,
+        origin_to_address,
+        origin_function_signature,
+        tx_hash,
+        event_index,
+        bridge_address,
+        event_name,
+        platform,
+        'v1' AS version,
+        sender,
+        receiver,
+        destination_chain_receiver,
+        destination_chain_id,
+        destination_chain,
+        token_address,
+        NULL AS token_symbol,
+        amount_unadj,
+        _log_id AS _id,
+        modified_timestamp AS _inserted_timestamp
+    FROM
+        {{ ref('silver_bridge__corebtc_unwrap') }}
+
+{% if is_incremental() and 'corebtc' not in var('HEAL_MODELS') %}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -334,6 +405,43 @@ WHERE
     )
 {% endif %}
 ),
+stargate_v2 AS (
+    SELECT
+       block_number,
+        block_timestamp,
+        origin_from_address,
+        origin_to_address,
+        origin_function_signature,
+        tx_hash,
+        event_index,
+        bridge_address,
+        event_name,
+        platform,
+        'v2' AS version,
+        sender,
+        receiver,
+        destination_chain_receiver,
+        destination_chain_id :: STRING AS destination_chain_id,
+        destination_chain,
+        token_address,
+        NULL AS token_symbol,
+        amount_unadj,
+        _log_id AS _id,
+        _inserted_timestamp
+    FROM 
+        {{ ref('silver_bridge__stargate_v2_oftsent') }}
+
+{% if is_incremental() and 'stargate' not in var('HEAL_MODELS') %}
+WHERE
+    _inserted_timestamp >= (
+        SELECT
+            MAX(_inserted_timestamp) - INTERVAL '{{ var("LOOKBACK", "4 hours") }}'
+        FROM
+            {{ this }}
+    )
+{% endif %}
+),
+
 symbiosis AS (
     SELECT
         block_number,
@@ -499,8 +607,8 @@ cctp AS (
         token_address,
         NULL AS token_symbol,
         amount_unadj,
-        _log_id as _id,
-        modified_timestamp as _inserted_timestamp
+        _log_id AS _id,
+        modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('silver_bridge__cctp_depositforburn') }}
 
@@ -514,7 +622,6 @@ WHERE
     )
 {% endif %}
 ),
-
 cctp_v2 AS (
     SELECT
         block_number,
@@ -536,8 +643,8 @@ cctp_v2 AS (
         token_address,
         NULL AS token_symbol,
         amount_unadj,
-        _log_id as _id,
-        modified_timestamp as _inserted_timestamp
+        _log_id AS _id,
+        modified_timestamp AS _inserted_timestamp
     FROM
         {{ ref('silver_bridge__cctp_v2_depositforburn') }}
 
@@ -601,12 +708,22 @@ all_protocols AS (
     SELECT
         *
     FROM
+        avaxbridge
+    UNION ALL
+    SELECT
+        *
+    FROM
         axelar
     UNION ALL
     SELECT
         *
     FROM
         celer_cbridge
+    UNION ALL
+    SELECT
+        *
+    FROM
+        corebtc
     UNION ALL
     SELECT
         *
@@ -633,6 +750,11 @@ all_protocols AS (
     FROM
         stargate
     UNION ALL
+    SELECT 
+        *
+    FROM
+        stargate_v2
+    UNION ALL
     SELECT
         *
     FROM
@@ -652,15 +774,15 @@ all_protocols AS (
         *
     FROM
         wormhole
-    UNION ALL 
-    SELECT 
+    UNION ALL
+    SELECT
         *
-    FROM 
+    FROM
         cctp
-    UNION ALL 
-    SELECT 
+    UNION ALL
+    SELECT
         *
-    FROM 
+    FROM
         cctp_v2
     UNION ALL
     SELECT
@@ -685,27 +807,41 @@ complete_bridge_activity AS (
         receiver,
         destination_chain_receiver,
         CASE
-            WHEN CONCAT(platform, '-', version) IN (
+            WHEN CONCAT(
+                platform,
+                '-',
+                version
+            ) IN (
                 'stargate-v1',
+                'stargate-v2-v2',
                 'wormhole-v1',
                 'meson-v1',
                 'allbridge-v2',
                 'circle-cctp-v1',
                 'circle-cctp-v2-v2',
-                'chainlink-ccip-v1'
+                'chainlink-ccip-v1',
+                'core-bitcoin-v1',
+                'avalanche-bridge-v1'
             ) THEN destination_chain_id :: STRING
             WHEN d.chain_id IS NULL THEN destination_chain_id :: STRING
             ELSE d.chain_id :: STRING
         END AS destination_chain_id,
         CASE
-            WHEN CONCAT(platform, '-', version) IN (
+            WHEN CONCAT(
+                platform,
+                '-',
+                version
+            ) IN (
                 'stargate-v1',
+                'stargate-v2-v2',
                 'wormhole-v1',
                 'meson-v1',
                 'allbridge-v2',
                 'circle-cctp-v1',
                 'circle-cctp-v2-v2',
-                'chainlink-ccip-v1'
+                'chainlink-ccip-v1',
+                'core-bitcoin-v1',
+                'avalanche-bridge-v1'
             ) THEN LOWER(destination_chain)
             WHEN d.chain IS NULL THEN LOWER(destination_chain)
             ELSE LOWER(

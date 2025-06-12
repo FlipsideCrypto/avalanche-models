@@ -25,6 +25,7 @@ sources:
       - name: dexalot_traces
       - name: dexalot_confirm_blocks
       - name: dexalot_receipts_by_hash
+      - name: token_reads
   - name: crosschain_silver
     database: >-
       {{ 'CROSSCHAIN_DEV' if '_DEV' in target.database.upper() else 'CROSSCHAIN' }}

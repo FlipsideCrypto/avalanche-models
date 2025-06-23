@@ -27,7 +27,7 @@ SELECT
   amount_in,
   ROUND(
         CASE
-            WHEN (token_in <> '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' or token_in_is_verified)
+            WHEN (token_in <> '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' or not token_in_is_verified)
             AND (
                 amount_out_usd IS NULL
                 OR ABS((amount_in_usd - amount_out_usd) / NULLIF(amount_out_usd, 0)) > 0.75
@@ -41,7 +41,7 @@ SELECT
     amount_out,
     ROUND(
         CASE
-            WHEN (token_out <> '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' or token_out_is_verified)
+            WHEN (token_out <> '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7' or not token_out_is_verified)
             AND (
                 amount_in_usd IS NULL
                 OR ABS((amount_out_usd - amount_in_usd) / NULLIF(amount_in_usd, 0)) > 0.75

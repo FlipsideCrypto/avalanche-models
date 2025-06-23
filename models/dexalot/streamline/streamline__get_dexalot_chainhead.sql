@@ -6,7 +6,7 @@
 SELECT
     {{ target.database }}.live.udf_api(
         'POST',
-        '{Service}',
+        '{URL}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json',
@@ -23,7 +23,7 @@ SELECT
             'params',
             []
         ),
-        'Vault/prod/avalanche/dexalot/internal/mainnet'
+        'Vault/prod/evm/nirvana/dexalot/mainnet'
     ) AS resp,
     utils.udf_hex_to_int(
         resp :data :result :: STRING

@@ -27,6 +27,7 @@ WITH balancer AS (
     tx_to,
     event_index,
     platform,
+    'balancer' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -61,6 +62,7 @@ trader_joe_v1 AS (
     tx_to,
     event_index,
     platform,
+    'trader_joe' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -95,6 +97,7 @@ trader_joe_v2 AS (
     tx_to,
     event_index,
     platform,
+    'trader_joe' AS protocol,
     'v2' AS version,
     _log_id,
     _inserted_timestamp
@@ -129,6 +132,7 @@ trader_joe_v2_1 AS (
     tx_to,
     event_index,
     platform,
+    'trader_joe' AS protocol,
     version,
     _log_id,
     _inserted_timestamp
@@ -163,6 +167,7 @@ woofi AS (
     tx_to,
     event_index,
     platform,
+    'woofi' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -197,6 +202,7 @@ gmx AS (
     tx_to,
     event_index,
     platform,
+    'gmx' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -231,7 +237,8 @@ kyberswap_v1_dynamic AS (
     tx_to,
     event_index,
     platform,
-    'v1-dynamic' AS version,
+    'kyberswap' AS protocol,
+    'v1_dynamic' AS version,
     _log_id,
     _inserted_timestamp
   FROM
@@ -265,7 +272,8 @@ kyberswap_v1_static AS (
     tx_to,
     event_index,
     platform,
-    'v1-static' AS version,
+    'kyberswap' AS protocol,
+    'v1_static' AS version,
     _log_id,
     _inserted_timestamp
   FROM
@@ -299,6 +307,7 @@ kyberswap_v2_elastic AS (
     tx_to,
     event_index,
     platform,
+    'kyberswap' AS protocol,
     'v2' AS version,
     _log_id,
     _inserted_timestamp
@@ -333,6 +342,7 @@ pangolin AS (
     tx_to,
     event_index,
     platform,
+    'pangolin' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -367,6 +377,7 @@ platypus AS (
     tx_to,
     event_index,
     platform,
+    'platypus' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -401,6 +412,7 @@ fraxswap AS (
     tx_to,
     event_index,
     platform,
+    'fraxswap' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -435,6 +447,7 @@ hashflow AS (
     tx_to,
     event_index,
     platform,
+    'hashflow' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -469,6 +482,7 @@ hashflow_v3 AS (
     tx_to,
     event_index,
     platform,
+    'hashflow' AS protocol,
     'v3' AS version,
     _log_id,
     _inserted_timestamp
@@ -503,6 +517,7 @@ sushi AS (
     tx_to,
     event_index,
     platform,
+    'sushiswap' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -537,6 +552,7 @@ curve AS (
     tx_to,
     event_index,
     platform,
+    'curve' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -583,6 +599,7 @@ univ3 AS (
     recipient AS tx_to,
     event_index,
     'uniswap-v3' AS platform,
+    'uniswap' AS protocol,
     'v3' AS version,
     _log_id,
     _inserted_timestamp
@@ -617,6 +634,7 @@ univ2 AS (
     tx_to,
     event_index,
     platform,
+    'uniswap' AS protocol,
     'v2' AS version,
     _log_id,
     _inserted_timestamp
@@ -663,6 +681,7 @@ pharaoh_v2 AS (
     recipient AS tx_to,
     event_index,
     'pharaoh-v2' AS platform,
+    'pharaoh' AS protocol,
     'v2' AS version,
     _log_id,
     _inserted_timestamp
@@ -697,6 +716,7 @@ pharaoh_v1 AS (
     tx_to,
     event_index,
     platform,
+    'pharaoh' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -731,6 +751,7 @@ arena AS (
     tx_to,
     event_index,
     platform,
+    'arena_trade' AS protocol,
     'v1' AS version,
     _log_id,
     _inserted_timestamp
@@ -765,6 +786,7 @@ dexalot AS (
     tx_to,
     event_index,
     platform,
+    'dexalot' AS protocol,
     'v1' AS version,
     _log_id,
     modified_timestamp AS _inserted_timestamp
@@ -903,6 +925,7 @@ complete_dex_swaps AS (
     s.contract_address,
     event_name,
     token_in,
+    p1.is_verified AS token_in_is_verified,
     c1.token_decimals AS decimals_in,
     c1.token_symbol AS symbol_in,
     amount_in_unadj,
@@ -915,6 +938,7 @@ complete_dex_swaps AS (
       ELSE NULL
     END AS amount_in_usd,
     token_out,
+    p2.is_verified AS token_out_is_verified,
     c2.token_decimals AS decimals_out,
     c2.token_symbol AS symbol_out,
     amount_out_unadj,
@@ -956,6 +980,7 @@ complete_dex_swaps AS (
     tx_to,
     event_index,
     s.platform,
+    s.protocol,
     s.version,
     s._log_id,
     s._inserted_timestamp
@@ -1000,6 +1025,7 @@ heal_model AS (
     t0.contract_address,
     event_name,
     token_in,
+    p1.is_verified AS token_in_is_verified,
     c1.token_decimals AS decimals_in,
     c1.token_symbol AS symbol_in,
     amount_in_unadj,
@@ -1012,6 +1038,7 @@ heal_model AS (
       ELSE NULL
     END AS amount_in_usd_heal,
     token_out,
+    p2.is_verified AS token_out_is_verified,
     c2.token_decimals AS decimals_out,
     c2.token_symbol AS symbol_out,
     amount_out_unadj,
@@ -1053,6 +1080,7 @@ heal_model AS (
     tx_to,
     event_index,
     t0.platform,
+    t0.protocol,
     t0.version,
     t0._log_id,
     t0._inserted_timestamp
@@ -1278,12 +1306,14 @@ SELECT
   contract_address,
   event_name,
   token_in,
+  token_in_is_verified,
   decimals_in,
   symbol_in,
   amount_in_unadj,
   amount_in_heal AS amount_in,
   amount_in_usd_heal AS amount_in_usd,
   token_out,
+  token_out_is_verified,
   decimals_out,
   symbol_out,
   amount_out_unadj,
@@ -1294,6 +1324,7 @@ SELECT
   tx_to,
   event_index,
   platform,
+  protocol,
   version,
   _log_id,
   _inserted_timestamp
@@ -1321,9 +1352,12 @@ SELECT
   tx_to,
   event_index,
   platform,
-  version,
+  protocol,
+  version as protocol_version,
   token_in,
+  token_in_is_verified,
   token_out,
+  token_out_is_verified,
   symbol_in,
   symbol_out,
   decimals_in,
@@ -1333,8 +1367,15 @@ SELECT
   {{ dbt_utils.generate_surrogate_key(
     ['tx_hash','event_index']
   ) }} AS complete_dex_swaps_id,
-  SYSDATE() AS inserted_timestamp,
-  SYSDATE() AS modified_timestamp,
+    {% if is_incremental() %}
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    {% else %}
+    CASE WHEN block_timestamp >= date_trunc('hour',SYSDATE()) - interval '6 hours' THEN SYSDATE() 
+        ELSE GREATEST(block_timestamp, dateadd('day', -10, SYSDATE())) END AS inserted_timestamp,
+    CASE WHEN block_timestamp >= date_trunc('hour',SYSDATE()) - interval '6 hours' THEN SYSDATE() 
+        ELSE GREATEST(block_timestamp, dateadd('day', -10, SYSDATE())) END AS modified_timestamp,
+    {% endif %}
   '{{ invocation_id }}' AS _invocation_id
 FROM
   FINAL qualify (ROW_NUMBER() over (PARTITION BY _log_id

@@ -104,6 +104,10 @@ models:
         +enabled: false
         vertex:
           +enabled: true
+        layerzero:
+          +enabled: true
+        stargate:
+          +enabled: true
       stats:
         +enabled: true
     scores_package:

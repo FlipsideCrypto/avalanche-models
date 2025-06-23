@@ -66,7 +66,7 @@ SELECT
     ) :: INT AS partition_key,
     {{ target.database }}.live.udf_api(
         'POST',
-        '{Service}',
+        '{URL}',
         OBJECT_CONSTRUCT(
             'Content-Type',
             'application/json'
@@ -81,7 +81,7 @@ SELECT
             'params',
             ARRAY_CONSTRUCT(tx_hash)
         ),
-        'Vault/prod/avalanche/dexalot/internal/mainnet'
+        'Vault/prod/evm/nirvana/dexalot/mainnet'
     ) AS request
 FROM
     ready_blocks

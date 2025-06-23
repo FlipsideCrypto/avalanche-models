@@ -1367,8 +1367,15 @@ SELECT
   {{ dbt_utils.generate_surrogate_key(
     ['tx_hash','event_index']
   ) }} AS complete_dex_swaps_id,
-  SYSDATE() AS inserted_timestamp,
-  SYSDATE() AS modified_timestamp,
+    {% if is_incremental() %}
+    SYSDATE() AS inserted_timestamp,
+    SYSDATE() AS modified_timestamp,
+    {% else %}
+    CASE WHEN block_timestamp >= date_trunc('hour',SYSDATE()) - interval '6 hours' THEN SYSDATE() 
+        ELSE GREATEST(block_timestamp, dateadd('day', -10, SYSDATE())) END AS inserted_timestamp,
+    CASE WHEN block_timestamp >= date_trunc('hour',SYSDATE()) - interval '6 hours' THEN SYSDATE() 
+        ELSE GREATEST(block_timestamp, dateadd('day', -10, SYSDATE())) END AS modified_timestamp,
+    {% endif %}
   '{{ invocation_id }}' AS _invocation_id
 FROM
   FINAL qualify (ROW_NUMBER() over (PARTITION BY _log_id

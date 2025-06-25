@@ -825,6 +825,7 @@ complete_bridge_activity AS (
             )
             ELSE NULL
         END AS amount_usd,
+        p.is_verified AS token_is_verified,
         _id,
         b._inserted_timestamp
     FROM
@@ -885,6 +886,7 @@ heal_model AS (
             ELSE NULL
         END AS amount_usd_heal,
         _id,
+        p.is_verified AS token_is_verified,
         t0._inserted_timestamp
     FROM
         {{ this }}
@@ -1021,6 +1023,7 @@ SELECT
     amount_unadj,
     amount_heal AS amount,
     amount_usd_heal AS amount_usd,
+    token_is_verified,
     _id,
     _inserted_timestamp
 FROM
@@ -1050,6 +1053,7 @@ SELECT
     amount_unadj,
     amount,
     amount_usd,
+    token_is_verified,
     _id,
     _inserted_timestamp,
     {{ dbt_utils.generate_surrogate_key(

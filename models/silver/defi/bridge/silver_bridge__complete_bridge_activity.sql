@@ -885,8 +885,8 @@ heal_model AS (
             WHEN C.token_decimals IS NOT NULL THEN amount_heal * p.price
             ELSE NULL
         END AS amount_usd_heal,
-        _id,
         p.is_verified AS token_is_verified,
+        _id,
         t0._inserted_timestamp
     FROM
         {{ this }}

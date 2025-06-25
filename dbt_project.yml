@@ -104,9 +104,9 @@ models:
         +enabled: false
         vertex:
           +enabled: true
-        layerzero:
-          +enabled: true
-        stargate:
+      defi:
+        +enabled: false
+        bridge:
           +enabled: true
       stats:
         +enabled: true

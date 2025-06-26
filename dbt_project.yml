@@ -104,6 +104,10 @@ models:
         +enabled: false
         vertex:
           +enabled: true
+      defi:
+        +enabled: false
+        bridge:
+          +enabled: true
       stats:
         +enabled: true
     scores_package:

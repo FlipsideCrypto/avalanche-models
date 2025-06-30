@@ -97,6 +97,7 @@ SELECT
     destination_chain_id :: STRING AS destination_chain_id,
     IFF(
         token_address = '0x152b9d0fdc40c096757f570a51e494bd4b943e50',
+        -- btc.b
         'bitcoin',
         'ethereum'
     ) AS destination_chain,

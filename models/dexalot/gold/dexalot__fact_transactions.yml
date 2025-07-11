@@ -1,0 +1,110 @@
+version: 2
+models:
+  - name: dexalot__fact_transactions
+    description: '{{ doc("fact_transactions_table_doc") }}'
+      
+    columns:
+      - name: BLOCK_NUMBER
+        description: '{{ doc("general_block_number") }}'
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("general_block_timestamp") }}'
+      - name: TX_HASH
+        description: '{{ doc("general_tx_hash") }}'
+      - name: FROM_ADDRESS
+        description: '{{ doc("general_from_address") }}'
+      - name: TO_ADDRESS
+        description: '{{ doc("general_to_address") }}'
+      - name: ORIGIN_FUNCTION_SIGNATURE
+        description: '{{ doc("general_origin_function_signature") }}'
+      - name: VALUE
+        description: '{{ doc("general_value") }}'
+      - name: VALUE_PRECISE_RAW
+        description: '{{ doc("general_value_precise_raw") }}'
+      - name: VALUE_PRECISE
+        description: '{{ doc("general_value_precise") }}'
+      - name: TX_FEE
+        description: '{{ doc("fact_transactions_tx_fee") }}'
+      - name: TX_FEE_PRECISE
+        description: '{{ doc("fact_transactions_tx_fee_precise") }}'
+      - name: TX_SUCCEEDED
+        description: '{{ doc("general_tx_succeeded") }}'
+      - name: TX_TYPE
+        description: '{{ doc("fact_transactions_tx_type") }}'
+      - name: TIMEBOOSTED
+        description: '{{ doc("fact_transactions_timeboosted") }}'
+      - name: NONCE
+        description: '{{ doc("fact_transactions_nonce") }}'
+      - name: TX_POSITION
+        description: '{{ doc("general_tx_position") }}'
+      - name: INPUT_DATA
+        description: '{{ doc("fact_transactions_input_data") }}'
+      - name: GAS_PRICE
+        description: '{{ doc("fact_transactions_tx_gas_price") }}'
+      - name: GAS_USED
+        description: '{{ doc("fact_transactions_tx_gas_used") }}'
+      - name: GAS_LIMIT
+        description: '{{ doc("fact_transactions_tx_gas_limit") }}'
+      - name: CUMULATIVE_GAS_USED
+        description: '{{ doc("fact_transactions_cumulative_gas_used") }}'
+      - name: EFFECTIVE_GAS_PRICE
+        description: '{{ doc("fact_transactions_effective_gas_price") }}'
+      - name: R
+        description: '{{ doc("fact_transactions_r") }}'
+      - name: S
+        description: '{{ doc("fact_transactions_s") }}'
+      - name: V
+        description: '{{ doc("fact_transactions_v") }}'
+      - name: ETH_VALUE
+        description: '{{ doc("fact_transactions_eth_value") }}'
+      - name: MINT
+        description: '{{ doc("fact_transactions_mint") }}'
+      - name: SOURCE_HASH
+        description: '{{ doc("fact_transactions_source_hash") }}'
+      - name: MAX_FEE_PER_GAS
+        description: '{{ doc("fact_transactions_max_fee_per_gas") }}'
+      - name: MAX_PRIORITY_FEE_PER_GAS
+        description: '{{ doc("fact_transactions_max_priority_fee_per_gas") }}'
+      - name: L1_FEE
+        description: '{{ doc("evm_l1_fee") }}'
+      - name: L1_FEE_PRECISE_RAW
+        description: '{{ doc("fact_transactions_l1_fee_precise_raw") }}'
+      - name: L1_FEE_PRECISE
+        description: '{{ doc("fact_transactions_l1_fee_precise") }}'
+      - name: L1_FEE_SCALAR
+        description: '{{ doc("evm_l1_fee_scalar") }}'
+      - name: L1_GAS_PRICE
+        description: '{{ doc("evm_l1_gas_price") }}'
+      - name: L1_GAS_USED
+        description: '{{ doc("evm_l1_gas_used") }}'
+      - name: Y_PARITY
+        description: '{{ doc("fact_transactions_y_parity") }}'
+      - name: ACCESS_LIST
+        description: '{{ doc("fact_transactions_access_list") }}'
+      - name: AUTHORIZATION_LIST
+        description: '{{ doc("fact_transactions_authorization_list") }}'
+      - name: TOKEN_RATIO
+        description: '{{ doc("fact_transactions_token_ratio") }}'
+      - name: L1_BASE_FEE_SCALAR
+        description: '{{ doc("fact_transactions_l1_base_fee_scalar") }}'
+      - name: L1_BLOB_BASE_FEE
+        description: '{{ doc("fact_transactions_l1_blob_base_fee") }}'
+      - name: L1_BLOB_BASE_FEE_SCALAR
+        description: '{{ doc("fact_transactions_l1_blob_base_fee_scalar") }}'
+      - name: OPERATOR_FEE_SCALAR
+        description: '{{ doc("fact_transactions_operator_fee_scalar") }}'
+      - name: OPERATOR_FEE_CONSTANT
+        description: '{{ doc("fact_transactions_operator_fee_constant") }}'
+      - name: BLOB_VERSIONED_HASHES
+        description: '{{ doc("fact_transactions_blob_versioned_hashes") }}'
+      - name: MAX_FEE_PER_BLOB_GAS
+        description: '{{ doc("fact_transactions_max_fee_per_blob_gas") }}'
+      - name: BLOB_GAS_USED
+        description: '{{ doc("fact_blocks_blob_gas_used") }}'
+      - name: BLOB_GAS_PRICE
+        description: '{{ doc("fact_transactions_blob_gas_price") }}'
+      - name: FACT_TRANSACTIONS_ID
+        description: '{{ doc("general_pk") }}'
+      - name: INSERTED_TIMESTAMP
+        description: '{{ doc("general_inserted_timestamp") }}'
+      - name: MODIFIED_TIMESTAMP
+        description: '{{ doc("general_modified_timestamp") }}'

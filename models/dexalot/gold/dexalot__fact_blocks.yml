@@ -1,56 +1,66 @@
 version: 2
 models:
   - name: dexalot__fact_blocks
-    description: '{{ doc("evm_blocks_table_doc") }}'
-
+    description: '{{ doc("fact_blocks_table_doc") }}'
+      
     columns:
       - name: BLOCK_NUMBER
-        description: '{{ doc("evm_block_number") }}'
-      - name: BLOCK_TIMESTAMP
-        description: '{{ doc("evm_block_timestamp") }}'
-      - name: NETWORK
-        description: '{{ doc("evm_network") }}'
-      - name: MINER
-        description: '{{ doc("evm_miner") }}'
-      - name: NONCE
-        description: '{{ doc("evm_blocks_nonce") }}'
-      - name: TX_COUNT
-        description: '{{ doc("evm_tx_count") }}'
-      - name: DIFFICULTY
-        description: '{{ doc("evm_difficulty") }}'
-      - name: TOTAL_DIFFICULTY
-        description: '{{ doc("evm_total_difficulty") }}'
-      - name: EXTRA_DATA
-        description: '{{ doc("evm_extra_data") }}'
-      - name: GAS_LIMIT
-        description: '{{ doc("evm_gas_limit") }}'
-      - name: GAS_USED
-        description: '{{ doc("evm_gas_used") }}'
-      - name: BASE_FEE_PER_GAS
-        description: '{{ doc("evm_base_fee_per_gas") }}'
+        description: '{{ doc("general_block_number") }}'
       - name: BLOCK_HASH
-        description: '{{ doc("evm_blocks_hash") }}'
-      - name: PARENT_HASH
-        description: '{{ doc("evm_parent_hash") }}'
-      - name: RECEIPTS_ROOT
-        description: '{{ doc("evm_receipts_root") }}'
-      - name: SHA3_UNCLES
-        description: '{{ doc("evm_sha3_uncles") }}'
+        description: '{{ doc("fact_blocks_block_hash") }}'
+      - name: BLOCK_TIMESTAMP
+        description: '{{ doc("general_block_timestamp") }}'
+      - name: NETWORK
+        description: '{{ doc("fact_blocks_network") }}'
+      - name: TX_COUNT
+        description: '{{ doc("fact_blocks_tx_count") }}'
       - name: SIZE
-        description: '{{ doc("evm_size") }}'
-      - name: UNCLE_BLOCKS
-        description: '{{ doc("evm_uncle_blocks") }}'
-      - name: STATE_ROOT
-        description: '{{ doc("evm_state_root") }}'
-      - name: TRANSACTIONS_ROOT
-        description: '{{ doc("evm_transactions_root") }}'
-      - name: LOGS_BLOOM
-        description: '{{ doc("evm_logs_bloom") }}'
+        description: '{{ doc("fact_blocks_size") }}'
+      - name: MINER
+        description: '{{ doc("fact_blocks_miner") }}'
       - name: BASE_FEE_PER_GAS
-        description: '{{ doc("evm_base_fee_per_gas") }}'
+        description: '{{ doc("fact_blocks_base_fee_per_gas") }}'
+      - name: MIX_HASH
+        description: '{{ doc("fact_blocks_mix_hash") }}'
+      - name: EXTRA_DATA
+        description: '{{ doc("fact_blocks_extra_data") }}'
+      - name: PARENT_HASH
+        description: '{{ doc("fact_blocks_parent_hash") }}'
+      - name: GAS_USED
+        description: '{{ doc("fact_blocks_gas_used") }}'
+      - name: GAS_LIMIT
+        description: '{{ doc("fact_blocks_gas_limit") }}'
+      - name: DIFFICULTY
+        description: '{{ doc("fact_blocks_difficulty") }}'
+      - name: TOTAL_DIFFICULTY
+        description: '{{ doc("fact_blocks_total_difficulty") }}'
+      - name: SHA3_UNCLES
+        description: '{{ doc("fact_blocks_sha3_uncles") }}'
+      - name: UNCLE_BLOCKS
+        description: '{{ doc("fact_blocks_uncle_blocks") }}'
+      - name: NONCE
+        description: '{{ doc("fact_blocks_nonce") }}'
+      - name: RECEIPTS_ROOT
+        description: '{{ doc("fact_blocks_receipts_root") }}'
+      - name: STATE_ROOT
+        description: '{{ doc("fact_blocks_state_root") }}'
+      - name: TRANSACTIONS_ROOT
+        description: '{{ doc("fact_blocks_transactions_root") }}'
+      - name: LOGS_BLOOM
+        description: '{{ doc("fact_blocks_logs_bloom")  }}'
+      - name: BLOB_GAS_USED
+        description: '{{ doc("fact_blocks_blob_gas_used") }}'
+      - name: EXCESS_BLOB_GAS
+        description: '{{ doc("fact_blocks_excess_blob_gas") }}'
+      - name: PARENT_BEACON_BLOCK_ROOT
+        description: '{{ doc("fact_blocks_parent_beacon_block_root") }}'
+      - name: WITHDRAWALS
+        description: '{{ doc("fact_blocks_withdrawals") }}'
+      - name: WITHDRAWALS_ROOT
+        description: '{{ doc("fact_blocks_withdrawals_root") }}'
       - name: FACT_BLOCKS_ID
-        description: '{{ doc("evm_pk") }}'
+        description: '{{ doc("general_pk") }}'
       - name: INSERTED_TIMESTAMP
-        description: '{{ doc("evm_inserted_timestamp") }}'
+        description: '{{ doc("general_inserted_timestamp") }}'
       - name: MODIFIED_TIMESTAMP
-        description: '{{ doc("evm_modified_timestamp") }}'
+        description: '{{ doc("general_modified_timestamp") }}'

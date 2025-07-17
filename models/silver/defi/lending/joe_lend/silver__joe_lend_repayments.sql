@@ -37,7 +37,7 @@ joe_lend_repayments AS (
     utils.udf_hex_to_int(
       segmented_data [2] :: STRING
     ) :: INTEGER AS repayed_amount_raw,
-    'Joe-Lend' AS platform,
+    'Joe Lend' AS platform,
     modified_timestamp AS _inserted_timestamp,
     CONCAT(
             tx_hash :: STRING,

@@ -39,7 +39,7 @@ joe_lend_redemptions AS (
             segmented_data [3] :: STRING
         ) :: INTEGER AS redeemed_token_raw,
         CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS redeemer,
-        'Joe-Lend' AS platform,
+        'Joe Lend' AS platform,
         modified_timestamp AS _inserted_timestamp,
         CONCAT(
             tx_hash :: STRING,

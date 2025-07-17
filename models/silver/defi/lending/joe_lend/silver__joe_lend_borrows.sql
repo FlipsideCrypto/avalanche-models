@@ -42,7 +42,7 @@ joe_lend_borrows AS (
       segmented_data [3] :: STRING
     ) :: INTEGER AS totalBorrows,
     contract_address AS token,
-    'Joe-Lend' AS platform,
+    'Joe Lend' AS platform,
     modified_timestamp AS _inserted_timestamp,
     CONCAT(
             tx_hash :: STRING,

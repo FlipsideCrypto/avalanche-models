@@ -39,7 +39,7 @@ joe_lend_deposits AS (
       segmented_data [1] :: STRING
     ) :: INTEGER AS mintAmount_raw,
     CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS supplier,
-    'Joe-Lend' AS platform,
+    'Joe Lend' AS platform,
     modified_timestamp AS _inserted_timestamp,
     CONCAT(
             tx_hash :: STRING,

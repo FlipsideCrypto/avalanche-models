@@ -100,10 +100,6 @@ models:
           +enabled: true
     curated_package:
       +enabled: false
-      protocols:
-        +enabled: false
-        vertex:
-          +enabled: true
       defi:
         +enabled: false
         bridge:

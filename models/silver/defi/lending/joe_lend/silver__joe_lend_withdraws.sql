@@ -18,9 +18,9 @@ WITH asset_details AS (
         underlying_symbol,
         underlying_decimals
     FROM
-        {{ ref('silver__trader_joe_asset_details') }}
+        {{ ref('silver__joe_lend_asset_details') }}
 ),
-trader_joe_redemptions AS (
+joe_lend_redemptions AS (
     SELECT
         block_number,
         block_timestamp,
@@ -39,7 +39,7 @@ trader_joe_redemptions AS (
             segmented_data [3] :: STRING
         ) :: INTEGER AS redeemed_token_raw,
         CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS redeemer,
-        'Trader-Joe' AS platform,
+        'Joe Lend' AS platform,
         modified_timestamp AS _inserted_timestamp,
         CONCAT(
             tx_hash :: STRING,
@@ -68,7 +68,7 @@ AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 
 {% endif %}
 ),
-trader_joe_combine AS (
+joe_lend_combine AS (
     SELECT
         block_number,
         block_timestamp,
@@ -91,7 +91,7 @@ trader_joe_combine AS (
         b._log_id,
         b._inserted_timestamp
     FROM
-        trader_joe_redemptions b
+        joe_lend_redemptions b
         LEFT JOIN asset_details C
         ON b.token = C.token_address
 )
@@ -122,6 +122,6 @@ SELECT
     _inserted_timestamp,
     _log_id
 FROM
-    trader_joe_combine ee qualify(ROW_NUMBER() over(PARTITION BY _log_id
+    joe_lend_combine ee qualify(ROW_NUMBER() over(PARTITION BY _log_id
 ORDER BY
     _inserted_timestamp DESC)) = 1

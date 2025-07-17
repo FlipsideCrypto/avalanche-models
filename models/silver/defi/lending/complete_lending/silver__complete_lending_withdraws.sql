@@ -79,7 +79,7 @@ WHERE
     )
 {% endif %}
 ),
-trader_joe AS (
+joe_lend AS (
     SELECT
         tx_hash,
         block_number,
@@ -100,9 +100,9 @@ trader_joe AS (
         _LOG_ID,
         _INSERTED_TIMESTAMP
     FROM
-        {{ ref('silver__trader_joe_withdraws') }}
+        {{ ref('silver__joe_lend_withdraws') }}
 
-{% if is_incremental() and 'trader_joe' not in var('HEAL_MODELS') %}
+{% if is_incremental() and 'joe_lend' not in var('HEAL_MODELS') %}
 WHERE
     _inserted_timestamp >= (
         SELECT
@@ -128,7 +128,7 @@ withdraws_union AS (
     SELECT
         *
     FROM
-        trader_joe
+        joe_lend
 ),
 complete_lending_withdraws AS (
     SELECT

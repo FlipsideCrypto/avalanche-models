@@ -19,9 +19,9 @@ models:
       - name: VALUE
         description: '{{ doc("evm_value") }}'
       - name: VALUE_PRECISE_RAW
-        description: '{{ doc("evm_value_precise_unadjusted") }}'
+        description: '{{ doc("evm_precise_amount_unadjusted") }}'
       - name: VALUE_PRECISE
-        description: '{{ doc("evm_value_precise_adjusted") }}'
+        description: '{{ doc("evm_precise_amount_adjusted") }}'
       - name: TX_FEE
         description: '{{ doc("evm_tx_fee") }}'
       - name: TX_FEE_PRECISE
@@ -31,11 +31,11 @@ models:
       - name: TX_TYPE
         description: '{{ doc("evm_tx_type") }}'
       - name: NONCE
-        description: '{{ doc("evm_nonce") }}'
+        description: '{{ doc("evm_tx_nonce") }}'
       - name: TX_POSITION
         description: '{{ doc("evm_tx_position") }}'
       - name: INPUT_DATA
-        description: '{{ doc("evm_input_data") }}'
+        description: '{{ doc("evm_tx_input_data") }}'
       - name: GAS_PRICE
         description: '{{ doc("evm_tx_gas_price") }}'
       - name: GAS_USED

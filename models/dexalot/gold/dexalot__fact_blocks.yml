@@ -7,7 +7,7 @@ models:
       - name: BLOCK_NUMBER
         description: '{{ doc("evm_block_number") }}'
       - name: BLOCK_HASH
-        description: '{{ doc("evm_block_hash") }}'
+        description: '{{ doc("evm_blocks_hash") }}'
       - name: BLOCK_TIMESTAMP
         description: '{{ doc("evm_block_timestamp") }}'
       - name: NETWORK
@@ -39,7 +39,7 @@ models:
       - name: UNCLE_BLOCKS
         description: '{{ doc("evm_uncle_blocks") }}'
       - name: NONCE
-        description: '{{ doc("evm_nonce") }}'
+        description: '{{ doc("evm_blocks_nonce") }}'
       - name: RECEIPTS_ROOT
         description: '{{ doc("evm_receipts_root") }}'
       - name: STATE_ROOT

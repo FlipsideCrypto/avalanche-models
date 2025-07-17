@@ -23,7 +23,7 @@ models:
       - name: OUTPUT
         description: '{{ doc("evm_traces_output") }}'
       - name: TYPE
-        description: '{{ doc("evm_type") }}'
+        description: '{{ doc("evm_traces_type") }}'
       - name: TRACE_ADDRESS
         description: '{{ doc("evm_trace_address") }}'
       - name: SUB_TRACES
@@ -31,9 +31,9 @@ models:
       - name: VALUE
         description: '{{ doc("evm_value") }}'
       - name: VALUE_PRECISE_RAW
-        description: '{{ doc("evm_value_precise_unadjusted") }}'
+        description: '{{ doc("evm_precise_amount_unadjusted") }}'
       - name: VALUE_PRECISE
-        description: '{{ doc("evm_value_precise_adjusted") }}'
+        description: '{{ doc("evm_precise_amount_adjusted") }}'
       - name: VALUE_HEX
         description: '{{ doc("evm_value_hex") }}'
       - name: GAS
@@ -45,7 +45,7 @@ models:
       - name: ORIGIN_TO_ADDRESS
         description: '{{ doc("evm_traces_to") }}'
       - name: ORIGIN_FUNCTION_SIGNATURE
-        description: '{{ doc("evm_traces_origin_sig") }}'
+        description: '{{ doc("evm_origin_sig") }}'
       - name: TRACE_SUCCEEDED
         description: '{{ doc("evm_trace_succeeded") }}'
       - name: ERROR_REASON

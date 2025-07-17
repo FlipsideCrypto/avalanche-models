@@ -19,9 +19,9 @@ WITH asset_details AS (
     underlying_symbol,
     underlying_decimals
   FROM
-    {{ ref('silver__trader_joe_asset_details') }}
+    {{ ref('silver__joe_lend_asset_details') }}
 ),
-trader_joe_liquidations AS (
+joe_lend_liquidations AS (
   SELECT
     block_number,
     block_timestamp,
@@ -42,7 +42,7 @@ trader_joe_liquidations AS (
       segmented_data [2] :: STRING
     ) :: INTEGER AS repayAmount_raw,
     CONCAT('0x', SUBSTR(segmented_data [3] :: STRING, 25, 40)) AS tokenCollateral,
-    'Trader-Joe' AS platform,
+    'Joe-Lend' AS platform,
     modified_timestamp AS _inserted_timestamp,
     CONCAT(
         tx_hash :: STRING,
@@ -106,7 +106,7 @@ liquidation_union AS (
     l._inserted_timestamp,
     l._log_id
   FROM
-    trader_joe_liquidations l
+    joe_lend_liquidations l
     LEFT JOIN asset_details asd1
     ON l.token = asd1.token_address
     LEFT JOIN asset_details asd2

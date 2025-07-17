@@ -18,9 +18,9 @@ WITH asset_details AS (
     underlying_symbol,
     underlying_decimals
   FROM
-    {{ ref('silver__trader_joe_asset_details') }}
+    {{ ref('silver__joe_lend_asset_details') }}
 ),
-trader_joe_borrows AS (
+joe_lend_repayments AS (
   SELECT
     block_number,
     block_timestamp,
@@ -31,18 +31,13 @@ trader_joe_borrows AS (
     origin_function_signature,
     contract_address,
     regexp_substr_all(SUBSTR(DATA, 3, len(DATA)), '.{64}') AS segmented_data,
-    CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS borrower,
-    utils.udf_hex_to_int(
-      segmented_data [1] :: STRING
-    ) :: INTEGER AS loan_amount_raw,
+    CONCAT('0x', SUBSTR(segmented_data [1] :: STRING, 25, 40)) AS borrower,
+    contract_address AS token,
+    CONCAT('0x', SUBSTR(segmented_data [0] :: STRING, 25, 40)) AS payer,
     utils.udf_hex_to_int(
       segmented_data [2] :: STRING
-    ) :: INTEGER AS accountBorrows,
-    utils.udf_hex_to_int(
-      segmented_data [3] :: STRING
-    ) :: INTEGER AS totalBorrows,
-    contract_address AS token,
-    'Trader-Joe' AS platform,
+    ) :: INTEGER AS repayed_amount_raw,
+    'Joe-Lend' AS platform,
     modified_timestamp AS _inserted_timestamp,
     CONCAT(
             tx_hash :: STRING,
@@ -58,7 +53,7 @@ trader_joe_borrows AS (
       FROM
         asset_details
     )
-    AND topics [0] :: STRING = '0x13ed6866d4e1ee6da46f845c46d7e54120883d75c5ea9a2dacc1c4ca8984ab80'
+    AND topics [0] :: STRING = '0x1a2a22cb034d26d1854bdc6666a5b91fe25efbbb5dcad3b0355478d6f5c362a1'
     AND tx_succeeded
 
 {% if is_incremental() %}
@@ -72,7 +67,7 @@ AND _inserted_timestamp >= SYSDATE() - INTERVAL '7 day'
 
 {% endif %}
 ),
-trader_joe_combine AS (
+joe_lend_combine AS (
   SELECT
     block_number,
     block_timestamp,
@@ -83,17 +78,18 @@ trader_joe_combine AS (
     origin_function_signature,
     contract_address,
     borrower,
-    loan_amount_raw,
-    C.underlying_asset_address AS borrows_contract_address,
-    C.underlying_symbol AS borrows_contract_symbol,
     token,
     C.token_symbol,
+    payer,
+    repayed_amount_raw,
+    C.underlying_asset_address AS repay_contract_address,
+    C.underlying_symbol AS repay_contract_symbol,
     C.underlying_decimals,
     b.platform,
     b._log_id,
     b._inserted_timestamp
   FROM
-    trader_joe_borrows b
+    joe_lend_repayments b
     LEFT JOIN asset_details C
     ON b.token = C.token_address
 )
@@ -107,12 +103,13 @@ SELECT
   origin_function_signature,
   contract_address,
   borrower,
-  borrows_contract_address,
-  borrows_contract_symbol,
   token as token_address,
   token_symbol,
-  loan_amount_raw AS amount_unadj,
-  loan_amount_raw / pow(
+  payer,
+  repay_contract_address,
+  repay_contract_symbol,
+  repayed_amount_raw AS amount_unadj,
+  repayed_amount_raw / pow(
     10,
     underlying_decimals
   ) AS amount,
@@ -120,6 +117,6 @@ SELECT
   _inserted_timestamp,
   _log_id
 FROM
-  trader_joe_combine qualify(ROW_NUMBER() over(PARTITION BY _log_id
+  joe_lend_combine qualify(ROW_NUMBER() over(PARTITION BY _log_id
 ORDER BY
   _inserted_timestamp DESC)) = 1

@@ -104,6 +104,8 @@ models:
         +enabled: false
         bridge:
           +enabled: true
+        dex:
+          +enabled: true
       stats:
         +enabled: true
     scores_package:

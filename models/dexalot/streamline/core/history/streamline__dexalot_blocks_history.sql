@@ -4,9 +4,9 @@
         func = 'streamline.udf_bulk_rest_api_v2',
         target = "{{this.schema}}.{{this.identifier}}",
         params ={ "external_table" :"dexalot_blocks",
-        "sql_limit" :"20000",
-        "producer_batch_size" :"5000",
-        "worker_batch_size" :"1000",
+        "sql_limit" :"100000",
+        "producer_batch_size" :"10000",
+        "worker_batch_size" :"2000",
         "sql_source" :"{{this.identifier}}" }
     ),
     tags = ['dexalot','streamline_dexalot_history']

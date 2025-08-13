@@ -308,9 +308,11 @@ heal_missing_data AS (
         ON t.tx_position = txs.position
         AND t.block_number = txs.block_number
     WHERE
-        t.tx_hash IS NULL
+        (t.tx_hash IS NULL
         OR t.block_timestamp IS NULL
         OR t.tx_succeeded IS NULL
+        )
+        AND txs.block_timestamp >= DATEADD('day',-14,SYSDATE())
 )
 {% endif %},
 all_traces AS (

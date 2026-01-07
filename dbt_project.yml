@@ -103,6 +103,10 @@ models:
           +enabled: true
         stablecoins:
           +enabled: true
+        tvl:
+          +enabled: true
+      contract_reads:
+        +enabled: true
       stats:
         +enabled: true
       chain_stats:
